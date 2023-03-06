@@ -43,9 +43,11 @@ class Divergence(tf.keras.Model):
         gradients_of_disc = disc_tape.gradient(disc_loss, self.discriminator.trainable_variables)
         self.disc_optimizer.apply_gradients(zip(gradients_of_disc, self.discriminator.trainable_variables))
 
-    def train(self, Q_dataset, P_dataset):
-        # MOVE HERE THE SLICING OF THE DATASETS
-        
+    def train(self, data_P, data_Q):
+        # dataset slicing into minibatches
+        P_dataset = tf.data.Dataset.from_tensor_slices(data_P).batch(self.batch_size)
+        Q_dataset = tf.data.Dataset.from_tensor_slices(data_Q).batch(self.batch_size)
+
         for epoch in range(self.epochs):
             start = time.time()
 
