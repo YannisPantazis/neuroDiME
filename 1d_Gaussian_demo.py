@@ -5,7 +5,7 @@ import tensorflow_addons as tfa
 from keras import backend as K
 
 import argparse
-import json
+#import json
 import matplotlib.pyplot as plt
 from scipy.stats import norm
 from bisect import bisect_left, bisect_right
@@ -16,13 +16,15 @@ from Divergences import *
 parser = argparse.ArgumentParser(description='Neural-based Estimation of Divergences')
 
 parser.add_argument('--method', default='KLD-DV', type=str, metavar='method',
-                    help='values: KLD-DV, KLD-LT, squared-Hel-LT, chi-squared-LT, JS-LT, alpha-LT, Renyi-DV, Renyi-CC, rescaled-Renyi-CC, Renyi-CC-WCR, IPM')
+                    help='values: KLD-DV, KLD-DV-GP, KLD-LT, squared-Hel-LT, chi-squared-LT, JS-LT, alpha-LT, Renyi-DV, Renyi-CC, rescaled-Renyi-CC, Renyi-CC-WCR, IPM')
 parser.add_argument('--sample_size', default=10000, type=int, metavar='N')
 parser.add_argument('--batch_size', default=1000, type=int, metavar='m')
 parser.add_argument('--lr', default=0.001, type=float)
 parser.add_argument('--epochs', default=100, type=int,
                     help='number of total epochs to run')
 parser.add_argument('--alpha', default=2.0, type=float, metavar='alpha')
+parser.add_argument('--Lip_constant', default=1.0, type=float, metavar='Lipschitz constant')
+parser.add_argument('--gp_weight', default=1.0, type=float, metavar='GP weight')
 
 parser.add_argument('--spectral_norm', action='store_true')
 parser.add_argument('--no-spectral_norm', dest='spectral_norm', action='store_false')
@@ -42,21 +44,21 @@ m = opt_dict['batch_size']
 lr = opt_dict['lr']
 epochs = opt_dict['epochs']
 alpha = opt_dict['alpha']
+L = opt_dict['Lip_constant']
+gp_weight = opt_dict['gp_weight']
 spec_norm = opt_dict['spectral_norm']
 bounded = opt_dict['bounded']
 fl_act_func_CC = 'abs' # abs, softplus, poly-softplus
 
-
 # create data sets
 d = 1
-mu_P, mu_Q = 0.0, 0.0
-sgm_P, sgm_Q = 1.0, 2.0
+mu_P, mu_Q = 0.0, 1.0
+sgm_P, sgm_Q = 1.0, 1.0
 
 data_P = np.random.normal(loc=mu_P, scale=sgm_P, size=(N,d))
+data_P = data_P.astype('f')
 data_Q = np.random.normal(loc=mu_Q, scale=sgm_Q, size=(N,d))
-
-P_dataset = tf.data.Dataset.from_tensor_slices(data_P).batch(m)
-Q_dataset = tf.data.Dataset.from_tensor_slices(data_Q).batch(m)
+data_Q = data_Q.astype('f')
 
 NoP = 10000
 min_x = min(mu_P-4.0*sgm_P, mu_Q-4.0*sgm_Q)
@@ -97,15 +99,29 @@ discriminator.summary()
 # construct divergence, train optimizer and estimate the divergence
 if mthd=="IPM":
     div_dense = IPM(discriminator, epochs, lr, m)
-    div_dense.train(P_dataset, Q_dataset)
+    div_dense.train(data_P, data_Q)
     div_value_est = float(div_dense.estimate(data_P, data_Q))
-                
+    g_est = div_dense.discriminate(x)
+    
+    g_star = pdf_P - pdf_Q # witness function in MMD (RKHS)
+    
     print('IPM:\t\t {:.4}'.format(div_value_est))
+    print()
+
+if mthd=="IPM-GP":
+    div_dense = Wasserstein_GP(discriminator, epochs, lr, m, L, gp_weight)
+    div_dense.train(data_P, data_Q)
+    div_value_est = float(div_dense.estimate(data_P, data_Q))
+    g_est = div_dense.discriminate(x)
+    
+    g_star = pdf_P - pdf_Q # witness function in MMD (RKHS)
+    
+    print('Wasserstein distance:\t\t {:.4}'.format(div_value_est))
     print()
 
 if mthd=="KLD-DV":
     div_dense = KLD_DV(discriminator, epochs, lr, m)
-    div_dense.train(P_dataset, Q_dataset)
+    div_dense.train(data_P, data_Q)
     div_value_est = float(div_dense.estimate(data_P, data_Q))
     g_est = div_dense.discriminate(x)
     
@@ -116,9 +132,22 @@ if mthd=="KLD-DV":
     print('KLD-DV (estimated):\t {:.4}'.format(div_value_est))
     print()
 
+if mthd=="KLD-DV-GP":
+    div_dense = KLD_DV_GP(discriminator, epochs, lr, m, L, gp_weight)
+    div_dense.train(data_P, data_Q)
+    div_value_est = float(div_dense.estimate(data_P, data_Q))
+    g_est = div_dense.discriminate(x)
+    
+    div_value_true = np.sum(pdf_P*np.log(pdf_P/pdf_Q)) * dx
+    g_star = np.log(pdf_P/pdf_Q)
+    
+    print('KLD (true):\t\t {:.4}'.format(div_value_true))
+    print('KLD-DV-GP (estimated):\t {:.4}'.format(div_value_est))
+    print()
+
 if mthd=="KLD-LT":
     div_dense = KLD_LT(discriminator, epochs, lr, m)
-    div_dense.train(P_dataset, Q_dataset)
+    div_dense.train(data_P, data_Q)
     div_value_est = float(div_dense.estimate(data_P, data_Q))
     g_est = div_dense.discriminate(x)
     
@@ -131,7 +160,7 @@ if mthd=="KLD-LT":
 
 if mthd=="squared-Hel-LT":
     div_dense = squared_Hellinger_LT(discriminator, epochs, lr, m)
-    div_dense.train(P_dataset, Q_dataset)
+    div_dense.train(data_P, data_Q)
     div_value_est = float(div_dense.estimate(data_P, data_Q))
     g_est = div_dense.discriminate(x)
     
@@ -144,7 +173,7 @@ if mthd=="squared-Hel-LT":
 
 if mthd=="chi-squared-LT":
     div_dense = Pearson_chi_squared_LT(discriminator, epochs, lr, m)
-    div_dense.train(P_dataset, Q_dataset)
+    div_dense.train(data_P, data_Q)
     div_value_est = float(div_dense.estimate(data_P, data_Q))
     g_est = div_dense.discriminate(x)
         
@@ -157,7 +186,7 @@ if mthd=="chi-squared-LT":
 
 if mthd=="JS-LT":
     div_dense = Jensen_Shannon_LT(discriminator, epochs, lr, m)
-    div_dense.train(P_dataset, Q_dataset)
+    div_dense.train(data_P, data_Q)
     div_value_est = float(div_dense.estimate(data_P, data_Q))
     g_est = div_dense.discriminate(x)
         
@@ -171,7 +200,7 @@ if mthd=="JS-LT":
 
 if mthd=="alpha-LT":
     div_dense = alpha_Divergence_LT(discriminator, alpha, epochs, lr, m)
-    div_dense.train(P_dataset, Q_dataset)
+    div_dense.train(data_P, data_Q)
     div_value_est = float(div_dense.estimate(data_P, data_Q))
     g_est = div_dense.discriminate(x)
 
@@ -184,7 +213,7 @@ if mthd=="alpha-LT":
 
 if mthd=="Renyi-DV":
     div_dense = Renyi_Divergence_DV(discriminator, alpha, epochs, lr, m)
-    div_dense.train(P_dataset, Q_dataset)
+    div_dense.train(data_P, data_Q)
     div_value_est = float(div_dense.estimate(data_P, data_Q))
     g_est = div_dense.discriminate(x)
     
@@ -197,7 +226,7 @@ if mthd=="Renyi-DV":
 
 if mthd=="Renyi-CC":
     div_dense = Renyi_Divergence_CC(discriminator, alpha, epochs, lr, m, fl_act_func_CC)
-    div_dense.train(P_dataset, Q_dataset)
+    div_dense.train(data_P, data_Q)
     div_value_est = float(div_dense.estimate(data_P, data_Q))
     g_est = div_dense.discriminate(x)
     
@@ -210,7 +239,7 @@ if mthd=="Renyi-CC":
 
 if mthd=="rescaled-Renyi-CC":
     div_dense = Renyi_Divergence_CC_rescaled(discriminator, alpha, epochs, lr, m, fl_act_func_CC)
-    div_dense.train(P_dataset, Q_dataset)
+    div_dense.train(data_P, data_Q)
     div_value_est = float(div_dense.estimate(data_P, data_Q))
     g_est = div_dense.discriminate(x)
     
@@ -223,7 +252,7 @@ if mthd=="rescaled-Renyi-CC":
 
 if mthd=="Renyi-WCR":
     div_dense = Renyi_Divergence_WCR(discriminator, 'Inf', epochs, lr, m, fl_act_func_CC)
-    div_dense.train(P_dataset, Q_dataset)
+    div_dense.train(data_P, data_Q)
     div_value_est = float(div_dense.estimate(data_P, data_Q))
     g_est = div_dense.discriminate(x)
     
