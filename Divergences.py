@@ -51,11 +51,11 @@ class Divergence(tf.keras.Model):
         for epoch in range(self.epochs):
             start = time.time()
 
-            for Q_batch, P_batch in zip(Q_dataset, P_dataset):
-                self.train_step(Q_batch, P_batch)
+            for P_batch, Q_batch in zip(P_dataset, Q_dataset):
+                self.train_step(P_batch, Q_batch)
 
 #            print('Time for epoch {} is {} sec'.format(epoch + 1, time.time()-start))
-#            print(float(self.estimate(Q_batch, P_batch)))
+#            print(float(self.estimate(P_batch, Q_batch)))
 #            print()
 
     def get_discriminator(self):
@@ -341,4 +341,97 @@ class Renyi_Divergence_WCR(Renyi_Divergence_CC):
         
         D_loss = D_loss_real + D_loss_fake + 1.0
         return D_loss
+
+
+
+'''
+Divergence class with (one-sided) gradient penalty (enforce Lipschitz continuity)
+'''
+class Divergence_GP(Divergence):
+ 
+    # initialize
+    def __init__(self, discriminator, epochs, lr, BATCH_SIZE, L, gp_weight):
+        super(Divergence, self).__init__()
+        
+        Divergence.__init__(self, discriminator, epochs, lr, BATCH_SIZE)
+        self.Lip_const = L # Lipschitz constant
+        self.gp_weight = gp_weight # weighting factor of gradient penalty
+
+    def get_Lip_constant(self):
+        return self.Lip_const
+
+    def set_Lip_constant(self, L):
+        self.Lip_const = L
+    
+    def get_gp_weight(self):
+        return self.gp_weight
+
+    def set_gp_weight(self, gp_weight):
+        self.gp_weight = gp_weight
+    
+    def gradient_penalty_loss(self, x, y): # compute the gradient penalty
+        temp_shape = [x.shape[0]] + [1 for _ in  range(len(x.shape)-1)]
+        ratio = tf.random.uniform(temp_shape, 0.0, 1.0, dtype=tf.dtypes.float32)
+        diff = y - x
+        interpltd = x + (ratio * diff) # get the interpolated samples
+
+        with tf.GradientTape() as gp_tape: # get the discriminator output
+            gp_tape.watch(interpltd)
+            D_pred = self.discriminator(interpltd, training=True)
+
+        grads = gp_tape.gradient(D_pred, [interpltd])[0] # calculate the gradients
+        if x.shape[1]==1: # calculate the norm
+            norm = tf.sqrt(tf.square(grads))
+        else:
+            norm = tf.sqrt(tf.reduce_sum(tf.square(grads)))
+
+        gp = tf.reduce_mean(tf.math.maximum(norm - self.Lip_const, 0.0)) # one-sided gradient penalty
+#        gp = tf.reduce_mean((norm - self.Lip_const) ** 2) # two-sided gradient penalty
+        return gp
+
+    def train_step(self, x, y): # add gradient penalty to the discriminator's loss
+        # discriminator's parameters update
+        with tf.GradientTape() as disc_tape:
+            disc_loss = -self.discriminator_loss(x, y) # with minus because we maximize the discrimination loss
+            gp_loss = self.gradient_penalty_loss(x, y) # gradient penalty
+            total_loss = disc_loss + gp_loss * self.gp_weight # add the gradient penalty to the original discriminator loss
+
+        gradients_of_disc = disc_tape.gradient(total_loss, self.discriminator.trainable_variables)
+        self.disc_optimizer.apply_gradients(zip(gradients_of_disc, self.discriminator.trainable_variables))
+
+
+
+'''
+KL divergence class with gradient penalty (based on the Donsker-Varahdan variational formula)
+'''
+class KLD_DV_GP(Divergence_GP):
+
+    def eval_var_formula(self, x, y):
+        D_real = self.discriminate(x)
+        D_fake = self.discriminate(y)
+
+        D_loss_real = tf.reduce_mean(D_real)
+        
+        max_val = tf.reduce_max(D_fake)
+        D_loss_fake = tf.math.log(tf.reduce_mean(tf.math.exp(D_fake - max_val))) + max_val
+
+        D_loss = D_loss_real - D_loss_fake
+        return D_loss
+        
+
+'''
+Wasserstein metric class with gradient penalty (enforce Lipschitz continuity)
+'''
+class Wasserstein_GP(Divergence_GP):
+
+    def eval_var_formula(self, x, y):
+        D_real = self.discriminate(x)
+        D_fake = self.discriminate(y)
+
+        D_loss_real = tf.reduce_mean(D_real)
+        D_loss_fake = tf.reduce_mean(D_fake)
+
+        D_loss = D_loss_real - D_loss_fake
+        return D_loss
+
 
