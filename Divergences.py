@@ -343,6 +343,21 @@ class Renyi_Divergence_WCR(Renyi_Divergence_CC):
         return D_loss
 
 
+'''
+Pearson chi^2-divergence class (based on Hammersley-Chapman-Robbins bound)
+'''
+class Pearson_chi_squared_HCR(Divergence):
+
+    def eval_var_formula(self, x, y):
+        D_real = self.discriminate(x)
+        D_fake = self.discriminate(y)
+
+        D_loss_real = tf.reduce_mean(D_real)
+        D_loss_fake = tf.reduce_mean(D_fake)
+
+        D_loss = (D_loss_real - D_loss_fake)**2 / tf.reduce_variance(D_fake)
+        return D_loss
+
 
 '''
 Divergence class with (one-sided) gradient penalty (enforce Lipschitz continuity)
@@ -386,7 +401,6 @@ class Divergence_GP(Divergence):
             norm = tf.sqrt(tf.reduce_sum(tf.square(grads)))
 
         gp = tf.reduce_mean(tf.math.maximum(norm - self.Lip_const, 0.0)) # one-sided gradient penalty
-#        gp = tf.reduce_mean((norm - self.Lip_const) ** 2) # two-sided gradient penalty
         return gp
 
     def train_step(self, x, y): # add gradient penalty to the discriminator's loss
@@ -399,6 +413,30 @@ class Divergence_GP(Divergence):
         gradients_of_disc = disc_tape.gradient(total_loss, self.discriminator.trainable_variables)
         self.disc_optimizer.apply_gradients(zip(gradients_of_disc, self.discriminator.trainable_variables))
 
+
+'''
+Divergence class with (two-sided) gradient penalty (enforce Lipschitz continuity)
+'''
+class Divergence_GP_2sided(Divergence_GP):
+ 
+    def gradient_penalty_loss(self, x, y): # compute the gradient penalty
+        temp_shape = [x.shape[0]] + [1 for _ in  range(len(x.shape)-1)]
+        ratio = tf.random.uniform(temp_shape, 0.0, 1.0, dtype=tf.dtypes.float32)
+        diff = y - x
+        interpltd = x + (ratio * diff) # get the interpolated samples
+
+        with tf.GradientTape() as gp_tape: # get the discriminator output
+            gp_tape.watch(interpltd)
+            D_pred = self.discriminator(interpltd, training=True)
+
+        grads = gp_tape.gradient(D_pred, [interpltd])[0] # calculate the gradients
+        if x.shape[1]==1: # calculate the norm
+            norm = tf.sqrt(tf.square(grads))
+        else:
+            norm = tf.sqrt(tf.reduce_sum(tf.square(grads)))
+
+        gp = tf.reduce_mean((norm - self.Lip_const) ** 2) # two-sided gradient penalty
+        return gp
 
 
 '''
