@@ -1,12 +1,14 @@
-Title: Neural-based Estimation of Divergences
+TITLE: Neural-based Estimation of Divergences and Integral Probability Metrics (NEDIPM)
+
 
 
 CLASS HIERARCHY
---------------
+---------------
 Divergence
     KLD_DV
     IPM
 	Wasserstein_GP
+	Wasserstein_GP2
     f_Divergence (LT-based)
 	KLD_LT
 	Pearson_chi_squared_LT
@@ -20,27 +22,36 @@ Divergence
 	Renyi_Divergence_CC
 	    Renyi_Divergence_CC_rescaled
 	    Renyi_Divergence_CC_WCR
-    Sinkhorn_Divergence
-
-    
-?? in total    
- 
-Consider including more divergences: skew KLD and/or skew f-divergences (this is merely a matter of dataset definition - have it as an example), Cauchy-Schwartz divergence, Wasserstein GP (1 and 2 sided), Sinkhorn?
-
-Add GP in f-divergences?
-
-!!!Move inside the class the dataset slicing into mini-batches!!!
 
 
-MI
-    Divergence-based (inherit the respective divergence; eg, MI_KLD_DV inherits from KLD_DV, too)
-    BA
-    UBA
-    TUBA
-    CLUB
-    FLO
-    InfoNCE
-    ...
+
+
+REQUIREMENTS
+------------
+Python 3.10.4
+pip install tensorflow==2.8.0 (for the Divergences.py)
+
+pip install tensorflow_addons==0.16.1 (for the 1d_Gaussian_demo.py)
+pip install pandas==1.4.2
+pip install argparse==1.1
+
+
+
+
+
+LIST OF EXAMPLES
+----------------
+a. 1D Gaussians: fixed or varying mu & sigma
+b. Multivariate Gaussians: vary dimension and correlation coefficient rho
+c. Heavy-tailed distribution and varying alpha
+d. Subpopulation detection: both synthetic (GMM) and real datasets
+e. An equivariant dataset
+f. Define 1-2 tasks for images that require divergence estimation (CNN-based?)
+
+- How detailed shall we be?
+There are several quantities to test:
+sample size, batch size, Lipschitz constant, alpha, Gamma function space, ...
+
 
 
 PYTHON FILES
@@ -54,9 +65,11 @@ PYTHON FILES
 
 - MI.py contains all the basic estimators of mutual information (Divergence-based, BA, UBA, TUBA, CLUB, FLO, InfoNCE, ...). Use as guide the available code (mi_estimators.py)
 
-- One file per demonstration example (multivariate Gaussians, contrastive learning(?), CIFAR10/100, ...)
+- Maybe, one file per demonstration example (multivariate Gaussians, contrastive learning(?), CIFAR10/100, ...)
 
 - Gamma function spaces: continuous & bounded, L-Lipschitz, equivariant, user-defined
+
+
 
 
 HOW TO RUN
@@ -65,7 +78,19 @@ python3 1d_Gaussian_demo.py --sample_size 100000 --batch_size 10000 --epochs 200
 
 
 (NOT READY YET) python3 large_scale_bio_run_new.py --sample_size 100000 --batch_size 10000 --alpha 2.0 --no_repeats 50 --epochs 200 --method IC-rescaled
+# python3 aucs_bio_example.py
 
 
 
-python3 aucs_bio_example.py
+
+MUTUAL INFORMATION (later)
+--------------------------
+MI
+    Divergence-based (inherit the respective divergence; eg, MI_KLD_DV inherits from KLD_DV, too)
+    BA
+    UBA
+    TUBA
+    CLUB
+    FLO
+    InfoNCE
+    ...
