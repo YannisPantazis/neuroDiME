@@ -32,10 +32,12 @@ Python 3.10.4
 pip install tensorflow==2.8.0 (for the Divergences.py)
 
 pip install tensorflow_addons==0.16.1 (for the 1d_Gaussian_demo.py)
-pip install keras==2.9.0
+pip install keras==2.8.0
 pip install pandas==1.4.2
 pip install argparse==1.1
-
+pip install protobuf==3.20.3
+pip install matplotlib==3.7.1
+pip install scipy==1.10.1
 
 
 
