@@ -355,7 +355,7 @@ class Pearson_chi_squared_HCR(Divergence):
         D_loss_real = tf.reduce_mean(D_real)
         D_loss_fake = tf.reduce_mean(D_fake)
 
-        D_loss = (D_loss_real - D_loss_fake)**2 / tf.reduce_variance(D_fake)
+        D_loss = (D_loss_real - D_loss_fake)**2 / tf.math.reduce_variance(D_fake)
         return D_loss
 
 
