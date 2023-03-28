@@ -3,17 +3,18 @@ import time
 
 
 '''
-Parent class where the common parameters and the common functions are defined
+Divergence D(P||Q) between random variables x~P, y~Q.
+Parent class where the common parameters and the common functions are defined.
 '''
 class Divergence(tf.keras.Model):
 
     # initialize
-    def __init__(self, discriminator, epochs, lr, BATCH_SIZE):
+    def __init__(self, discriminator, epochs, learning_rate, batch_size, discriminator_penalty=None):
         super(Divergence, self).__init__()
-        self.batch_size = BATCH_SIZE
+        self.batch_size = batch_size
         self.epochs = epochs
-        self.learning_rate = lr
-
+        self.learning_rate = learning_rate
+        self.discriminator_penalty=discriminator_penalty
         self.discriminator = discriminator
         self.disc_optimizer = tf.keras.optimizers.Adam(self.learning_rate)
 
@@ -38,10 +39,13 @@ class Divergence(tf.keras.Model):
     def train_step(self, x, y):
         # discriminator's parameters update
         with tf.GradientTape() as disc_tape:
-            disc_loss = -self.discriminator_loss(x, y) # with minus because we maximize the discrimination loss
+            loss = -self.discriminator_loss(x, y) # with minus because we maximize the discrimination loss
+            if self.discriminator_penalty is not None:
+                loss=loss+self.discriminator_penalty.evaluate(self.discriminator, x, y)
 
-        gradients_of_disc = disc_tape.gradient(disc_loss, self.discriminator.trainable_variables)
-        self.disc_optimizer.apply_gradients(zip(gradients_of_disc, self.discriminator.trainable_variables))
+        gradients_of_loss = disc_tape.gradient(loss, self.discriminator.trainable_variables)
+        self.disc_optimizer.apply_gradients(zip(gradients_of_loss, self.discriminator.trainable_variables))
+
 
     def train(self, data_P, data_Q):
         # dataset slicing into minibatches
@@ -89,18 +93,21 @@ IPM class
 class IPM(Divergence):
 
     def eval_var_formula(self, x, y):
-        D_real = self.discriminate(x)
-        D_fake = self.discriminate(y)
+        D_P = self.discriminate(x)
+        D_Q = self.discriminate(y)
 
-        D_loss_real = tf.reduce_mean(D_real)
-        D_loss_fake = tf.reduce_mean(D_fake)
+        D_loss_P = tf.reduce_mean(D_P)
+        D_loss_Q = tf.reduce_mean(D_Q)
 
-        D_loss = D_loss_real - D_loss_fake
+        D_loss = D_loss_P - D_loss_Q
         return D_loss
+
+
 
 
 '''
 f-divergence class (parent class)
+D_f(P||Q), x~P, y~Q.
 '''
 class f_Divergence(Divergence):
  
@@ -112,20 +119,21 @@ class f_Divergence(Divergence):
         return y
 
     def eval_var_formula(self, x, y):
-        D_real = self.discriminate(x)
-        D_real = self.final_layer_activation(D_real)
-        D_fake = self.discriminate(y)
-        D_fake = self.final_layer_activation(D_fake)
+        D_P = self.discriminate(x)
+        D_P = self.final_layer_activation(D_P)
+        D_Q = self.discriminate(y)
+        D_Q = self.final_layer_activation(D_Q)
         
-        D_loss_real = tf.reduce_mean(D_real)
-        D_loss_fake = tf.reduce_mean(self.f_star(D_fake))
+        D_loss_P = tf.reduce_mean(D_P)
+        D_loss_Q = tf.reduce_mean(self.f_star(D_Q))
         
-        D_loss = D_loss_real - D_loss_fake
+        D_loss = D_loss_P - D_loss_Q
         return D_loss
 
 
 '''
 Kullback-Leibler (KL) divergence class (based on Legendre transform)
+KL(P||Q), x~P, y~Q.
 '''
 class KLD_LT(f_Divergence):
  
@@ -137,6 +145,7 @@ class KLD_LT(f_Divergence):
 
 '''
 Pearson chi^2-divergence class (based on Legendre transform)
+chi^2(P||Q), x~P, y~Q.
 '''
 class Pearson_chi_squared_LT(f_Divergence):
  
@@ -146,8 +155,11 @@ class Pearson_chi_squared_LT(f_Divergence):
         return f_star_y
 
 
+
+
 '''
 squared Hellinger distance class (based on Legendre transform)
+H(P||Q), x~P, y~Q.
 '''
 class squared_Hellinger_LT(f_Divergence):
  
@@ -163,6 +175,7 @@ class squared_Hellinger_LT(f_Divergence):
 
 '''
 Jensen-Shannon divergence class (based on Legendre transform)
+JS(P||Q), x~P, y~Q.
 '''
 class Jensen_Shannon_LT(f_Divergence):
  
@@ -179,14 +192,14 @@ class Jensen_Shannon_LT(f_Divergence):
 
 '''
 alpha-divergence class (based on Legendre transform)
+D_{f_alpha}(P||Q), x~P, y~Q.
 '''
 class alpha_Divergence_LT(f_Divergence):
  
     # initialize
-    def __init__(self, discriminator, alpha, epochs, lr, BATCH_SIZE):
-        super(Divergence, self).__init__()
+    def __init__(self, discriminator, alpha, epochs, learning_rate, batch_size,discriminator_penalty=None):
         
-        Divergence.__init__(self, discriminator, epochs, lr, BATCH_SIZE)
+        Divergence.__init__(self, discriminator, epochs, learning_rate, batch_size,discriminator_penalty)
         self.alpha = alpha # order
     
     def get_order(self):
@@ -203,37 +216,56 @@ class alpha_Divergence_LT(f_Divergence):
             f_star_y = tf.math.pow((1.0-self.alpha)*tf.nn.relu(y), self.alpha/(self.alpha-1.0)) / self.alpha - 1.0/(self.alpha*(self.alpha-1.0))
         
         return f_star_y
+        
+        
+'''
+Pearson chi^2-divergence class (based on Hammersley-Chapman-Robbins bound)
+chi^2(P||Q), x~P, y~Q.
+'''
+class Pearson_chi_squared_HCR(Divergence):
+
+    def eval_var_formula(self, x, y):
+        D_P = self.discriminate(x)
+        D_Q = self.discriminate(y)
+
+        D_loss_P = tf.reduce_mean(D_P)
+        D_loss_Q = tf.reduce_mean(D_Q)
+
+        D_loss = (D_loss_P - D_loss_Q)**2 / tf.math.reduce_variance(D_Q)
+        return D_loss
+
 
 
 '''
 KL divergence class (based on the Donsker-Varahdan variational formula)
+KL(P||Q), x~P, y~Q.
 '''
 class KLD_DV(Divergence):
 
     def eval_var_formula(self, x, y):
-        D_real = self.discriminate(x)
-        D_fake = self.discriminate(y)
+        D_P = self.discriminate(x)
+        D_Q = self.discriminate(y)
 
-        D_loss_real = tf.reduce_mean(D_real)
+        D_loss_P = tf.reduce_mean(D_P)
         
-        max_val = tf.reduce_max(D_fake)
-        D_loss_fake = tf.math.log(tf.reduce_mean(tf.math.exp(D_fake - max_val))) + max_val
+        max_val = tf.reduce_max(D_Q)
+        D_loss_Q = tf.math.log(tf.reduce_mean(tf.math.exp(D_Q - max_val))) + max_val
 
-        D_loss = D_loss_real - D_loss_fake
+        D_loss = D_loss_P - D_loss_Q
         return D_loss
 
 
 '''
 Renyi divergence class
+R_alpha(P||Q), x~P, y~Q.
 '''
 class Renyi_Divergence(Divergence):
  
     # initialize
-    def __init__(self, discriminator, alpha, epochs, lr, BATCH_SIZE):
-        super(Divergence, self).__init__()
+    def __init__(self, discriminator, alpha, epochs, learning_rate, batch_size,discriminator_penalty=None):
         
-        Divergence.__init__(self, discriminator, epochs, lr, BATCH_SIZE)
-        self.alpha = alpha # RD order
+        Divergence.__init__(self, discriminator, epochs, learning_rate, batch_size,discriminator_penalty)
+        self.alpha = alpha # Renyi Divergence order
 
     def get_order(self):
         return self.alpha
@@ -244,6 +276,7 @@ class Renyi_Divergence(Divergence):
 
 '''
 Renyi divergence class (based on the Renyi-Donsker-Varahdan variational formula)
+R_alpha(P||Q), x~P, y~Q.
 '''
 class Renyi_Divergence_DV(Renyi_Divergence):
 
@@ -251,62 +284,63 @@ class Renyi_Divergence_DV(Renyi_Divergence):
         gamma = self.alpha
         beta = 1.0 - self.alpha
 
-        D_real = self.discriminate(x)
-        D_fake = self.discriminate(y)
+        D_P = self.discriminate(x)
+        D_Q = self.discriminate(y)
 
         if beta == 0.0:
-            D_loss_real = tf.reduce_mean(D_real)
+            D_loss_P = tf.reduce_mean(D_P)
         else:
-            max_val = tf.reduce_max((-beta) * D_real)
-            D_loss_real = -(1.0/beta) * (tf.math.log(tf.reduce_mean(tf.math.exp((-beta) * D_real - max_val))) + max_val)
+            max_val = tf.reduce_max((-beta) * D_P)
+            D_loss_P = -(1.0/beta) * (tf.math.log(tf.reduce_mean(tf.math.exp((-beta) * D_P - max_val))) + max_val)
 
         if gamma == 0.0:
-            D_loss_fake = tf.reduce_mean(D_fake)
+            D_loss_Q = tf.reduce_mean(D_Q)
         else:
-            max_val = tf.reduce_max((gamma) * D_fake)
-            D_loss_fake = (1.0/gamma) * (tf.math.log(tf.reduce_mean(tf.math.exp(gamma * D_fake - max_val))) + max_val)
+            max_val = tf.reduce_max((gamma) * D_Q)
+            D_loss_Q = (1.0/gamma) * (tf.math.log(tf.reduce_mean(tf.math.exp(gamma * D_Q - max_val))) + max_val)
 
-        D_loss = D_loss_real - D_loss_fake
+        D_loss = D_loss_P - D_loss_Q
         return D_loss
 
 
 '''
 Renyi divergence class (based on the convex-conjugate variational formula)
+R_alpha(P||Q), x~P, y~Q.
 '''
 class Renyi_Divergence_CC(Renyi_Divergence):
     
     # initialize
-    def __init__(self, discriminator, alpha, epochs, lr, BATCH_SIZE, fl_act_func):
-        super(Divergence, self).__init__()
+    def __init__(self, discriminator, alpha, epochs, learning_rate, batch_size, final_act_func,discriminator_penalty=None):
         
-        Renyi_Divergence.__init__(self, discriminator, alpha, epochs, lr, BATCH_SIZE)
-        self.act_func = fl_act_func
+        Renyi_Divergence.__init__(self, discriminator, alpha, epochs, learning_rate, batch_size,discriminator_penalty)
+        self.final_act_func = final_act_func
     
     def final_layer_activation(self, y): # enforce positive values
-        if self.act_func=='abs':
+        if self.final_act_func=='abs':
             out = tf.math.abs(y)
-        elif self.act_func=='softplus':
+        elif self.final_act_func=='softplus':
             out = tf.keras.activations.softplus(y)
-        elif self.act_func=='poly-softplus':
+        elif self.final_act_func=='poly-softplus':
             out = 1.0+(1.0/(1.0+tf.nn.relu(-y))-1.0)*(1.0-tf.sign(y))/2.0 +y*(tf.sign(y)+1.0)/2.0
         
         return out
     
     def eval_var_formula(self, x, y):
-        D_real = self.discriminate(x)
-        D_real = self.final_layer_activation(D_real)
-        D_fake = self.discriminate(y)
-        D_fake = self.final_layer_activation(D_fake)
+        D_P = self.discriminate(x)
+        D_P = self.final_layer_activation(D_P)
+        D_Q = self.discriminate(y)
+        D_Q = self.final_layer_activation(D_Q)
         
-        D_loss_real = -tf.reduce_mean(D_real)
-        D_loss_fake = tf.math.log(tf.reduce_mean(D_fake**((self.alpha-1.0)/self.alpha))) / (self.alpha-1.0)
+        D_loss_Q = -tf.reduce_mean(D_Q)
+        D_loss_P = tf.math.log(tf.reduce_mean(D_P**((self.alpha-1.0)/self.alpha))) / (self.alpha-1.0)
         
-        D_loss = D_loss_real + D_loss_fake + (tf.math.log(self.alpha)+1.0)/self.alpha
+        D_loss = D_loss_Q + D_loss_P + (tf.math.log(self.alpha)+1.0)/self.alpha
         return D_loss
 
 
 '''
 Rescaled Renyi divergence class (based on the rescaled convex-conjugate variational formula)
+alpha*R_alpha(P||Q), x~P, y~Q.
 '''
 class Renyi_Divergence_CC_rescaled(Renyi_Divergence_CC):
     
@@ -327,50 +361,52 @@ class Renyi_Divergence_CC_rescaled(Renyi_Divergence_CC):
 
 '''
 "Rescaled Renyi divergence class as alpha --> infinity (aka worst-case regret divergence)
+D_\infty(P||Q), x~P, y~Q.
 '''
 class Renyi_Divergence_WCR(Renyi_Divergence_CC):
     
     def eval_var_formula(self, x, y):
-        D_real = self.discriminate(x)
-        D_real = self.final_layer_activation(D_real)
-        D_fake = self.discriminate(y)
-        D_fake = self.final_layer_activation(D_fake)
+        D_P = self.discriminate(x)
+        D_P = self.final_layer_activation(D_P)
+        D_Q = self.discriminate(y)
+        D_Q = self.final_layer_activation(D_Q)
         
-        D_loss_real = tf.math.log(tf.reduce_mean(D_real))
-        D_loss_fake = -tf.reduce_mean(D_fake)
+        D_loss_P = tf.math.log(tf.reduce_mean(D_P))
+        D_loss_Q = -tf.reduce_mean(D_Q)
         
-        D_loss = D_loss_real + D_loss_fake + 1.0
+        D_loss = D_loss_Q + D_loss_P + 1.0
         return D_loss
 
 
 '''
-Pearson chi^2-divergence class (based on Hammersley-Chapman-Robbins bound)
+Discriminator penalty class penalizes the divergence objective functional during training.
+Allows for the (approximate) implementation of discriminator constraints.
 '''
-class Pearson_chi_squared_HCR(Divergence):
-
-    def eval_var_formula(self, x, y):
-        D_real = self.discriminate(x)
-        D_fake = self.discriminate(y)
-
-        D_loss_real = tf.reduce_mean(D_real)
-        D_loss_fake = tf.reduce_mean(D_fake)
-
-        D_loss = (D_loss_real - D_loss_fake)**2 / tf.math.reduce_variance(D_fake)
-        return D_loss
-
-
-'''
-Divergence class with (one-sided) gradient penalty (enforce Lipschitz continuity)
-'''
-class Divergence_GP(Divergence):
- 
+class Discriminator_Penalty():
     # initialize
-    def __init__(self, discriminator, epochs, lr, BATCH_SIZE, L, gp_weight):
-        super(Divergence, self).__init__()
+    def __init__(self, penalty_weight):
+        self.penalty_weight = penalty_weight # weighting of penalty term
         
-        Divergence.__init__(self, discriminator, epochs, lr, BATCH_SIZE)
-        self.Lip_const = L # Lipschitz constant
-        self.gp_weight = gp_weight # weighting factor of gradient penalty
+    def get_penalty_weight(self):
+        return self.penalty_weight
+
+    def set_penalty_weight(self, weight):
+        self.penalty_weight = weight
+    
+    def evaluate(self, discriminator, x, y): # depends on the choice of penalty 
+        return None
+
+
+'''
+One-sided gradient penalty (enforce Lipschitz constant bound L<=1)
+'''
+class Gradient_Penalty_1Sided(Discriminator_Penalty):
+    # initialize
+    def __init__(self, penalty_weight, Lip_const):
+        
+        Discriminator_Penalty.__init__(self, penalty_weight)
+        self.Lip_const = Lip_const # Lipschitz constant
+
 
     def get_Lip_constant(self):
         return self.Lip_const
@@ -378,13 +414,44 @@ class Divergence_GP(Divergence):
     def set_Lip_constant(self, L):
         self.Lip_const = L
     
-    def get_gp_weight(self):
-        return self.gp_weight
+    def evaluate(self, discriminator, x, y): # compute the gradient penalty
+        temp_shape = [x.shape[0]] + [1 for _ in  range(len(x.shape)-1)]
+        ratio = tf.random.uniform(temp_shape, 0.0, 1.0, dtype=tf.dtypes.float32)
+        diff = y - x
+        interpltd = x + (ratio * diff) # get the interpolated samples
 
-    def set_gp_weight(self, gp_weight):
-        self.gp_weight = gp_weight
+        with tf.GradientTape() as gp_tape: # get the discriminator output
+            gp_tape.watch(interpltd)
+            D_pred = discriminator(interpltd, training=True)
+
+        grads = gp_tape.gradient(D_pred, [interpltd])[0] # calculate the gradients
+        if x.shape[1]==1: # calculate the norm
+            norm = tf.sqrt(tf.square(grads))
+        else:
+            norm = tf.sqrt(tf.reduce_sum(tf.square(grads)))
+
+        gp = self.penalty_weight*tf.reduce_mean(tf.math.maximum(norm - self.Lip_const, 0.0)) # one-sided gradient penalty
+        return gp
+        
+        '''
+Two-sided gradient penalty (enforce Lipschitz constant bound L=1)
+'''
+class Gradient_Penalty_2Sided(Discriminator_Penalty):
+    # initialize
+    def __init__(self, penalty_weight, Lip_const):
+        
+        Discriminator_Penalty.__init__(self, penalty_weight)
+        self.Lip_const = Lip_const # Lipschitz constant
+
+
+    def get_Lip_constant(self):
+        return self.Lip_const
+
+    def set_Lip_constant(self, L):
+        self.Lip_const = L
     
-    def gradient_penalty_loss(self, x, y): # compute the gradient penalty
+
+    def evaluate(self, discriminator, x, y): # compute the gradient penalty
         temp_shape = [x.shape[0]] + [1 for _ in  range(len(x.shape)-1)]
         ratio = tf.random.uniform(temp_shape, 0.0, 1.0, dtype=tf.dtypes.float32)
         diff = y - x
@@ -392,7 +459,7 @@ class Divergence_GP(Divergence):
 
         with tf.GradientTape() as gp_tape: # get the discriminator output
             gp_tape.watch(interpltd)
-            D_pred = self.discriminator(interpltd, training=True)
+            D_pred = discriminator(interpltd, training=True)
 
         grads = gp_tape.gradient(D_pred, [interpltd])[0] # calculate the gradients
         if x.shape[1]==1: # calculate the norm
@@ -400,76 +467,7 @@ class Divergence_GP(Divergence):
         else:
             norm = tf.sqrt(tf.reduce_sum(tf.square(grads)))
 
-        gp = tf.reduce_mean(tf.math.maximum(norm - self.Lip_const, 0.0)) # one-sided gradient penalty
+        gp = self.penalty_weight*tf.reduce_mean((norm - self.Lip_const) ** 2) # two-sided gradient penalty
         return gp
-
-    def train_step(self, x, y): # add gradient penalty to the discriminator's loss
-        # discriminator's parameters update
-        with tf.GradientTape() as disc_tape:
-            disc_loss = -self.discriminator_loss(x, y) # with minus because we maximize the discrimination loss
-            gp_loss = self.gradient_penalty_loss(x, y) # gradient penalty
-            total_loss = disc_loss + gp_loss * self.gp_weight # add the gradient penalty to the original discriminator loss
-
-        gradients_of_disc = disc_tape.gradient(total_loss, self.discriminator.trainable_variables)
-        self.disc_optimizer.apply_gradients(zip(gradients_of_disc, self.discriminator.trainable_variables))
-
-
-'''
-Divergence class with (two-sided) gradient penalty (enforce Lipschitz continuity)
-'''
-class Divergence_GP_2sided(Divergence_GP):
- 
-    def gradient_penalty_loss(self, x, y): # compute the gradient penalty
-        temp_shape = [x.shape[0]] + [1 for _ in  range(len(x.shape)-1)]
-        ratio = tf.random.uniform(temp_shape, 0.0, 1.0, dtype=tf.dtypes.float32)
-        diff = y - x
-        interpltd = x + (ratio * diff) # get the interpolated samples
-
-        with tf.GradientTape() as gp_tape: # get the discriminator output
-            gp_tape.watch(interpltd)
-            D_pred = self.discriminator(interpltd, training=True)
-
-        grads = gp_tape.gradient(D_pred, [interpltd])[0] # calculate the gradients
-        if x.shape[1]==1: # calculate the norm
-            norm = tf.sqrt(tf.square(grads))
-        else:
-            norm = tf.sqrt(tf.reduce_sum(tf.square(grads)))
-
-        gp = tf.reduce_mean((norm - self.Lip_const) ** 2) # two-sided gradient penalty
-        return gp
-
-
-'''
-KL divergence class with gradient penalty (based on the Donsker-Varahdan variational formula)
-'''
-class KLD_DV_GP(Divergence_GP):
-
-    def eval_var_formula(self, x, y):
-        D_real = self.discriminate(x)
-        D_fake = self.discriminate(y)
-
-        D_loss_real = tf.reduce_mean(D_real)
-        
-        max_val = tf.reduce_max(D_fake)
-        D_loss_fake = tf.math.log(tf.reduce_mean(tf.math.exp(D_fake - max_val))) + max_val
-
-        D_loss = D_loss_real - D_loss_fake
-        return D_loss
-        
-
-'''
-Wasserstein metric class with gradient penalty (enforce Lipschitz continuity)
-'''
-class Wasserstein_GP(Divergence_GP):
-
-    def eval_var_formula(self, x, y):
-        D_real = self.discriminate(x)
-        D_fake = self.discriminate(y)
-
-        D_loss_real = tf.reduce_mean(D_real)
-        D_loss_fake = tf.reduce_mean(D_fake)
-
-        D_loss = D_loss_real - D_loss_fake
-        return D_loss
 
 

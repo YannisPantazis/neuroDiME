@@ -29,11 +29,11 @@ parser.add_argument('--gp_weight', default=1.0, type=float, metavar='GP weight')
 
 parser.add_argument('--spectral_norm', action='store_true')
 parser.add_argument('--no-spectral_norm', dest='spectral_norm', action='store_false')
-parser.set_defaults(spectral_norm=True)
+parser.set_defaults(spectral_norm=False)
 
 parser.add_argument('--bounded', action='store_true')
 parser.add_argument('--no-bounded', dest='bounded', action='store_false')
-parser.set_defaults(bounded=True)
+parser.set_defaults(bounded=False)
 
 parser.add_argument('--delta_mu', default=1.0, type=float)
 
@@ -64,7 +64,7 @@ bounded = opt_dict['bounded']
 delta_mu=opt_dict['delta_mu']
 run_num=opt_dict['run_number']
 
-fl_act_func_CC = 'softplus' # abs, softplus, poly-softplus
+fl_act_func_CC = 'poly-softplus' # abs, softplus, poly-softplus
 
 # create data sets
 
@@ -143,7 +143,8 @@ if mthd=="KLD-DV":
     print()
 
 if mthd=="KLD-DV-GP":
-    div_dense = KLD_DV_GP(discriminator, epochs, lr, m, L, gp_weight)
+    gp1=Gradient_Penalty_1Sided(gp_weight, L)
+    div_dense = KLD_DV(discriminator, epochs, lr, m, gp1)
     div_dense.train(data_P, data_Q)
     div_value_est = float(div_dense.estimate(data_P, data_Q))
 
@@ -263,11 +264,11 @@ if not os.path.exists(test_name):
 
 
     
-with open(test_name+'/estimated_'+mthd+'_dim_'+str(d)+'_delta_mu_{:.1f}'.format(delta_mu)+'_N_'+str(N)+'_m_'+str(m)+'_Lrate_{:.1e}'.format(lr)+'_epochs_'+str(epochs)+'_alpha_{:.1f}'.format(alpha)+'_L_{:.1f}'.format(L)+'_gp_weight_{:.1f}'.format(gp_weight)+'_spec_norm_'+str(spec_norm)+'_bounded_'+str(bounded)+'_run_num_'+str(run_num)+'.csv', "w") as output:
+with open(test_name+'/estimated_'+mthd+'_dim_'+str(d)+'_delta_mu_{:.2f}'.format(delta_mu)+'_N_'+str(N)+'_m_'+str(m)+'_Lrate_{:.1e}'.format(lr)+'_epochs_'+str(epochs)+'_alpha_{:.1f}'.format(alpha)+'_L_{:.1f}'.format(L)+'_gp_weight_{:.1f}'.format(gp_weight)+'_spec_norm_'+str(spec_norm)+'_bounded_'+str(bounded)+'_run_num_'+str(run_num)+'.csv', "w") as output:
     writer = csv.writer(output, lineterminator='\n')
     writer.writerow([div_value_est]) 
     
-with open(test_name+'/true_'+mthd+'_dim_'+str(d)+'_delta_mu_{:.1f}'.format(delta_mu)+'_N_'+str(N)+'_m_'+str(m)+'_Lrate_{:.1e}'.format(lr)+'_epochs_'+str(epochs)+'_alpha_{:.1f}'.format(alpha)+'_L_{:.1f}'.format(L)+'_gp_weight_{:.1f}'.format(gp_weight)+'_spec_norm_'+str(spec_norm)+'_bounded_'+str(bounded)+'_run_num_'+str(run_num)+'.csv', "w") as output:
+with open(test_name+'/true_'+mthd+'_dim_'+str(d)+'_delta_mu_{:.2f}'.format(delta_mu)+'_N_'+str(N)+'_m_'+str(m)+'_Lrate_{:.1e}'.format(lr)+'_epochs_'+str(epochs)+'_alpha_{:.1f}'.format(alpha)+'_L_{:.1f}'.format(L)+'_gp_weight_{:.1f}'.format(gp_weight)+'_spec_norm_'+str(spec_norm)+'_bounded_'+str(bounded)+'_run_num_'+str(run_num)+'.csv', "w") as output:
     writer = csv.writer(output, lineterminator='\n')
     writer.writerow([div_value_true])  
 

@@ -135,7 +135,8 @@ if mthd=="IPM":
     div_dense = IPM(discriminator, epochs, lr, m)            
 
 if mthd=="Wasserstein":
-    div_dense = Wasserstein_GP(discriminator, epochs, lr, m, L, gp_weight)
+    gp1 = Gradient_Penalty_1Sided(gp_weight, L)
+    div_dense = IPM(discriminator, epochs, lr, m, gp1)
 
 if mthd=="KLD-LT":
     div_dense = KLD_LT(discriminator, epochs, lr, m)	    
@@ -144,7 +145,8 @@ if mthd=="KLD-DV":
     div_dense = KLD_DV(discriminator, epochs, lr, m)
     
 if mthd=="KLD-DV-GP":
-    div_dense = KLD_DV_GP(discriminator, epochs, lr, m, L, gp_weight)	
+    gp1 = Gradient_Penalty_1Sided(gp_weight, L)
+    div_dense = KLD_DV(discriminator, epochs, lr, m, gp1)	
     
 if mthd=="squared-Hel-LT":
     div_dense = squared_Hellinger_LT(discriminator, epochs, lr, m)    
