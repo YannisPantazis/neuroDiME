@@ -398,7 +398,7 @@ class Discriminator_Penalty():
 
 
 '''
-One-sided gradient penalty (enforce Lipschitz constant bound L<=1)
+One-sided gradient penalty (constraint: Lipschitz constant  <= Lip_const)
 '''
 class Gradient_Penalty_1Sided(Discriminator_Penalty):
     # initialize
@@ -434,7 +434,7 @@ class Gradient_Penalty_1Sided(Discriminator_Penalty):
         return gp
         
         '''
-Two-sided gradient penalty (enforce Lipschitz constant bound L=1)
+Two-sided gradient penalty (constraint: Lipschitz constant = Lip_const)
 '''
 class Gradient_Penalty_2Sided(Discriminator_Penalty):
     # initialize
