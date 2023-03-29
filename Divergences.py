@@ -49,13 +49,21 @@ class Divergence(tf.keras.Model):
 
     def train(self, data_P, data_Q):
         # dataset slicing into minibatches
-        P_dataset = tf.data.Dataset.from_tensor_slices(data_P).batch(self.batch_size)
-        Q_dataset = tf.data.Dataset.from_tensor_slices(data_Q).batch(self.batch_size)
+        P_dataset = tf.data.Dataset.from_tensor_slices(data_P)
+        Q_dataset = tf.data.Dataset.from_tensor_slices(data_Q)
+
+        P_dataset=P_dataset.shuffle(buffer_size=data_P.shape[0], reshuffle_each_iteration=True)
+        Q_dataset=Q_dataset.shuffle(buffer_size=data_Q.shape[0], reshuffle_each_iteration=True)
+
+        P_dataset=P_dataset.batch(self.batch_size)
+        Q_dataset=Q_dataset.batch(self.batch_size)
 
         for epoch in range(self.epochs):
             start = time.time()
 
+            
             for P_batch, Q_batch in zip(P_dataset, Q_dataset):
+
                 self.train_step(P_batch, Q_batch)
 
 #            print('Time for epoch {} is {} sec'.format(epoch + 1, time.time()-start))
