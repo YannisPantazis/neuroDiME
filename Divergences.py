@@ -47,7 +47,7 @@ class Divergence(tf.keras.Model):
         self.disc_optimizer.apply_gradients(zip(gradients_of_loss, self.discriminator.trainable_variables))
 
 
-    def train(self, data_P, data_Q):
+    def train(self, data_P, data_Q, save_estimates=True):
         # dataset slicing into minibatches
         P_dataset = tf.data.Dataset.from_tensor_slices(data_P)
         Q_dataset = tf.data.Dataset.from_tensor_slices(data_Q)
@@ -68,7 +68,8 @@ class Divergence(tf.keras.Model):
                 self.train_step(P_batch, Q_batch)
 
 #           print('Time for epoch {} is {} sec'.format(epoch + 1, time.time()-start))
-            estimates.append(float(self.estimate(P_batch, Q_batch)))
+            if save_estimates:
+                estimates.append(float(self.estimate(P_batch, Q_batch)))
 
         return estimates
 
