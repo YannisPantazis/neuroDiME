@@ -58,6 +58,7 @@ class Divergence(tf.keras.Model):
         P_dataset=P_dataset.batch(self.batch_size)
         Q_dataset=Q_dataset.batch(self.batch_size)
 
+        estimates=[]
         for epoch in range(self.epochs):
             start = time.time()
 
@@ -66,9 +67,12 @@ class Divergence(tf.keras.Model):
 
                 self.train_step(P_batch, Q_batch)
 
-#            print('Time for epoch {} is {} sec'.format(epoch + 1, time.time()-start))
-#            print(float(self.estimate(P_batch, Q_batch)))
-#            print()
+#           print('Time for epoch {} is {} sec'.format(epoch + 1, time.time()-start))
+            estimates.append(float(self.estimate(P_batch, Q_batch)))
+
+        return estimates
+
+
 
     def get_discriminator(self):
         return self.discriminator
