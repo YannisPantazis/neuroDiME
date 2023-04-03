@@ -131,13 +131,13 @@ discriminator.summary()
 
 if mthd=="KLD-DV":
     div_dense = KLD_DV(discriminator, epochs, lr, m)
-    div_dense.train(data_P, data_Q)
-    div_value_est = float(div_dense.estimate(data_P, data_Q))
+    divergence_estimates=div_dense.train(data_P, data_Q)
+    
     
     div_value_true=float(1.0/2.0*(np.log(np.abs(np.linalg.det(Sigma_q)/np.linalg.det(Sigma_p)))+np.matmul(np.transpose(mu_q-mu_p),np.matmul(np.linalg.inv(Sigma_q),mu_q-mu_p))-d+np.trace(np.matmul(Sigma_p,np.linalg.inv(Sigma_q)))))
    
     print('KLD (true):\t\t {:.4}'.format(div_value_true))
-    print('KLD-DV (estimated):\t {:.4}'.format(div_value_est))
+    print('KLD-DV (estimated):\t {:.4}'.format(divergence_estimates[-1]))
 
 
     print()
@@ -145,111 +145,105 @@ if mthd=="KLD-DV":
 if mthd=="KLD-DV-GP":
     gp1=Gradient_Penalty_1Sided(gp_weight, L)
     div_dense = KLD_DV(discriminator, epochs, lr, m, gp1)
-    div_dense.train(data_P, data_Q)
-    div_value_est = float(div_dense.estimate(data_P, data_Q))
-
-
+    divergence_estimates=div_dense.train(data_P, data_Q)
+    
     div_value_true=float(1.0/2.0*(np.log(np.abs(np.linalg.det(Sigma_q)/np.linalg.det(Sigma_p)))+np.matmul(np.transpose(mu_q-mu_p),np.matmul(np.linalg.inv(Sigma_q),mu_q-mu_p))-d+np.trace(np.matmul(Sigma_p,np.linalg.inv(Sigma_q)))))
     
     print('KLD (true):\t\t {:.4}'.format(div_value_true))
-    print('KLD-DV-GP (estimated):\t {:.4}'.format(div_value_est))
+    print('KLD-DV-GP (estimated):\t {:.4}'.format(divergence_estimates[-1]))
     print()
 
 if mthd=="KLD-LT":
     div_dense = KLD_LT(discriminator, epochs, lr, m)
-    div_dense.train(data_P, data_Q)
-    div_value_est = float(div_dense.estimate(data_P, data_Q))
+    divergence_estimates=div_dense.train(data_P, data_Q)
 
     div_value_true=float(1.0/2.0*(np.log(np.abs(np.linalg.det(Sigma_q)/np.linalg.det(Sigma_p)))+np.matmul(np.transpose(mu_q-mu_p),np.matmul(np.linalg.inv(Sigma_q),mu_q-mu_p))-d+np.trace(np.matmul(Sigma_p,np.linalg.inv(Sigma_q)))))
     
     print('KLD (true):\t\t {:.4}'.format(div_value_true))
-    print('KLD-LT (estimated):\t {:.4}'.format(div_value_est))
+    print('KLD-LT (estimated):\t {:.4}'.format(divergence_estimates[-1]))
     print()
 
 if mthd=="squared-Hel-LT":
     div_dense = squared_Hellinger_LT(discriminator, epochs, lr, m)
-    div_dense.train(data_P, data_Q)
-    div_value_est = float(div_dense.estimate(data_P, data_Q))
-
+    divergence_estimates=div_dense.train(data_P, data_Q)
 
     Renyi=float(1.0/2.0*np.matmul(np.transpose(mu_q-mu_p),np.matmul(np.linalg.inv(Sigma_alpha),mu_q-mu_p))-1.0/(2.0*alpha*(alpha-1.0))*np.math.log(np.linalg.det(Sigma_alpha)/(np.math.pow(np.linalg.det(Sigma_p),1.0-alpha)*np.math.pow(np.linalg.det(Sigma_q),alpha))))
     div_value_true=(np.math.exp(alpha*(alpha-1)*Renyi)-1.)/(alpha*(alpha-1.))/2.
 
     print('squared-Hellinger-LT (true):\t\t {:.4}'.format(div_value_true))
-    print('squared-Hellinger-LT (estimated):\t\t {:.4}'.format(div_value_est))
+    print('squared-Hellinger-LT (estimated):\t\t {:.4}'.format(divergence_estimates[-1]))
     print()
 
 if mthd=="chi-squared-LT":
     div_dense = Pearson_chi_squared_LT(discriminator, epochs, lr, m)
-    div_dense.train(data_P, data_Q)
-    div_value_est = float(div_dense.estimate(data_P, data_Q))
+    divergence_estimates=div_dense.train(data_P, data_Q)
 
     Renyi=float(1.0/2.0*np.matmul(np.transpose(mu_q-mu_p),np.matmul(np.linalg.inv(Sigma_alpha),mu_q-mu_p))-1.0/(2.0*alpha*(alpha-1.0))*np.math.log(np.linalg.det(Sigma_alpha)/(np.math.pow(np.linalg.det(Sigma_p),1.0-alpha)*np.math.pow(np.linalg.det(Sigma_q),alpha))))
     div_value_true=2.*(np.math.exp(alpha*(alpha-1)*Renyi)-1.)/(alpha*(alpha-1.))
 
     
     print('chi-squared-LT (true):\t\t {:.4}'.format(div_value_true))
-    print('chi-squared-LT (estimated):\t\t {:.4}'.format(div_value_est))
+    print('chi-squared-LT (estimated):\t\t {:.4}'.format(divergence_estimates[-1]))
     print()
 
 if mthd=="chi-squared-HCR":
     div_dense = Pearson_chi_squared_HCR(discriminator, epochs, lr, m)
-    div_dense.train(data_P, data_Q)
-    div_value_est = float(div_dense.estimate(data_P, data_Q))
+    divergence_estimates=div_dense.train(data_P, data_Q)
+
 
     Renyi=float(1.0/2.0*np.matmul(np.transpose(mu_q-mu_p),np.matmul(np.linalg.inv(Sigma_alpha),mu_q-mu_p))-1.0/(2.0*alpha*(alpha-1.0))*np.math.log(np.linalg.det(Sigma_alpha)/(np.math.pow(np.linalg.det(Sigma_p),1.0-alpha)*np.math.pow(np.linalg.det(Sigma_q),alpha))))
     div_value_true=2.*(np.math.exp(alpha*(alpha-1)*Renyi)-1.)/(alpha*(alpha-1.))
 
     
     print('chi-squared-HCR (true):\t\t {:.4}'.format(div_value_true))
-    print('chi-squared-HCR (estimated):\t\t {:.4}'.format(div_value_est))
+    print('chi-squared-HCR (estimated):\t\t {:.4}'.format(divergence_estimates[-1]))
     print()
 
 
 if mthd=="alpha-LT":
     div_dense = alpha_Divergence_LT(discriminator, alpha, epochs, lr, m)
-    div_dense.train(data_P, data_Q)
-    div_value_est = float(div_dense.estimate(data_P, data_Q))
+    divergence_estimates=div_dense.train(data_P, data_Q)
+
     
     Renyi=float(1.0/2.0*np.matmul(np.transpose(mu_q-mu_p),np.matmul(np.linalg.inv(Sigma_alpha),mu_q-mu_p))-1.0/(2.0*alpha*(alpha-1.0))*np.math.log(np.linalg.det(Sigma_alpha)/(np.math.pow(np.linalg.det(Sigma_p),1.0-alpha)*np.math.pow(np.linalg.det(Sigma_q),alpha))))
     div_value_true=(np.math.exp(alpha*(alpha-1)*Renyi)-1.)/(alpha*(alpha-1.))
 
     print('alpha-divergence (true):\t\t {:.4}'.format(div_value_true))
-    print('alpha-divergence-LT (estimated):\t\t {:.4}'.format(div_value_est))
+    print('alpha-divergence-LT (estimated):\t\t {:.4}'.format(divergence_estimates[-1]))
     print()
 
 if mthd=="Renyi-DV":
     div_dense = Renyi_Divergence_DV(discriminator, alpha, epochs, lr, m)
-    div_dense.train(data_P, data_Q)
-    div_value_est = float(div_dense.estimate(data_P, data_Q))
+    divergence_estimates=div_dense.train(data_P, data_Q)
+
     
     div_value_true=float(1.0/2.0*np.matmul(np.transpose(mu_q-mu_p),np.matmul(np.linalg.inv(Sigma_alpha),mu_q-mu_p))-1.0/(2.0*alpha*(alpha-1.0))*np.math.log(np.linalg.det(Sigma_alpha)/(np.math.pow(np.linalg.det(Sigma_p),1.0-alpha)*np.math.pow(np.linalg.det(Sigma_q),alpha))))
 
 
     print('Renyi-divergence (true):\t\t {:.4}'.format(div_value_true))
-    print('Renyi-divergence-DV (estimated):\t\t {:.4}'.format(div_value_est))
+    print('Renyi-divergence-DV (estimated):\t\t {:.4}'.format(divergence_estimates[-1]))
     print()
 
 if mthd=="Renyi-CC":
     div_dense = Renyi_Divergence_CC(discriminator, alpha, epochs, lr, m, fl_act_func_CC)
-    div_dense.train(data_P, data_Q)
-    div_value_est = float(div_dense.estimate(data_P, data_Q))
+    divergence_estimates=div_dense.train(data_P, data_Q)
+
    
     div_value_true=float(1.0/2.0*np.matmul(np.transpose(mu_q-mu_p),np.matmul(np.linalg.inv(Sigma_alpha),mu_q-mu_p))-1.0/(2.0*alpha*(alpha-1.0))*np.math.log(np.linalg.det(Sigma_alpha)/(np.math.pow(np.linalg.det(Sigma_p),1.0-alpha)*np.math.pow(np.linalg.det(Sigma_q),alpha))))
     
     print('Renyi-divergence (true):\t\t {:.4}'.format(div_value_true))
-    print('Renyi-divergence-CC (estimated):\t\t {:.4}'.format(div_value_est))
+    print('Renyi-divergence-CC (estimated):\t\t {:.4}'.format(divergence_estimates[-1]))
     print()
 
 if mthd=="rescaled-Renyi-CC":
     div_dense = Renyi_Divergence_CC_rescaled(discriminator, alpha, epochs, lr, m, fl_act_func_CC)
-    div_dense.train(data_P, data_Q)
-    div_value_est = float(div_dense.estimate(data_P, data_Q))
+    divergence_estimates=div_dense.train(data_P, data_Q)
+
    
     div_value_true=float(alpha*(1.0/2.0*np.matmul(np.transpose(mu_q-mu_p),np.matmul(np.linalg.inv(Sigma_alpha),mu_q-mu_p))-1.0/(2.0*alpha*(alpha-1.0))*np.math.log(np.linalg.det(Sigma_alpha)/(np.math.pow(np.linalg.det(Sigma_p),1.0-alpha)*np.math.pow(np.linalg.det(Sigma_q),alpha)))))
     
     print('rescaled-Renyi-divergence (true):\t\t {:.4}'.format(div_value_true))
-    print('rescaled-Renyi-divergence-CC (estimated):\t\t {:.4}'.format(div_value_est))
+    print('rescaled-Renyi-divergence-CC (estimated):\t\t {:.4}'.format(divergence_estimates[-1]))
     print()
 
 
@@ -266,7 +260,8 @@ if not os.path.exists(test_name):
     
 with open(test_name+'/estimated_'+mthd+'_dim_'+str(d)+'_delta_mu_{:.2f}'.format(delta_mu)+'_N_'+str(N)+'_m_'+str(m)+'_Lrate_{:.1e}'.format(lr)+'_epochs_'+str(epochs)+'_alpha_{:.1f}'.format(alpha)+'_L_{:.1f}'.format(L)+'_gp_weight_{:.1f}'.format(gp_weight)+'_spec_norm_'+str(spec_norm)+'_bounded_'+str(bounded)+'_run_num_'+str(run_num)+'.csv', "w") as output:
     writer = csv.writer(output, lineterminator='\n')
-    writer.writerow([div_value_est]) 
+    for div_value_est in divergence_estimates:
+        writer.writerow([div_value_est]) 
     
 with open(test_name+'/true_'+mthd+'_dim_'+str(d)+'_delta_mu_{:.2f}'.format(delta_mu)+'_N_'+str(N)+'_m_'+str(m)+'_Lrate_{:.1e}'.format(lr)+'_epochs_'+str(epochs)+'_alpha_{:.1f}'.format(alpha)+'_L_{:.1f}'.format(L)+'_gp_weight_{:.1f}'.format(gp_weight)+'_spec_norm_'+str(spec_norm)+'_bounded_'+str(bounded)+'_run_num_'+str(run_num)+'.csv', "w") as output:
     writer = csv.writer(output, lineterminator='\n')
