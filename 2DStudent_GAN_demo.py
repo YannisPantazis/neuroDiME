@@ -220,10 +220,7 @@ if mthd=="rescaled-Renyi-CC":
 
 
 GAN_dense = GAN(div_dense, generator, noise_source, epochs, disc_steps_per_gen_step, reverse_order, m)
-loss_array = GAN_dense.train(data_P)
-
-N_samples = 100
-generator_samples = GAN_dense.generate_samples(N_samples)
+generator_samples, loss_array = GAN_dense.train(data_P,num_gen_samples_to_save=100, save_loss_estimates=True)
 
 
 
@@ -237,11 +234,12 @@ with open(test_name+'/loss_'+mthd+'_N_'+str(N)+'_m_'+str(m)+'_Lrate_{:.1e}'.form
     writer = csv.writer(output, lineterminator='\n')
     for loss in loss_array:
         writer.writerow([loss]) 
-    
-with open(test_name+'/generator_samples_'+mthd+'_N_'+str(N)+'_m_'+str(m)+'_Lrate_{:.1e}'.format(lr)+'_epochs_'+str(epochs)+'_alpha_{:.1f}'.format(alpha)+'_L_{:.1f}'.format(L)+'_gp_weight_{:.1f}'.format(gp_weight)+'_spec_norm_'+str(spec_norm)+'_bounded_'+str(bounded)+'_reverse_'+str(reverse_order)+'_run_num_'+str(run_num)+'.csv', "w") as output:
-    writer = csv.writer(output, lineterminator='\n')
-    for sample in generator_samples:
-        writer.writerow(sample) 
+
+for j in range(len(generator_samples)):    
+    with open(test_name+'/generator_samples_'+mthd+'_N_'+str(N)+'_m_'+str(m)+'_Lrate_{:.1e}'.format(lr)+'_epoch_'+str(j+1)+'_alpha_{:.1f}'.format(alpha)+'_L_{:.1f}'.format(L)+'_gp_weight_{:.1f}'.format(gp_weight)+'_spec_norm_'+str(spec_norm)+'_bounded_'+str(bounded)+'_reverse_'+str(reverse_order)+'_run_num_'+str(run_num)+'.csv', "w") as output:
+        writer = csv.writer(output, lineterminator='\n')
+        for sample in generator_samples[j]:
+            writer.writerow(sample) 
 
 print()
 print("Training Complete")

@@ -63,7 +63,7 @@ class GAN():
         self.divergence.train_step(data1, data2)
         
      
-    def train(self, data_P, save_estimates=True):
+    def train(self, data_P,  num_gen_samples_to_save=None, save_loss_estimates=False):
         # dataset slicing into minibatches
         P_dataset = tf.data.Dataset.from_tensor_slices(data_P)
 
@@ -73,8 +73,8 @@ class GAN():
 
         P_dataset=P_dataset.batch(self.batch_size)
 
-
-        estimates=[]
+        generator_samples=[]
+        loss_estimates=[]
         for epoch in range(self.epochs):
             for P_batch in P_dataset:
 
@@ -85,11 +85,13 @@ class GAN():
             
                 self.gen_train_step(P_batch, Z_batch)
 
+            if num_gen_samples_to_save is not None:
+                generator_samples.append(self.generate_samples(num_gen_samples_to_save))
 
-                if save_estimates:
-                    estimates.append(float(self.estimate_loss(P_batch, Z_batch)))
+            if save_loss_estimates:
+                loss_estimates.append(float(self.estimate_loss(P_batch, Z_batch)))
 
-        return estimates
+        return generator_samples, loss_estimates
         
         
     def generate_samples(self, N_samples):    
