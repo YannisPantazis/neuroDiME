@@ -17,7 +17,7 @@ from Divergences import *
 parser = argparse.ArgumentParser(description='Neural-based Estimation of Divergences between Gaussians')
 parser.add_argument('--dimension', default=1, type=int, metavar='d')
 parser.add_argument('--method', default='KLD-DV', type=str, metavar='method',
-                    help='values: KLD-DV, KLD-DV-GP, KLD-LT, squared-Hel-LT, chi-squared-LT, JS-LT, alpha-LT, Renyi-DV, Renyi-CC, rescaled-Renyi-CC, Renyi-CC-WCR, IPM')
+                    help='values: KLD-DV, KLD-DV-GP, KLD-LT, squared-Hel-LT, chi-squared-LT, JS-LT, alpha-LT, Renyi-DV, Renyi-CC, rescaled-Renyi-CC, Renyi-CC-WCR')
 parser.add_argument('--sample_size', default=10000, type=int, metavar='N')
 parser.add_argument('--batch_size', default=1000, type=int, metavar='m')
 parser.add_argument('--lr', default=0.001, type=float)
@@ -27,13 +27,6 @@ parser.add_argument('--alpha', default=2.0, type=float, metavar='alpha')
 parser.add_argument('--Lip_constant', default=1.0, type=float, metavar='Lipschitz constant')
 parser.add_argument('--gp_weight', default=1.0, type=float, metavar='GP weight')
 
-parser.add_argument('--spectral_norm', action='store_true')
-parser.add_argument('--no-spectral_norm', dest='spectral_norm', action='store_false')
-parser.set_defaults(spectral_norm=False)
-
-parser.add_argument('--bounded', action='store_true')
-parser.add_argument('--no-bounded', dest='bounded', action='store_false')
-parser.set_defaults(bounded=False)
 
 parser.add_argument('--delta_mu', default=1.0, type=float)
 
@@ -59,12 +52,12 @@ else:
     alpha = opt_dict['alpha']
 L = opt_dict['Lip_constant']
 gp_weight = opt_dict['gp_weight']
-spec_norm = opt_dict['spectral_norm']
-bounded = opt_dict['bounded']
 delta_mu=opt_dict['delta_mu']
 run_num=opt_dict['run_number']
 
 fl_act_func_CC = 'poly-softplus' # abs, softplus, poly-softplus
+bounded=False
+spec_norm=False
 
 # create data sets
 
@@ -102,7 +95,7 @@ data_Q = data_Q.astype('f')
 
 
 # construct the discriminator neural network
-layers_list = [32, 32] # UNCECOMP's NN: [16, 16, 8]
+layers_list = [64] # UNCECOMP's NN: [16, 16, 8]
 act_func = 'relu'
 
 discriminator = tf.keras.Sequential()

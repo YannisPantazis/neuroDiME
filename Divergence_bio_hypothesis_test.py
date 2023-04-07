@@ -22,9 +22,9 @@ parser.add_argument('--run_number', default=1, type=int, metavar='run_num')
 parser.add_argument('--Lip_constant', default=1.0, type=float, metavar='Lipschitz constant')
 parser.add_argument('--gp_weight', default=1.0, type=float, metavar='GP weight')
 
-parser.add_argument('--spectral_norm', type=bool, default=False)
-parser.add_argument('--bounded', type=bool, default=False)
-parser.add_argument('--reverse',  type=bool, default=False)
+parser.add_argument('--spectral_norm', choices=('True','False'), default='False')
+parser.add_argument('--bounded', choices=('True','False'), default='False')
+parser.add_argument('--reverse', choices=('True','False'), default='False')
 
 
 
@@ -41,11 +41,16 @@ epochs = opt_dict['epochs']
 run_num = opt_dict['run_number']
 L = opt_dict['Lip_constant']
 gp_weight = opt_dict['gp_weight']
-spec_norm = opt_dict['spectral_norm']
-bounded=opt_dict['bounded']
-reverse_order = opt_dict['reverse']
-fl_act_func_IC = 'poly-softplus' # abs, softplus, poly-softplus
 
+spec_norm = opt_dict['spectral_norm']=='True'
+bounded=opt_dict['bounded']=='True'
+reverse_order = opt_dict['reverse']=='True'
+
+print("Spectral_norm: "+str(spec_norm))
+print("Bounded: "+str(bounded))
+print("Reversed: "+str(reverse_order))
+
+fl_act_func_IC = 'poly-softplus' # abs, softplus, poly-softplus
 
 if mthd=="squared-Hel-LT":
     alpha=1./2.
@@ -98,22 +103,14 @@ N1 = N - N2
 print(N1,N2,p)
 
 # select which samples via indexing
-idx1 = np.random.randint(data_h.shape[0], size=N)
-idx2 = np.random.randint(data_h.shape[0], size=N)
+idx_pure = np.random.randint(data_h.shape[0], size=N)
 
 idx_mix1 = np.random.randint(data_h.shape[0], size=N1)
 idx_mix2 = np.random.randint(data_s.shape[0], size=N2)
 
 # create datasets
-dataset_pure = data_h[idx2]
-
-
-print(data_h[idx_mix1].shape)
-print(data_s[idx_mix2].shape)
-
+dataset_pure = data_h[idx_pure]
 dataset_cntmd = np.concatenate((data_h[idx_mix1], data_s[idx_mix2]), axis=0)
-print('Data shapes:')
-print(dataset_cntmd.shape)
 
 # shuffle contaminated dataset
 idx = np.random.randint(N, size=N)
@@ -178,11 +175,10 @@ if mthd=="Renyi-WCR":
        
     	    
 # run    
-div_dense.train(data_P, data_Q)
-divergence_estimate=float(div_dense.estimate(data_P, data_Q))
+divergence_estimates = div_dense.train(data_P, data_Q)
 
 print('prob sick: '+str(p))      
-print(mthd+':\t\t {:.4}'.format(divergence_estimate))
+print(mthd+':\t\t {:.4}'.format(divergence_estimates[-1]))
 print()
         
         
@@ -195,7 +191,8 @@ if not os.path.exists(test_name):
 	    
 with open(test_name+'/estimated_'+mthd+'_p_{:.1e}'.format(p)+'_N_'+str(N)+'_m_'+str(m)+'_Lrate_{:.1e}'.format(lr)+'_epochs_'+str(epochs)+'_alpha_{:.1f}'.format(alpha)+'_L_{:.1f}'.format(L)+'_gp_weight_{:.1f}'.format(gp_weight)+'_spec_norm_'+str(spec_norm)+'_bounded_'+str(bounded)+'_reverse_'+str(reverse_order)+'_run_num_'+str(run_num)+'.csv', "w") as output:
     writer = csv.writer(output, lineterminator='\n')
-    writer.writerow([divergence_estimate]) 
+    for divergence_estimate in divergence_estimates:
+        writer.writerow([divergence_estimate]) 
     
 
 
