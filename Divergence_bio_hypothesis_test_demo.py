@@ -25,7 +25,7 @@ parser.add_argument('--gp_weight', default=1.0, type=float, metavar='GP weight')
 parser.add_argument('--spectral_norm', choices=('True','False'), default='False')
 parser.add_argument('--bounded', choices=('True','False'), default='False')
 parser.add_argument('--reverse', choices=('True','False'), default='False')
-
+parser.add_argument('--use_GP', choices=('True','False'), default='False')
 
 
 opt = parser.parse_args()
@@ -45,10 +45,12 @@ gp_weight = opt_dict['gp_weight']
 spec_norm = opt_dict['spectral_norm']=='True'
 bounded=opt_dict['bounded']=='True'
 reverse_order = opt_dict['reverse']=='True'
+use_GP = opt_dict['use_GP']=='True'
 
 print("Spectral_norm: "+str(spec_norm))
 print("Bounded: "+str(bounded))
 print("Reversed: "+str(reverse_order))
+print("Use Gradient PEnalty: "+str(use_GP))
 
 fl_act_func_IC = 'poly-softplus' # abs, softplus, poly-softplus
 
@@ -127,54 +129,55 @@ else:
 print('Data shapes:')
 print(data_P.shape)
 print(data_Q.shape)
+
+
+# construct gradient penalty
+if use_GP:
+    discriminator_penalty=Gradient_Penalty_1Sided(gp_weight, L)
+else:
+    discriminator_penalty=None
+
+
+#Construct divergence
        
 if mthd=="IPM":
-    div_dense = IPM(discriminator, epochs, lr, m)            
-
-if mthd=="Wasserstein":
-    gp1 = Gradient_Penalty_1Sided(gp_weight, L)
-    div_dense = IPM(discriminator, epochs, lr, m, gp1)
+    div_dense = IPM(discriminator, epochs, lr, m, discriminator_penalty)            
 
 if mthd=="KLD-LT":
-    div_dense = KLD_LT(discriminator, epochs, lr, m)	    
+    div_dense = KLD_LT(discriminator, epochs, lr, m, discriminator_penalty)	    
 
 if mthd=="KLD-DV":
-    div_dense = KLD_DV(discriminator, epochs, lr, m)
-    
-if mthd=="KLD-DV-GP":
-    gp1 = Gradient_Penalty_1Sided(gp_weight, L)
-    div_dense = KLD_DV(discriminator, epochs, lr, m, gp1)	
-    
+    div_dense = KLD_DV(discriminator, epochs, lr, m, discriminator_penalty)
+
 if mthd=="squared-Hel-LT":
-    div_dense = squared_Hellinger_LT(discriminator, epochs, lr, m)    
+    div_dense = squared_Hellinger_LT(discriminator, epochs, lr, m, discriminator_penalty)    
     
 if mthd=="chi-squared-LT":
-    div_dense = Pearson_chi_squared_LT(discriminator, epochs, lr, m)    
+    div_dense = Pearson_chi_squared_LT(discriminator, epochs, lr, m, discriminator_penalty)    
     
 if mthd=="chi-squared-HCR":
-    div_dense = Pearson_chi_squared_HCR(discriminator, epochs, lr, m)	    
+    div_dense = Pearson_chi_squared_HCR(discriminator, epochs, lr, m, discriminator_penalty)	    
     
 if mthd=="JS-LT":
-    div_dense = Jensen_Shannon_LT(discriminator, epochs, lr, m)    	    
+    div_dense = Jensen_Shannon_LT(discriminator, epochs, lr, m, discriminator_penalty)    	    
     
 if mthd=="alpha-LT":
-    div_dense = alpha_Divergence_LT(discriminator, alpha, epochs, lr, m)   
+    div_dense = alpha_Divergence_LT(discriminator, alpha, epochs, lr, m, discriminator_penalty)   
        
 if mthd=="Renyi-DV":
-    div_dense = Renyi_Divergence_DV(discriminator, alpha, epochs, lr, m)    
+    div_dense = Renyi_Divergence_DV(discriminator, alpha, epochs, lr, m, discriminator_penalty)    
        	       
 if mthd=="Renyi-CC":
-    div_dense = Renyi_Divergence_CC(discriminator, alpha, epochs, lr, m, fl_act_func_IC)
+    div_dense = Renyi_Divergence_CC(discriminator, alpha, epochs, lr, m, fl_act_func_IC, discriminator_penalty)
        	       
 if mthd=="rescaled-Renyi-CC":
-    div_dense = Renyi_Divergence_CC_rescaled(discriminator, alpha, epochs, lr, m, fl_act_func_IC)
+    div_dense = Renyi_Divergence_CC_rescaled(discriminator, alpha, epochs, lr, m, fl_act_func_IC, discriminator_penalty)
        	       
 if mthd=="Renyi-WCR":
-    div_dense = Renyi_Divergence_WCR(discriminator, 'Inf', epochs, lr, m, fl_act_func_IC)
-       	       
-       
+    div_dense = Renyi_Divergence_WCR(discriminator, 'Inf', epochs, lr, m, fl_act_func_IC, discriminator_penalty)
+       	              
     	    
-# run    
+# Estimate divergence    
 divergence_estimates = div_dense.train(data_P, data_Q)
 
 print('prob sick: '+str(p))      
@@ -189,7 +192,7 @@ if not os.path.exists(test_name):
 	os.makedirs(test_name)
 	
 	    
-with open(test_name+'/estimated_'+mthd+'_p_{:.1e}'.format(p)+'_N_'+str(N)+'_m_'+str(m)+'_Lrate_{:.1e}'.format(lr)+'_epochs_'+str(epochs)+'_alpha_{:.1f}'.format(alpha)+'_L_{:.1f}'.format(L)+'_gp_weight_{:.1f}'.format(gp_weight)+'_spec_norm_'+str(spec_norm)+'_bounded_'+str(bounded)+'_reverse_'+str(reverse_order)+'_run_num_'+str(run_num)+'.csv', "w") as output:
+with open(test_name+'/estimated_'+mthd+'_p_{:.1e}'.format(p)+'_N_'+str(N)+'_m_'+str(m)+'_Lrate_{:.1e}'.format(lr)+'_epochs_'+str(epochs)+'_alpha_{:.1f}'.format(alpha)+'_L_{:.1f}'.format(L)+'_gp_weight_{:.1f}'.format(gp_weight)+'_spec_norm_'+str(spec_norm)+'_bounded_'+str(bounded)+'_reverse_'+str(reverse_order)+'_GP_'+str(use_GP)+'_run_num_'+str(run_num)+'.csv', "w") as output:
     writer = csv.writer(output, lineterminator='\n')
     for divergence_estimate in divergence_estimates:
         writer.writerow([divergence_estimate]) 
