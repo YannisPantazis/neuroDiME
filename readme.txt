@@ -79,6 +79,12 @@ HOW TO RUN
 ----------
 python3 1d_Gaussian_demo.py --sample_size 100000 --batch_size 10000 --epochs 200 --method KLD-DV
 
+python 1d_Gaussian_demo.py --sample_size 10000 --batch_size 1000 --epochs 200 --method KLD-DV --framework torch/tf/jax
+
+python N_dim_Gaussian_demo.py --sample_size 10000 --batch_size 1000 --epochs 200 --method KLD-DV-GP --framework torch/tf/jax
+
+python N_dim_Gaussian_demo.py --sample_size 10000 --batch_size 1000 --epochs 200 --method KLD-DV-GP --dimension 2 --framework torch/tf/jax
+
 
 (NOT READY YET) python3 large_scale_bio_run_new.py --sample_size 100000 --batch_size 10000 --alpha 2.0 --no_repeats 50 --epochs 200 --method IC-rescaled
 # python3 aucs_bio_example.py
