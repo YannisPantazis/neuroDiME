@@ -1,5 +1,4 @@
 import numpy as np
-from Divergences import *
 import argparse
 import csv
 import os
@@ -27,6 +26,7 @@ parser.add_argument('--bounded', choices=('True','False'), default='False')
 parser.add_argument('--reverse', choices=('True','False'), default='False')
 parser.add_argument('--use_GP', choices=('True','False'), default='False')
 
+parser.add_argument('--framework', choices=['tf', 'torch', 'jax'], required=True)
 
 opt = parser.parse_args()
 opt_dict = vars(opt)
@@ -50,9 +50,11 @@ use_GP = opt_dict['use_GP']=='True'
 print("Spectral_norm: "+str(spec_norm))
 print("Bounded: "+str(bounded))
 print("Reversed: "+str(reverse_order))
-print("Use Gradient PEnalty: "+str(use_GP))
+print("Use Gradient Penalty: "+str(use_GP))
 
 fl_act_func_IC = 'poly-softplus' # abs, softplus, poly-softplus
+
+fw = opt_dict['framework']
 
 if mthd=="squared-Hel-LT":
     alpha=1./2.
@@ -74,29 +76,18 @@ d = data_h.shape[1]
 layers_list.insert(0, d)
 
 
-# discriminator
-discriminator = tf.keras.Sequential()
-discriminator.add(tf.keras.Input(shape=(d,)))
-if spec_norm:
-    for h_dim in layers_list:
-        discriminator.add(tfa.layers.SpectralNormalization(tf.keras.layers.Dense(units=h_dim, activation=act_func)))
-    discriminator.add(tfa.layers.SpectralNormalization(tf.keras.layers.Dense(units = 1, activation='linear')))
+if fw == 'tf':
+    print(f'Predicting the {mthd} divergence using TensorFlow\n')
+    from models.tensorflow import *
+    discriminator = Discriminator(input_dim=d, spec_norm=spec_norm, bounded=bounded, layers_list=layers_list)
+
+elif fw == 'torch':
+    print(f'Predicting the {mthd} divergence using PyTorch\n')
+    from models.torch import *
+    discriminator = Discriminator(input_dim=d, batch_size=m, spec_norm=spec_norm, bounded=bounded, layers_list=layers_list)
 
 else:
-    for h_dim in layers_list:
-        discriminator.add(tf.keras.layers.Dense(units=h_dim, activation=act_func))
-    discriminator.add(tf.keras.layers.Dense(units = 1, activation='linear'))
-
-if bounded:
-    def bounded_activation(x):
-        M = 100.0
-        return M * K.tanh(x/M)
-    
-    discriminator.add(tf.keras.layers.Activation(bounded_activation))
-
-discriminator.summary()
-
-
+    print(f'Predicting the {mthd} divergence using JAX\n')
 
 
 # number of sample per class
@@ -185,15 +176,17 @@ print('prob sick: '+str(p))
 print(mthd+':\t\t {:.4}'.format(divergence_estimates[-1]))
 print()
         
-        
 #save result       
-        
-test_name="Bio_hypothesis_test"
+if fw == 'torch':
+    test_name="Bio_hypothesis_test_torch"
+elif fw == 'tf':
+    test_name="Bio_hypothesis_test_tf"
+
 if not os.path.exists(test_name):
 	os.makedirs(test_name)
 	
 	    
-with open(test_name+'/estimated_'+mthd+'_p_{:.1e}'.format(p)+'_N_'+str(N)+'_m_'+str(m)+'_Lrate_{:.1e}'.format(lr)+'_epochs_'+str(epochs)+'_alpha_{:.1f}'.format(alpha)+'_L_{:.1f}'.format(L)+'_gp_weight_{:.1f}'.format(gp_weight)+'_spec_norm_'+str(spec_norm)+'_bounded_'+str(bounded)+'_reverse_'+str(reverse_order)+'_GP_'+str(use_GP)+'_run_num_'+str(run_num)+'.csv', "w") as output:
+with open(test_name+'/estimated_'+mthd+'_p_{:.1e}'.format(p)+'_N_'+str(N)+'_m_'+str(m)+'_Lrate_{:.1e}'.format(lr)+'_epochs_'+str(epochs)+'_alpha_{:.1f}'.format(alpha)+'_L_{:.1f}'.format(L)+'_gp_weight_{:.1f}'.format(gp_weight)+'_spec_norm_'+str(spec_norm)+'_bounded_'+str(bounded)+'_reverse_'+str(reverse_order)+'_run_num_'+str(run_num)+'_framework_'+str(fw) +'.csv', "w") as output:
     writer = csv.writer(output, lineterminator='\n')
     for divergence_estimate in divergence_estimates:
         writer.writerow([divergence_estimate]) 

@@ -1,8 +1,5 @@
 import numpy as np
 import pandas as pd
-import tensorflow as tf
-import tensorflow_addons as tfa
-from keras import backend as K
 import csv
 import os
 import argparse
@@ -10,7 +7,6 @@ import argparse
 import matplotlib.pyplot as plt
 from scipy.stats import norm
 from bisect import bisect_left, bisect_right
-from Divergences import *
 
 
 # read input arguments
@@ -31,6 +27,8 @@ parser.add_argument('--gp_weight', default=1.0, type=float, metavar='GP weight')
 parser.add_argument('--delta_mu', default=1.0, type=float)
 
 parser.add_argument('--run_number', default=1, type=int, metavar='run_num')
+
+parser.add_argument('--framework', choices=['tf', 'torch', 'jax'], required=True)
 
 opt = parser.parse_args()
 opt_dict = vars(opt)
@@ -54,6 +52,8 @@ L = opt_dict['Lip_constant']
 gp_weight = opt_dict['gp_weight']
 delta_mu=opt_dict['delta_mu']
 run_num=opt_dict['run_number']
+
+fw = opt_dict['framework']
 
 fl_act_func_CC = 'poly-softplus' # abs, softplus, poly-softplus
 bounded=False
@@ -93,35 +93,25 @@ data_P = data_P.astype('f')
 data_Q = sample_Q(N)
 data_Q = data_Q.astype('f')
 
-
 # construct the discriminator neural network
 layers_list = [64] # UNCECOMP's NN: [16, 16, 8]
 act_func = 'relu'
 
-discriminator = tf.keras.Sequential()
-discriminator.add(tf.keras.Input(shape=(d,)))
-if spec_norm:
-    for h_dim in layers_list:
-        discriminator.add(tfa.layers.SpectralNormalization(tf.keras.layers.Dense(units=h_dim, activation=act_func)))
-    discriminator.add(tfa.layers.SpectralNormalization(tf.keras.layers.Dense(units = 1, activation='linear')))
+if fw == 'tf':
+    print(f'Predicting the {mthd} divergence using TensorFlow\n')
+    from models.tensorflow import *
+    discriminator = Discriminator(input_dim=d, spec_norm=spec_norm, bounded=bounded, layers_list=layers_list)
+
+elif fw == 'torch':
+    print(f'Predicting the {mthd} divergence using PyTorch\n')
+    from models.torch import *
+    discriminator = Discriminator(input_dim=d, batch_size=m, spec_norm=spec_norm, bounded=bounded, layers_list=layers_list)
 
 else:
-    for h_dim in layers_list:
-        discriminator.add(tf.keras.layers.Dense(units=h_dim, activation=act_func))
-    discriminator.add(tf.keras.layers.Dense(units = 1, activation='linear'))
-
-if bounded:
-    def bounded_activation(x):
-        M = 100.0
-        return M * K.tanh(x/M)
-    
-    discriminator.add(tf.keras.layers.Activation(bounded_activation))
-
-discriminator.summary()
+    print(f'Predicting the {mthd} divergence using JAX\n')
 
 
 # construct divergence, train optimizer and estimate the divergence
-
 if mthd=="KLD-DV":
     div_dense = KLD_DV(discriminator, epochs, lr, m)
     divergence_estimates=div_dense.train(data_P, data_Q)
