@@ -66,10 +66,13 @@ use_GP = opt_dict['use_GP']=='True'
 print("Spectral_norm: "+str(spec_norm))
 print("Bounded: "+str(bounded))
 print("Reversed: "+str(reverse_order))
-print("Use Gradient PEnalty: "+str(use_GP))
+print("Use Gradient Penalty: "+str(use_GP))
 
 
 fl_act_func_CC = 'poly-softplus' # abs, softplus, poly-softplus
+optimizer = "RMS" #Adam, RMS
+save_frequency = 100 #generator samples are saved every save_frequency epochs
+num_gen_samples_to_save = 5000
 
 
 #data distribution
@@ -176,6 +179,15 @@ generator.summary()
 def noise_source(N_samp):
     return np.random.normal(0., 1.0, size=[N_samp, Z_dim])
 
+#construct optimizers
+if optimizer == 'Adam':
+    disc_optimizer = tf.keras.optimizers.Adam(lr)
+    gen_optimizer = tf.keras.optimizers.Adam(lr)
+
+if optimizer == 'RMS':
+    disc_optimizer = tf.keras.optimizers.RMSprop(lr)
+    gen_optimizer = tf.keras.optimizers.RMSprop(lr)
+
 
 # construct gradient penalty
 if use_GP:
@@ -186,45 +198,45 @@ else:
 
 # construct divergence
 if mthd=="IPM":
-    div_dense = IPM(discriminator, epochs, lr, m, discriminator_penalty)
+    div_dense = IPM(discriminator, disc_optimizer, epochs, m, discriminator_penalty)
 
 if mthd=="KLD-LT":
-    div_dense = KLD_LT(discriminator, epochs, lr, m, discriminator_penalty)
+    div_dense = KLD_LT(discriminator, disc_optimizer, epochs, m, discriminator_penalty)
     
 if mthd=="KLD-DV":
-    div_dense = KLD_DV(discriminator, epochs, lr, m, discriminator_penalty)
+    div_dense = KLD_DV(discriminator, disc_optimizer, epochs, m, discriminator_penalty)
 
 if mthd=="squared-Hel-LT":
-    div_dense = squared_Hellinger_LT(discriminator, epochs, lr, m, discriminator_penalty)
+    div_dense = squared_Hellinger_LT(discriminator, disc_optimizer, epochs, m, discriminator_penalty)
 
 if mthd=="chi-squared-LT":
-    div_dense = Pearson_chi_squared_LT(discriminator, epochs, lr, m, discriminator_penalty)
+    div_dense = Pearson_chi_squared_LT(discriminator, disc_optimizer, epochs, m, discriminator_penalty)
 
 if mthd=="chi-squared-HCR":
-    div_dense = Pearson_chi_squared_HCR(discriminator, epochs, lr, m, discriminator_penalty)
+    div_dense = Pearson_chi_squared_HCR(discriminator, disc_optimizer, epochs, m, discriminator_penalty)
 
 if mthd=="JS-LT":
-    div_dense = Jensen_Shannon_LT(discriminator, epochs, lr, m, discriminator_penalty)    
+    div_dense = Jensen_Shannon_LT(discriminator, disc_optimizer, epochs, m, discriminator_penalty)    
 
 if mthd=="alpha-LT":
-    div_dense = alpha_Divergence_LT(discriminator, alpha, epochs, lr, m, discriminator_penalty)
+    div_dense = alpha_Divergence_LT(discriminator, disc_optimizer, alpha, epochs, m, discriminator_penalty)
 
 if mthd=="Renyi-DV":
-    div_dense = Renyi_Divergence_DV(discriminator, alpha, epochs, lr, m, discriminator_penalty)
+    div_dense = Renyi_Divergence_DV(discriminator, disc_optimizer, alpha, epochs, m, discriminator_penalty)
     
 if mthd=="Renyi-CC":
-    div_dense = Renyi_Divergence_CC(discriminator, alpha, epochs, lr, m, fl_act_func_CC, discriminator_penalty)
+    div_dense = Renyi_Divergence_CC(discriminator, disc_optimizer, alpha, epochs, m, fl_act_func_CC, discriminator_penalty)
 
 if mthd=="rescaled-Renyi-CC":
-    div_dense = Renyi_Divergence_CC_rescaled(discriminator, alpha, epochs, lr, m, fl_act_func_CC, discriminator_penalty)
+    div_dense = Renyi_Divergence_CC_rescaled(discriminator, disc_optimizer, alpha, epochs, m, fl_act_func_CC, discriminator_penalty)
 
 if mthd=="Renyi-WCR":
-    div_dense = Renyi_Divergence_WCR(discriminator, 'Inf', epochs, lr, m, fl_act_func_IC, discriminator_penalty)
+    div_dense = Renyi_Divergence_WCR(discriminator, disc_optimizer, epochs, m, fl_act_func_CC, discriminator_penalty)
 
 
 #train GAN
-GAN_dense = GAN(div_dense, generator, noise_source, epochs, disc_steps_per_gen_step, reverse_order, m)
-generator_samples, loss_array = GAN_dense.train(data_P,num_gen_samples_to_save=100, save_loss_estimates=True)
+GAN_dense = GAN(div_dense, generator, gen_optimizer, noise_source, epochs, disc_steps_per_gen_step, m, reverse_order)
+generator_samples, loss_array = GAN_dense.train(data_P, save_frequency, num_gen_samples_to_save, save_loss_estimates=True)
 
 
 
@@ -234,13 +246,13 @@ if not os.path.exists(test_name):
 	os.makedirs(test_name)
 	
 	    
-with open(test_name+'/loss_'+mthd+'_N_'+str(N)+'_m_'+str(m)+'_Lrate_{:.1e}'.format(lr)+'_epochs_'+str(epochs)+'_alpha_{:.1f}'.format(alpha)+'_L_{:.1f}'.format(L)+'_gp_weight_{:.1f}'.format(gp_weight)+'_spec_norm_'+str(spec_norm)+'_bounded_'+str(bounded)+'_reverse_'+str(reverse_order)+'_GP_'+str(use_GP)+'_run_num_'+str(run_num)+'.csv', "w") as output:
+with open(test_name+'/loss_'+mthd+'_N_'+str(N)+'_m_'+str(m)+'_Lrate_{:.1e}'.format(lr)+'_epochs_'+str(epochs)+'_alpha_{:.1f}'.format(alpha)+'_L_{:.1f}'.format(L)+'_gp_weight_{:.1f}'.format(gp_weight)+'_spec_norm_'+str(spec_norm)+'_bounded_'+str(bounded)+'_reverse_'+str(reverse_order)+'_GP_'+str(use_GP)+'_optimizer_'+optimizer+'_run_num_'+str(run_num)+'.csv', "w") as output:
     writer = csv.writer(output, lineterminator='\n')
     for loss in loss_array:
         writer.writerow([loss]) 
 
 for j in range(len(generator_samples)):    
-    with open(test_name+'/generator_samples_'+mthd+'_N_'+str(N)+'_m_'+str(m)+'_Lrate_{:.1e}'.format(lr)+'_epoch_'+str(j+1)+'_alpha_{:.1f}'.format(alpha)+'_L_{:.1f}'.format(L)+'_gp_weight_{:.1f}'.format(gp_weight)+'_spec_norm_'+str(spec_norm)+'_bounded_'+str(bounded)+'_reverse_'+str(reverse_order)+'_GP_'+str(use_GP)+'_run_num_'+str(run_num)+'.csv', "w") as output:
+    with open(test_name+'/generator_samples_'+mthd+'_N_'+str(N)+'_m_'+str(m)+'_Lrate_{:.1e}'.format(lr)+'_epoch_'+str((j+1)*save_frequency)+'_alpha_{:.1f}'.format(alpha)+'_L_{:.1f}'.format(L)+'_gp_weight_{:.1f}'.format(gp_weight)+'_spec_norm_'+str(spec_norm)+'_bounded_'+str(bounded)+'_reverse_'+str(reverse_order)+'_GP_'+str(use_GP)+'_optimizer_'+optimizer+'_run_num_'+str(run_num)+'.csv', "w") as output:
         writer = csv.writer(output, lineterminator='\n')
         for sample in generator_samples[j]:
             writer.writerow(sample) 

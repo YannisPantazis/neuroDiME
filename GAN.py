@@ -7,13 +7,13 @@ If reverse_order=True the GAN works to minimize min_theta D(g_theta(Z)||P) where
 '''
 class GAN():
    # initialize
-    def __init__(self, divergence, generator, noise_source, epochs, disc_steps_per_gen_step, reverse_order=False, include_penalty_in_gen_loss=False, batch_size=None):
+    def __init__(self, divergence, generator, gen_optimizer, noise_source, epochs, disc_steps_per_gen_step, batch_size=None, reverse_order=False, include_penalty_in_gen_loss=False):
         
         self.divergence = divergence # Variational divergence 
         self.generator = generator
         self.epochs = epochs
         self.disc_steps_per_gen_step = disc_steps_per_gen_step
-        self.gen_optimizer = tf.keras.optimizers.Adam(divergence.learning_rate)
+        self.gen_optimizer = gen_optimizer
         self.reverse_order = reverse_order
         self.include_penalty_in_gen_loss = include_penalty_in_gen_loss
         self.noise_source = noise_source   # noise_source must be a function that takes a batch_size as input and outputs a batch of noise samples (that will be fed into the generator)
@@ -63,7 +63,7 @@ class GAN():
         self.divergence.train_step(data1, data2)
         
      
-    def train(self, data_P,  num_gen_samples_to_save=None, save_loss_estimates=False):
+    def train(self, data_P, save_frequency=None,  num_gen_samples_to_save=None, save_loss_estimates=False):
         # dataset slicing into minibatches
         P_dataset = tf.data.Dataset.from_tensor_slices(data_P)
 
@@ -84,12 +84,13 @@ class GAN():
                     self.disc_train_step(P_batch,Z_batch)
             
                 self.gen_train_step(P_batch, Z_batch)
+            
+            if save_frequency is not None and (epoch+1) % save_frequency == 0:
+                if num_gen_samples_to_save is not None:
+                    generator_samples.append(self.generate_samples(num_gen_samples_to_save))
 
-            if num_gen_samples_to_save is not None:
-                generator_samples.append(self.generate_samples(num_gen_samples_to_save))
-
-            if save_loss_estimates:
-                loss_estimates.append(float(self.estimate_loss(P_batch, Z_batch)))
+                if save_loss_estimates:
+                    loss_estimates.append(float(self.estimate_loss(P_batch, Z_batch)))
 
         return generator_samples, loss_estimates
         

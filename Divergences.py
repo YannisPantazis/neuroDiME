@@ -1,4 +1,5 @@
 import tensorflow as tf
+import math
 import time
 
 
@@ -9,14 +10,13 @@ Parent class where the common parameters and the common functions are defined.
 class Divergence(tf.keras.Model):
 
     # initialize
-    def __init__(self, discriminator, epochs, learning_rate, batch_size, discriminator_penalty=None):
+    def __init__(self, discriminator, disc_optimizer, epochs, batch_size, discriminator_penalty=None):
         super(Divergence, self).__init__()
         self.batch_size = batch_size
         self.epochs = epochs
-        self.learning_rate = learning_rate
-        self.discriminator_penalty=discriminator_penalty
         self.discriminator = discriminator
-        self.disc_optimizer = tf.keras.optimizers.Adam(self.learning_rate)
+        self.disc_optimizer = disc_optimizer
+        self.discriminator_penalty = discriminator_penalty
 
     def __repr__(self):
         return 'discriminator: {}'.format(self.discriminator)
@@ -210,9 +210,9 @@ D_{f_alpha}(P||Q), x~P, y~Q.
 class alpha_Divergence_LT(f_Divergence):
  
     # initialize
-    def __init__(self, discriminator, alpha, epochs, learning_rate, batch_size,discriminator_penalty=None):
+    def __init__(self, discriminator, disc_optimizer, alpha, epochs, batch_size,discriminator_penalty=None):
         
-        Divergence.__init__(self, discriminator, epochs, learning_rate, batch_size,discriminator_penalty)
+        Divergence.__init__(self, discriminator, disc_optimizer, epochs, batch_size, discriminator_penalty)
         self.alpha = alpha # order
     
     def get_order(self):
@@ -275,9 +275,9 @@ R_alpha(P||Q), x~P, y~Q.
 class Renyi_Divergence(Divergence):
  
     # initialize
-    def __init__(self, discriminator, alpha, epochs, learning_rate, batch_size,discriminator_penalty=None):
+    def __init__(self, discriminator, disc_optimizer, alpha, epochs, batch_size, discriminator_penalty=None):
         
-        Divergence.__init__(self, discriminator, epochs, learning_rate, batch_size,discriminator_penalty)
+        Divergence.__init__(self, discriminator, disc_optimizer, epochs, batch_size, discriminator_penalty)
         self.alpha = alpha # Renyi Divergence order
 
     def get_order(self):
@@ -323,9 +323,9 @@ R_alpha(P||Q), x~P, y~Q.
 class Renyi_Divergence_CC(Renyi_Divergence):
     
     # initialize
-    def __init__(self, discriminator, alpha, epochs, learning_rate, batch_size, final_act_func,discriminator_penalty=None):
+    def __init__(self, discriminator, disc_optimizer, alpha, epochs, batch_size, final_act_func, discriminator_penalty=None):
         
-        Renyi_Divergence.__init__(self, discriminator, alpha, epochs, learning_rate, batch_size,discriminator_penalty)
+        Renyi_Divergence.__init__(self, discriminator, disc_optimizer, alpha, epochs, batch_size, discriminator_penalty)
         self.final_act_func = final_act_func
     
     def final_layer_activation(self, y): # enforce positive values
@@ -377,6 +377,11 @@ class Renyi_Divergence_CC_rescaled(Renyi_Divergence_CC):
 D_\infty(P||Q), x~P, y~Q.
 '''
 class Renyi_Divergence_WCR(Renyi_Divergence_CC):
+    # initialize
+    def __init__(self, discriminator, disc_optimizer, epochs, batch_size, final_act_func, discriminator_penalty=None):
+
+        Renyi_Divergence_CC.__init__(self, discriminator, disc_optimizer, math.inf, epochs, batch_size, final_act_func, discriminator_penalty)
+
     
     def eval_var_formula(self, x, y):
         D_P = self.discriminate(x)
@@ -439,11 +444,11 @@ class Gradient_Penalty_1Sided(Discriminator_Penalty):
 
         grads = gp_tape.gradient(D_pred, [interpltd])[0] # calculate the gradients
         if x.shape[1]==1: # calculate the norm
-            norm = tf.sqrt(tf.square(grads))
+            norm_squared = tf.square(grads)
         else:
-            norm = tf.sqrt(tf.reduce_sum(tf.square(grads)))
+            norm_squared = tf.reduce_sum(tf.square(grads))
 
-        gp = self.penalty_weight*tf.reduce_mean(tf.math.maximum(norm - self.Lip_const, 0.0)) # one-sided gradient penalty
+        gp = self.penalty_weight*tf.reduce_mean(tf.math.maximum(norm_squared/self.Lip_const**2-1., 0.0)) # one-sided gradient penalty
         return gp
         
         '''

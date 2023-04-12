@@ -20,7 +20,7 @@ parser.add_argument('--epochs', default=100, type=int,
 parser.add_argument('--alpha', default=2.0, type=float, metavar='alpha')
 parser.add_argument('--run_number', default=1, type=int, metavar='run_num')
 parser.add_argument('--Lip_constant', default=1.0, type=float, metavar='Lipschitz constant')
-parser.add_argument('--gp_weight', default=1.0, type=float, metavar='GP weight')
+parser.add_argument('--gp_weight', default=10.0, type=float, metavar='GP weight')
 
 parser.add_argument('--spectral_norm', choices=('True','False'), default='False')
 parser.add_argument('--bounded', choices=('True','False'), default='False')
@@ -120,11 +120,12 @@ dataset_cntmd = dataset_cntmd[idx]
 
 
 if reverse_order:
-    data_P = dataset_cntmd
-    data_Q = dataset_pure
-else:
     data_P = dataset_pure
     data_Q = dataset_cntmd
+else:
+    data_P = dataset_cntmd
+    data_Q = dataset_pure
+
 
 print('Data shapes:')
 print(data_P.shape)
