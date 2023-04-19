@@ -67,9 +67,7 @@ class GAN():
         # dataset slicing into minibatches
         P_dataset = tf.data.Dataset.from_tensor_slices(data_P)
 
-
         P_dataset=P_dataset.shuffle(buffer_size=data_P.shape[0], reshuffle_each_iteration=True)
-
 
         P_dataset=P_dataset.batch(self.batch_size)
 

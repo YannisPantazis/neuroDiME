@@ -6,6 +6,8 @@ import argparse
 import matplotlib.pyplot as plt
 from scipy.stats import norm
 from bisect import bisect_left, bisect_right
+from tf_model import *
+
 
 # read input arguments
 parser = argparse.ArgumentParser(description='Neural-based Estimation of Divergences')
@@ -20,7 +22,7 @@ parser.add_argument('--epochs', default=100, type=int,
 parser.add_argument('--alpha', default=2.0, type=float, metavar='alpha')
 parser.add_argument('--Lip_constant', default=1.0, type=float, metavar='Lipschitz constant')
 parser.add_argument('--gp_weight', default=1.0, type=float, metavar='GP weight')
-
+parser.add_argument('--use_GP', choices=('True', 'False'), default='False')
 parser.add_argument('--spectral_norm', action='store_true')
 parser.add_argument('--no-spectral_norm', dest='spectral_norm', action='store_false')
 parser.set_defaults(spectral_norm=False)
@@ -29,7 +31,6 @@ parser.add_argument('--bounded', action='store_true')
 parser.add_argument('--no-bounded', dest='bounded', action='store_false')
 parser.set_defaults(bounded=False)
 
-parser.add_argument('--framework', choices=['tf', 'torch', 'jax'], required=True)
 
 opt = parser.parse_args()
 opt_dict = vars(opt)
@@ -46,8 +47,7 @@ gp_weight = opt_dict['gp_weight']
 spec_norm = opt_dict['spectral_norm']
 bounded = opt_dict['bounded']
 fl_act_func_CC = 'abs' # abs, softplus, poly-softplus
-
-fw = opt_dict['framework']
+use_GP = opt_dict['use_GP']=='True'
 
 # create data sets
 d = 1
@@ -73,29 +73,29 @@ eff_vals_P = norm.ppf([0.01, 0.99], loc=mu_P, scale=sgm_P)
 layers_list = [32, 32] # UNCECOMP's NN: [16, 16, 8]
 act_func = 'relu'
 
-if fw == 'tf':
-    print(f'Predicting the {mthd} divergence using TensorFlow\n')
-    from models.tensorflow import *
-    discriminator = Discriminator(input_dim=d, spec_norm=spec_norm, bounded=bounded, layers_list=layers_list)
+print(f'Predicting the {mthd} divergence using TensorFlow\n')
+discriminator = Discriminator(input_dim=d, spec_norm=spec_norm, bounded=bounded, layers_list=layers_list)
 
-elif fw == 'torch':
-    print(f'Predicting the {mthd} divergence using PyTorch\n')
-    from models.torch import *
-    discriminator = Discriminator(input_dim=d, batch_size=m, spec_norm=spec_norm, bounded=bounded, layers_list=layers_list)
+optimizer = 'RMS' # Adam, RMS
+#construct optimizers
+if optimizer == 'Adam':
+    disc_optimizer = tf.keras.optimizers.Adam(lr)
 
+if optimizer == 'RMS':
+    disc_optimizer = tf.keras.optimizers.RMSprop(lr)
+
+# construct gradient penalty
+if use_GP:
+    discriminator_penalty=Gradient_Penalty_1Sided(gp_weight, L)
 else:
-    print(f'Predicting the {mthd} divergence using JAX\n')
-
+    discriminator_penalty=None
 
 
 # construct divergence, train optimizer and estimate the divergence
 if mthd=="IPM":
-    div_dense = IPM(discriminator, epochs, lr, m)
+    div_dense = IPM(discriminator, disc_optimizer, epochs, m, discriminator_penalty)
     div_dense.train(data_P, data_Q)
     div_value_est = float(div_dense.estimate(data_P, data_Q))
-
-    if fw == 'torch':
-        x = x.reshape(-1, 1)
 
     g_est = div_dense.discriminate(x)
     
@@ -104,28 +104,10 @@ if mthd=="IPM":
     print('IPM:\t\t {:.4}'.format(div_value_est))
     print()
 
-if mthd=="IPM-GP":
-    div_dense = Wasserstein_GP(discriminator, epochs, lr, m, L, gp_weight)
-    div_dense.train(data_P, data_Q)
-    div_value_est = float(div_dense.estimate(data_P, data_Q))
-
-    if fw == 'torch':
-        x = x.reshape(-1, 1)
-
-    g_est = div_dense.discriminate(x)
-    
-    g_star = pdf_P - pdf_Q # witness function in MMD (RKHS)
-    
-    print('Wasserstein distance:\t\t {:.4}'.format(div_value_est))
-    print()
-
 if mthd=="KLD-DV":
-    div_dense = KLD_DV(discriminator, epochs, lr, m)
+    div_dense = KLD_DV(discriminator, disc_optimizer, epochs, m, discriminator_penalty)
     div_dense.train(data_P, data_Q)
     div_value_est = float(div_dense.estimate(data_P, data_Q))
-
-    if fw == 'torch':
-        x = x.reshape(-1, 1)
 
     g_est = div_dense.discriminate(x)
     
@@ -136,30 +118,10 @@ if mthd=="KLD-DV":
     print('KLD-DV (estimated):\t {:.4}'.format(div_value_est))
     print()
 
-if mthd=="KLD-DV-GP": # create gp and add it to constructor
-    div_dense = KLD_DV_GP(discriminator, epochs, lr, m, L, gp_weight)
-    div_dense.train(data_P, data_Q)
-    div_value_est = float(div_dense.estimate(data_P, data_Q))
-
-    if fw == 'torch':
-        x = x.reshape(-1, 1)
-
-    g_est = div_dense.discriminate(x)
-    
-    div_value_true = np.sum(pdf_P*np.log(pdf_P/pdf_Q)) * dx
-    g_star = np.log(pdf_P/pdf_Q)
-    
-    print('KLD (true):\t\t {:.4}'.format(div_value_true))
-    print('KLD-DV-GP (estimated):\t {:.4}'.format(div_value_est))
-    print()
-
 if mthd=="KLD-LT":
-    div_dense = KLD_LT(discriminator, epochs, lr, m)
+    div_dense = KLD_LT(discriminator, disc_optimizer, epochs, m, discriminator_penalty)
     div_dense.train(data_P, data_Q)
     div_value_est = float(div_dense.estimate(data_P, data_Q))
-
-    if fw == 'torch':
-        x = x.reshape(-1, 1)
 
     g_est = div_dense.discriminate(x)
     
@@ -171,12 +133,9 @@ if mthd=="KLD-LT":
     print()
 
 if mthd=="squared-Hel-LT":
-    div_dense = squared_Hellinger_LT(discriminator, epochs, lr, m)
+    div_dense = squared_Hellinger_LT(discriminator, disc_optimizer, epochs, m, discriminator_penalty)
     div_dense.train(data_P, data_Q)
     div_value_est = float(div_dense.estimate(data_P, data_Q))
-
-    if fw == 'torch':
-        x = x.reshape(-1, 1)
 
     g_est = div_dense.discriminate(x)
     
@@ -188,12 +147,9 @@ if mthd=="squared-Hel-LT":
     print()
 
 if mthd=="chi-squared-LT":
-    div_dense = Pearson_chi_squared_LT(discriminator, epochs, lr, m)
+    div_dense = Pearson_chi_squared_LT(discriminator, disc_optimizer, epochs, m, discriminator_penalty)
     div_dense.train(data_P, data_Q)
     div_value_est = float(div_dense.estimate(data_P, data_Q))
-
-    if fw == 'torch':
-        x = x.reshape(-1, 1)
 
     g_est = div_dense.discriminate(x)
         
@@ -205,12 +161,9 @@ if mthd=="chi-squared-LT":
     print()
 
 if mthd=="JS-LT":
-    div_dense = Jensen_Shannon_LT(discriminator, epochs, lr, m)
+    div_dense = Jensen_Shannon_LT(discriminator, disc_optimizer, epochs, m, discriminator_penalty)
     div_dense.train(data_P, data_Q)
     div_value_est = float(div_dense.estimate(data_P, data_Q))
-
-    if fw == 'torch':
-        x = x.reshape(-1, 1)
 
     g_est = div_dense.discriminate(x)
         
@@ -223,12 +176,9 @@ if mthd=="JS-LT":
     print()
 
 if mthd=="alpha-LT":
-    div_dense = alpha_Divergence_LT(discriminator, alpha, epochs, lr, m)
+    div_dense = alpha_Divergence_LT(discriminator, disc_optimizer, alpha, epochs, m, discriminator_penalty)
     div_dense.train(data_P, data_Q)
     div_value_est = float(div_dense.estimate(data_P, data_Q))
-
-    if fw == 'torch':
-        x = x.reshape(-1, 1)
 
     g_est = div_dense.discriminate(x)
 
@@ -240,7 +190,7 @@ if mthd=="alpha-LT":
     print()
 
 if mthd=="Renyi-DV":
-    div_dense = Renyi_Divergence_DV(discriminator, alpha, epochs, lr, m)
+    div_dense = Renyi_Divergence_DV(discriminator, disc_optimizer, alpha, epochs, m, discriminator_penalty)
     div_dense.train(data_P, data_Q)
     div_value_est = float(div_dense.estimate(data_P, data_Q))
     g_est = div_dense.discriminate(x)
@@ -253,12 +203,9 @@ if mthd=="Renyi-DV":
     print()
 
 if mthd=="Renyi-CC":
-    div_dense = Renyi_Divergence_CC(discriminator, alpha, epochs, lr, m, fl_act_func_CC)
+    div_dense = Renyi_Divergence_CC(discriminator, disc_optimizer, alpha, epochs, m, fl_act_func_CC, discriminator_penalty)
     div_dense.train(data_P, data_Q)
     div_value_est = float(div_dense.estimate(data_P, data_Q))
-
-    if fw == 'torch':
-        x = x.reshape(-1, 1)
 
     g_est = div_dense.discriminate(x)
     
@@ -270,12 +217,9 @@ if mthd=="Renyi-CC":
     print()
 
 if mthd=="rescaled-Renyi-CC":
-    div_dense = Renyi_Divergence_CC_rescaled(discriminator, alpha, epochs, lr, m, fl_act_func_CC)
+    div_dense = Renyi_Divergence_CC_rescaled(discriminator, disc_optimizer, alpha, epochs, m, fl_act_func_CC, discriminator_penalty)
     div_dense.train(data_P, data_Q)
     div_value_est = float(div_dense.estimate(data_P, data_Q))
-
-    if fw == 'torch':
-        x = x.reshape(-1, 1)
 
     g_est = div_dense.discriminate(x)
     
@@ -287,12 +231,9 @@ if mthd=="rescaled-Renyi-CC":
     print()
 
 if mthd=="Renyi-WCR":
-    div_dense = Renyi_Divergence_WCR(discriminator, 'Inf', epochs, lr, m, fl_act_func_CC)
+    div_dense = Renyi_Divergence_WCR(discriminator, disc_optimizer, 'Inf', epochs, m, fl_act_func_CC, discriminator_penalty)
     div_dense.train(data_P, data_Q)
     div_value_est = float(div_dense.estimate(data_P, data_Q))
-
-    if fw == 'torch':
-        x = x.reshape(-1, 1)
 
     g_est = div_dense.discriminate(x)
     
@@ -305,10 +246,7 @@ if mthd=="Renyi-WCR":
 
 
 # plot optimizer
-if fw=='torch':
-    g_est = g_est.detach().numpy()
-else:
-    g_est = g_est.numpy()
+g_est = g_est.numpy()
 
 g_est = np.reshape(g_est, (NoP,))
 

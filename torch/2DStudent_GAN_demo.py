@@ -1,8 +1,7 @@
 import numpy as np
 import pandas as pd
-import tensorflow as tf
-import tensorflow_addons as tfa
-from keras import backend as K
+import torch
+import torch.nn as nn
 import csv
 import os
 import argparse
@@ -10,8 +9,9 @@ import argparse
 import matplotlib.pyplot as plt
 from scipy.stats import norm
 from bisect import bisect_left, bisect_right
-from Divergences import *
-from GAN import *
+from Divergences_torch import *
+from torch_model import *
+from GAN_torch import *
 
 
 # read input arguments
@@ -127,51 +127,14 @@ act_func = 'relu'
 
 D_hidden_layers=[64,32,16] #sizes of hidden layers for the discriminator
 
+discriminator = Discriminator(input_dim=X_dim, batch_size=m, spec_norm=spec_norm, bounded=bounded, layers_list=D_hidden_layers)
 
-discriminator = tf.keras.Sequential()
-discriminator.add(tf.keras.Input(shape=(X_dim,)))
-if spec_norm:
-    for h_dim in D_hidden_layers:
-        discriminator.add(tfa.layers.SpectralNormalization(tf.keras.layers.Dense(units=h_dim, activation=act_func)))
-    discriminator.add(tfa.layers.SpectralNormalization(tf.keras.layers.Dense(units = 1, activation='linear')))
-
-else:
-    for h_dim in D_hidden_layers:
-        discriminator.add(tf.keras.layers.Dense(units=h_dim, activation=act_func))
-    discriminator.add(tf.keras.layers.Dense(units = 1, activation='linear'))
-
-if bounded:
-    def bounded_activation(x):
-        M = 100.0
-        return M * K.tanh(x/M)
-    
-    discriminator.add(tf.keras.layers.Activation(bounded_activation))
-
-print()
-print("Discriminator Summary:")
-discriminator.summary()
 
 #construct the generator neural network
 G_hidden_layers=[64,32,16] #sizes of hidden layers for the generator
 Z_dim=10 #dimension of the noise source for the generator
 
-generator = tf.keras.Sequential()
-generator.add(tf.keras.Input(shape=(Z_dim,)))
-if spec_norm:
-    for h_dim in G_hidden_layers:
-        generator.add(tfa.layers.SpectralNormalization(tf.keras.layers.Dense(units=h_dim, activation=act_func)))
-    generator.add(tfa.layers.SpectralNormalization(tf.keras.layers.Dense(units = X_dim, activation='linear')))
-
-else:
-    for h_dim in G_hidden_layers:
-        generator.add(tf.keras.layers.Dense(units=h_dim, activation=act_func))
-    generator.add(tf.keras.layers.Dense(units = X_dim, activation='linear'))
-
-print()
-print("Generator Summary:")
-discriminator.summary()
-generator.summary()
-
+generator = Generator(X_dim=X_dim, Z_dim=Z_dim, batch_size=m, spec_norm=spec_norm, layers_list=G_hidden_layers)
 
 
 #Function for sampling from the noise source
@@ -181,12 +144,12 @@ def noise_source(N_samp):
 
 #construct optimizers
 if optimizer == 'Adam':
-    disc_optimizer = tf.keras.optimizers.Adam(lr)
-    gen_optimizer = tf.keras.optimizers.Adam(lr)
+    disc_optimizer = torch.optim.Adam(discriminator.parameters(), lr=lr)
+    gen_optimizer = torch.optim.Adam(discriminator.parameters(), lr=lr)
 
 if optimizer == 'RMS':
-    disc_optimizer = tf.keras.optimizers.RMSprop(lr)
-    gen_optimizer = tf.keras.optimizers.RMSprop(lr)
+    disc_optimizer = torch.optim.RMSprop(discriminator.parameters(), lr=lr)
+    gen_optimizer = torch.optim.RMSprop(discriminator.parameters(), lr=lr)
 
 
 # construct gradient penalty

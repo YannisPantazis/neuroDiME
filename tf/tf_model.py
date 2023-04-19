@@ -1,5 +1,4 @@
 from tensorflow_addons.layers import SpectralNormalization
-from Divergences import *
 from keras import backend as K  
 from keras.layers import Dense, Input, Activation
 from keras.models import Sequential, Model
@@ -31,6 +30,8 @@ class Discriminator(Model):
         if bounded:
             self.discriminator.add(Activation(self.bounded_activation))
 
+        print()
+        print('Discriminator Summary:')
         self.discriminator.summary()
    
     def call(self, inputs):
@@ -40,3 +41,33 @@ class Discriminator(Model):
     def bounded_activation(x):
         M = 100.0
         return M * K.tanh(x/M)
+
+
+class Generator(Model):
+    def __init__(self, X_dim, Z_dim, spec_norm, layers_list):
+        super(Generator, self).__init__()
+
+        self.X_dim = X_dim
+        self.Z_dim = Z_dim
+        self.spec_norm = spec_norm
+        self.layers_list = layers_list
+
+        self.generator = Sequential()
+        self.generator.add(Input(shape=(self.Z_dim,)))
+
+        if self.spec_norm:
+            for h_dim in self.layers_list:
+                self.generator.add(SpectralNormalization(Dense(units=h_dim, activation='relu')))
+            self.generator.add(SpectralNormalization(Dense(units=X_dim, activation='linear')))
+        else:
+            for h_dim in self.layers_list:
+                self.generator.add(Dense(units=h_dim, activation='relu'))
+            self.generator.add(Dense(units=X_dim, activation='linear'))
+        
+        print()
+        print('Generator Summary:')
+        self.generator.summary()
+   
+    def call(self, inputs):
+        predicted = self.generator(inputs)
+        return predicted

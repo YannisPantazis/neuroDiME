@@ -5,6 +5,8 @@ import os
 import json
 #from aux_funcs import *
 from numpy import genfromtxt
+from torch_model import *
+
 
 # read input arguments
 parser = argparse.ArgumentParser(description='AUC for Sick Cell Detection using Neural-based Variational Divergences ')
@@ -26,7 +28,6 @@ parser.add_argument('--bounded', choices=('True','False'), default='False')
 parser.add_argument('--reverse', choices=('True','False'), default='False')
 parser.add_argument('--use_GP', choices=('True','False'), default='False')
 
-parser.add_argument('--framework', choices=['tf', 'torch', 'jax'], required=True)
 
 opt = parser.parse_args()
 opt_dict = vars(opt)
@@ -54,8 +55,6 @@ print("Use Gradient Penalty: "+str(use_GP))
 
 fl_act_func_IC = 'poly-softplus' # abs, softplus, poly-softplus
 
-fw = opt_dict['framework']
-
 if mthd=="squared-Hel-LT":
     alpha=1./2.
 elif mthd=="chi-squared-LT":
@@ -69,25 +68,15 @@ layers_list = [32, 32]
 act_func = 'relu'
 
 # load data
-data_h = np.genfromtxt("bio_csv/healthy.csv", delimiter=",").astype('float32')
-data_s = np.genfromtxt("bio_csv/sick.csv", delimiter=",").astype('float32')
+data_h = np.genfromtxt("../bio_csv/healthy.csv", delimiter=",").astype('float32')
+data_s = np.genfromtxt("../bio_csv/sick.csv", delimiter=",").astype('float32')
 
 d = data_h.shape[1]
 layers_list.insert(0, d)
 
 
-if fw == 'tf':
-    print(f'Predicting the {mthd} divergence using TensorFlow\n')
-    from models.tensorflow import *
-    discriminator = Discriminator(input_dim=d, spec_norm=spec_norm, bounded=bounded, layers_list=layers_list)
-
-elif fw == 'torch':
-    print(f'Predicting the {mthd} divergence using PyTorch\n')
-    from models.torch import *
-    discriminator = Discriminator(input_dim=d, batch_size=m, spec_norm=spec_norm, bounded=bounded, layers_list=layers_list)
-
-else:
-    print(f'Predicting the {mthd} divergence using JAX\n')
+print(f'Predicting the {mthd} divergence using PyTorch\n')
+discriminator = Discriminator(input_dim=d, batch_size=m, spec_norm=spec_norm, bounded=bounded, layers_list=layers_list)
 
 
 # number of sample per class
@@ -122,6 +111,13 @@ print('Data shapes:')
 print(data_P.shape)
 print(data_Q.shape)
 
+optimizer = 'RMS' # Adam, RMS
+#construct optimizers
+if optimizer == 'Adam':
+    disc_optimizer = torch.optim.Adam(discriminator.parameters(), lr=lr)
+
+if optimizer == 'RMS':
+    disc_optimizer = torch.optim.RMSprop(discriminator.parameters(), lr=lr)
 
 # construct gradient penalty
 if use_GP:
@@ -133,40 +129,40 @@ else:
 #Construct divergence
        
 if mthd=="IPM":
-    div_dense = IPM(discriminator, epochs, lr, m, discriminator_penalty)            
+    div_dense = IPM(discriminator, disc_optimizer, epochs, m, discriminator_penalty)            
 
 if mthd=="KLD-LT":
-    div_dense = KLD_LT(discriminator, epochs, lr, m, discriminator_penalty)	    
+    div_dense = KLD_LT(discriminator, disc_optimizer, epochs, m, discriminator_penalty)	    
 
 if mthd=="KLD-DV":
-    div_dense = KLD_DV(discriminator, epochs, lr, m, discriminator_penalty)
+    div_dense = KLD_DV(discriminator, disc_optimizer, epochs, m, discriminator_penalty)
 
 if mthd=="squared-Hel-LT":
-    div_dense = squared_Hellinger_LT(discriminator, epochs, lr, m, discriminator_penalty)    
+    div_dense = squared_Hellinger_LT(discriminator, disc_optimizer, epochs, m, discriminator_penalty)    
     
 if mthd=="chi-squared-LT":
-    div_dense = Pearson_chi_squared_LT(discriminator, epochs, lr, m, discriminator_penalty)    
+    div_dense = Pearson_chi_squared_LT(discriminator, disc_optimizer, epochs, m, discriminator_penalty)    
     
 if mthd=="chi-squared-HCR":
-    div_dense = Pearson_chi_squared_HCR(discriminator, epochs, lr, m, discriminator_penalty)	    
+    div_dense = Pearson_chi_squared_HCR(discriminator, disc_optimizer, epochs, m, discriminator_penalty)	    
     
 if mthd=="JS-LT":
-    div_dense = Jensen_Shannon_LT(discriminator, epochs, lr, m, discriminator_penalty)    	    
+    div_dense = Jensen_Shannon_LT(discriminator, disc_optimizer, epochs, m, discriminator_penalty)    	    
     
 if mthd=="alpha-LT":
-    div_dense = alpha_Divergence_LT(discriminator, alpha, epochs, lr, m, discriminator_penalty)   
+    div_dense = alpha_Divergence_LT(discriminator, disc_optimizer, alpha, epochs, m, discriminator_penalty)   
        
 if mthd=="Renyi-DV":
-    div_dense = Renyi_Divergence_DV(discriminator, alpha, epochs, lr, m, discriminator_penalty)    
+    div_dense = Renyi_Divergence_DV(discriminator, disc_optimizer, alpha, epochs, m, discriminator_penalty)    
        	       
 if mthd=="Renyi-CC":
-    div_dense = Renyi_Divergence_CC(discriminator, alpha, epochs, lr, m, fl_act_func_IC, discriminator_penalty)
+    div_dense = Renyi_Divergence_CC(discriminator, disc_optimizer, alpha, epochs, m, fl_act_func_IC, discriminator_penalty)
        	       
 if mthd=="rescaled-Renyi-CC":
-    div_dense = Renyi_Divergence_CC_rescaled(discriminator, alpha, epochs, lr, m, fl_act_func_IC, discriminator_penalty)
+    div_dense = Renyi_Divergence_CC_rescaled(discriminator, disc_optimizer, alpha, epochs, m, fl_act_func_IC, discriminator_penalty)
        	       
 if mthd=="Renyi-WCR":
-    div_dense = Renyi_Divergence_WCR(discriminator, 'Inf', epochs, lr, m, fl_act_func_IC, discriminator_penalty)
+    div_dense = Renyi_Divergence_WCR(discriminator, disc_optimizer, 'Inf', epochs, m, fl_act_func_IC, discriminator_penalty)
        	              
     	    
 # Estimate divergence    
@@ -177,16 +173,13 @@ print(mthd+':\t\t {:.4}'.format(divergence_estimates[-1]))
 print()
         
 #save result       
-if fw == 'torch':
-    test_name="Bio_hypothesis_test_torch"
-elif fw == 'tf':
-    test_name="Bio_hypothesis_test_tf"
+test_name="Bio_hypothesis_test_torch"
 
 if not os.path.exists(test_name):
 	os.makedirs(test_name)
 	
 	    
-with open(test_name+'/estimated_'+mthd+'_p_{:.1e}'.format(p)+'_N_'+str(N)+'_m_'+str(m)+'_Lrate_{:.1e}'.format(lr)+'_epochs_'+str(epochs)+'_alpha_{:.1f}'.format(alpha)+'_L_{:.1f}'.format(L)+'_gp_weight_{:.1f}'.format(gp_weight)+'_spec_norm_'+str(spec_norm)+'_bounded_'+str(bounded)+'_reverse_'+str(reverse_order)+'_run_num_'+str(run_num)+'_framework_'+str(fw) +'.csv', "w") as output:
+with open(test_name+'/estimated_'+mthd+'_p_{:.1e}'.format(p)+'_N_'+str(N)+'_m_'+str(m)+'_Lrate_{:.1e}'.format(lr)+'_epochs_'+str(epochs)+'_alpha_{:.1f}'.format(alpha)+'_L_{:.1f}'.format(L)+'_gp_weight_{:.1f}'.format(gp_weight)+'_spec_norm_'+str(spec_norm)+'_bounded_'+str(bounded)+'_reverse_'+str(reverse_order)+'_run_num_'+str(run_num)+'.csv', "w") as output:
     writer = csv.writer(output, lineterminator='\n')
     for divergence_estimate in divergence_estimates:
         writer.writerow([divergence_estimate]) 
