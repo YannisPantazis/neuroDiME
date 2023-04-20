@@ -145,11 +145,11 @@ def noise_source(N_samp):
 #construct optimizers
 if optimizer == 'Adam':
     disc_optimizer = torch.optim.Adam(discriminator.parameters(), lr=lr)
-    gen_optimizer = torch.optim.Adam(discriminator.parameters(), lr=lr)
+    gen_optimizer = torch.optim.Adam(generator.parameters(), lr=lr)
 
 if optimizer == 'RMS':
     disc_optimizer = torch.optim.RMSprop(discriminator.parameters(), lr=lr)
-    gen_optimizer = torch.optim.RMSprop(discriminator.parameters(), lr=lr)
+    gen_optimizer = torch.optim.RMSprop(generator.parameters(), lr=lr)
 
 
 # construct gradient penalty
