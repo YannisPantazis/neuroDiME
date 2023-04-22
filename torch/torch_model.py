@@ -1,6 +1,6 @@
 from torch.nn import Module, Linear, ReLU, Sequential
 from torch.nn.utils import spectral_norm
-from Divergences_torch import *
+from Divergences import *
 from torchsummary import summary
 from collections import OrderedDict as OrderedDict
 

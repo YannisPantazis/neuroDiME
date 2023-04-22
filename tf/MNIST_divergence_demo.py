@@ -3,11 +3,7 @@ import pandas as pd
 import tensorflow as tf
 import tensorflow_addons as tfa
 from keras import backend as K
-from keras.layers import Dense
-from keras.layers import Conv2D
-from keras.layers import Flatten
-from keras.layers import Dropout
-from keras.layers import LeakyReLU
+from keras.layers import Dense, Conv2D, Flatten, Dropout, LeakyReLU
 import csv
 import os
 import argparse

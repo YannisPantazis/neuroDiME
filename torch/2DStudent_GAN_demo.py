@@ -9,9 +9,8 @@ import argparse
 import matplotlib.pyplot as plt
 from scipy.stats import norm
 from bisect import bisect_left, bisect_right
-from Divergences_torch import *
 from torch_model import *
-from GAN_torch import *
+from GAN import *
 
 
 # read input arguments
