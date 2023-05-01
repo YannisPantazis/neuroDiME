@@ -74,10 +74,11 @@ data_s = np.genfromtxt("../bio_csv/sick.csv", delimiter=",").astype('float32')
 d = data_h.shape[1]
 layers_list.insert(0, d)
 
+device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 print(f'Predicting the {mthd} divergence using PyTorch\n')
 discriminator = Discriminator(input_dim=d, batch_size=m, spec_norm=spec_norm, bounded=bounded, layers_list=layers_list)
-
+discriminator.to(device)
 
 # number of sample per class
 N2 = int(np.ceil(N*p))

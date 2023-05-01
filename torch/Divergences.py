@@ -53,7 +53,7 @@ class Divergence(nn.Module):
         loss.backward()
         self.disc_optimizer.step()
 
-    def train(self, data_P, data_Q, save_estimates=True):
+    def train(self, data_P, data_Q, device, save_estimates=True):
         # dataset slicing into minibatches
         P_dataset = torch.utils.data.DataLoader(data_P, batch_size=self.batch_size, shuffle=True)
         Q_dataset = torch.utils.data.DataLoader(data_Q, batch_size=self.batch_size, shuffle=True)
@@ -61,6 +61,8 @@ class Divergence(nn.Module):
         estimates = []
         for epoch in range(self.epochs):
             for P_batch, Q_batch in zip(P_dataset, Q_dataset):
+                P_batch.to(device)
+                Q_batch.to(device)
                 self.train_step(P_batch, Q_batch)
             
             if save_estimates:

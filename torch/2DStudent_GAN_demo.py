@@ -119,7 +119,7 @@ def sample_P(N_samp):
 data_P = sample_P(N)
 data_P = data_P.astype('f')
 
-
+device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 # construct the discriminator neural network
 act_func = 'relu'
@@ -127,14 +127,14 @@ act_func = 'relu'
 D_hidden_layers=[64,32,16] #sizes of hidden layers for the discriminator
 
 discriminator = Discriminator(input_dim=X_dim, batch_size=m, spec_norm=spec_norm, bounded=bounded, layers_list=D_hidden_layers)
-
+discriminator.to(device)
 
 #construct the generator neural network
 G_hidden_layers=[64,32,16] #sizes of hidden layers for the generator
 Z_dim=10 #dimension of the noise source for the generator
 
 generator = Generator(X_dim=X_dim, Z_dim=Z_dim, batch_size=m, spec_norm=spec_norm, layers_list=G_hidden_layers)
-
+generator.to(device)
 
 #Function for sampling from the noise source
 

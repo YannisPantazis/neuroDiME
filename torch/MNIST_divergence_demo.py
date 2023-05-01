@@ -1,9 +1,6 @@
 import numpy as np
 import pandas as pd
-import tensorflow as tf
-import tensorflow_addons as tfa
-from keras import backend as K
-from keras.layers import Dense, Conv2D, Flatten, Dropout, LeakyReLU
+
 import csv
 import os
 import argparse
@@ -13,9 +10,12 @@ from scipy.stats import norm
 from bisect import bisect_left, bisect_right
 from Divergences import *
 from GAN import *
-from keras.datasets.mnist import load_data
-from keras.models import load_model
+import torchvision.datasets as datasets
+from torch.nn import Sequential, Conv2d, LeakyReLU, Linear, Flatten, Dropout
+from torchsummary import summary
+import time
 
+start_time = time.time()
 # read input arguments
 parser = argparse.ArgumentParser(description='Neural-based Estimation of Divergences between MNIST Digit Distributions')
 parser.add_argument('--P_digit', type=int)          
@@ -66,10 +66,15 @@ optimizer = "Adam" #Adam, RMS
 fl_act_func_CC = 'poly-softplus' # abs, softplus, poly-softplus
 
 
-#data distribution
-(trainX, trainy), (_, _) = load_data()
+mnist_trainset = datasets.MNIST(root='./data', train=True, download=True, transform=None)
 
-X = np.expand_dims(trainX, axis=-1)
+device = 'cuda' if torch.cuda.is_available() else 'cpu'
+
+#data distribution
+trainX = mnist_trainset.train_data
+trainy = mnist_trainset.train_labels
+
+X = np.expand_dims(trainX, axis=1)
 # convert from unsigned ints to floats
 X = X.astype('float32')
 # scale from [0,255] to [0,1]
@@ -84,18 +89,17 @@ Q_idx = np.random.randint(0,len(Q_digits),size=N)
 data_P = P_digits[P_idx, :]
 data_Q = Q_digits[Q_idx, :]
 
-
 print('P-Data Shape')
 print(data_P.shape)
 print('Q-Data Shape')
 print(data_Q.shape)
 
 #Saved models folder    
-saved_name ='MNIST_saved_models'
+saved_name = f'MNIST_{mthd}_saved_models'
 if not os.path.exists(saved_name):
 	os.makedirs(saved_name)
-
-model_file = f'{saved_name}/{mthd}_{P_digit}_{Q_digit}_{N}_{m}_{lr}_{epochs}_{alpha}_{L}_{gp_weight}_{use_GP}_{run_num}.h5'
+        
+model_file = f'{saved_name}/{mthd}_{P_digit}_{Q_digit}_{N}_{m}_{lr}_{epochs}_{alpha}_{L}_{gp_weight}_{use_GP}_{run_num}.pth'
 
 if os.path.exists(model_file):
     # load the model
@@ -103,29 +107,32 @@ if os.path.exists(model_file):
     print()
     print('Loading Model...')
     print()
-    discriminator = load_model(model_file)
+    discriminator = torch.load(model_file)
 else:
     # construct the discriminator neural network
-    discriminator = tf.keras.Sequential()
-    discriminator.add(Conv2D(64, (3,3), strides=(2, 2), padding='same', input_shape=(28,28,1)))
-    discriminator.add(LeakyReLU(alpha=0.2))
-    discriminator.add(Dropout(0.4))
-    discriminator.add(Conv2D(64, (3,3), strides=(2, 2), padding='same'))
-    discriminator.add(LeakyReLU(alpha=0.2))
-    discriminator.add(Dropout(0.4))
-    discriminator.add(Flatten())
-    discriminator.add(Dense(1, activation='linear'))
+    discriminator = nn.Sequential(
+                    nn.Conv2d(in_channels=1, out_channels=64, kernel_size=(3,3), stride=(2, 2), padding=1),
+                    nn.LeakyReLU(negative_slope=0.2),
+                    nn.Dropout(p=0.4),
+                    nn.Conv2d(in_channels=64, out_channels=64, kernel_size=(3,3), stride=(2, 2), padding=1),
+                    nn.LeakyReLU(negative_slope=0.2),
+                    nn.Dropout(p=0.4),
+                    nn.Flatten(),
+                    nn.Linear(3136, 1)
+                    )
 
-print()
-print("Discriminator Summary:")
-discriminator.summary()
+# print()
+# print('Discriminator Summary:')
+# summary(discriminator, (1, 28, 28))
 
-#construct optimizer
+discriminator.to(device)
+
+#construct optimizers
 if optimizer == 'Adam':
-    disc_optimizer = tf.keras.optimizers.Adam(lr)
+    disc_optimizer = torch.optim.Adam(discriminator.parameters(), lr=lr)
 
 if optimizer == 'RMS':
-    disc_optimizer = tf.keras.optimizers.RMSprop(lr)
+    disc_optimizer = torch.optim.RMSprop(discriminator.parameters(), lr=lr)
 
 
 # construct gradient penalty
@@ -176,31 +183,27 @@ if mthd=="Renyi-WCR":
 if not os.path.exists(model_file):
     #train Discriminator
     print('Training the model...')
-    divergence_estimates=divergence_CNN.train(data_P, data_Q)
+    divergence_estimates=divergence_CNN.train(data_P, data_Q, device)
     print()
     print("Training Complete")
 
     # save the model
-    # pickle.dump(discriminator, open(model_file, 'wb'))
     print('Saving Model...')
-    discriminator.save(model_file)
+    torch.save(discriminator, model_file)
 
 
 #Save results    
-test_name='MNIST_divergence_demo'
+test_name = f'MNIST_{mthd}_divergence_demo'
 if not os.path.exists(test_name):
 	os.makedirs(test_name)
 	
-estimate = divergence_CNN.estimate(data_P, data_Q).numpy()
+estimate = divergence_CNN.estimate(data_P, data_Q).detach().numpy()
 print(f'KLD_DV estimate between digits {P_digit} and {Q_digit}: {estimate}')
 
 
 with open(test_name+'/'+mthd+'_div_estimate_P_digit_' +str(P_digit)+'_Q_digit_' +str(Q_digit)+'_N_'+str(N)+'_m_'+str(m)+'_Lrate_{:.1e}'.format(lr)+'_epochs_'+str(epochs)+'_alpha_{:.1f}'.format(alpha)+'_L_{:.1f}'.format(L)+'_gp_weight_{:.1f}'.format(gp_weight)+'_GP_'+str(use_GP)+'_run_num_'+str(run_num)+'.csv', "w") as output:
     writer = csv.writer(output, lineterminator='\n')
     writer.writerow([estimate])
-    # for div_est in divergence_estimates:
-#         writer.writerow([div_est]) 
 
 
-
-
+print(f'--- {time.time() - start_time} seconds ---')

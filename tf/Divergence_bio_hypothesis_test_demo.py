@@ -114,11 +114,9 @@ optimizer = "RMS" #Adam, RMS
 #construct optimizers
 if optimizer == 'Adam':
     disc_optimizer = tf.keras.optimizers.Adam(lr)
-    gen_optimizer = tf.keras.optimizers.Adam(lr)
 
 if optimizer == 'RMS':
     disc_optimizer = tf.keras.optimizers.RMSprop(lr)
-    gen_optimizer = tf.keras.optimizers.RMSprop(lr)
 
 # construct gradient penalty
 if use_GP:

@@ -73,10 +73,11 @@ eff_vals_P = norm.ppf([0.01, 0.99], loc=mu_P, scale=sgm_P)
 layers_list = [32, 32] # UNCECOMP's NN: [16, 16, 8]
 act_func = 'relu'
 
+device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 print(f'Predicting the {mthd} divergence using PyTorch\n')
 discriminator = Discriminator(input_dim=d, batch_size=m, spec_norm=spec_norm, bounded=bounded, layers_list=layers_list)
-
+discriminator.to(device)
 
 optimizer = 'RMS' # Adam, RMS
 #construct optimizers
