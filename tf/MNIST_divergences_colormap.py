@@ -39,7 +39,7 @@ def main():
     x = np.arange(0, 10, 1)
     y = np.arange(0, 10, 1)
     plt.imshow(div_values, interpolation='none', cmap=plt.get_cmap('binary'))
-    plt.title(f'Colormap of {method} estimates between all pair of digits')
+    plt.title(f'Colormap of {method} estimates between all pair of digits using TensorFlow')
     plt.xticks(x)
     plt.yticks(y)
     cbar = plt.colorbar()
