@@ -40,7 +40,11 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Intro:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">models</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="Divergences.html">Divergences module</a></li>
@@ -88,9 +92,10 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-models.GAN">
-<span id="gan-module"></span><h1>GAN module<a class="headerlink" href="#module-models.GAN" title="Permalink to this heading"></a></h1>
-<dl class="py class">
+  <section id="gan-module">
+<h1>GAN module<a class="headerlink" href="#gan-module" title="Permalink to this heading"></a></h1>
+<p>The GAN module written in TensorFlow</p>
+<span class="target" id="module-models.GAN"></span><dl class="py class">
 <dt class="sig sig-object py" id="models.GAN.GAN">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">models.GAN.</span></span><span class="sig-name descname"><span class="pre">GAN</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">divergence</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">generator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gen_optimizer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noise_source</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disc_steps_per_gen_step</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reverse_order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_penalty_in_gen_loss</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/GAN.html#GAN"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.GAN.GAN" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
