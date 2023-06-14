@@ -7,14 +7,21 @@ from keras.layers import Dense, Conv2D, Flatten, Dropout, LeakyReLU
 import csv
 import os
 import argparse
+import sys
 #import json
 import matplotlib.pyplot as plt
 from scipy.stats import norm
 from bisect import bisect_left, bisect_right
-from Divergences import *
-from GAN import *
 from keras.datasets.mnist import load_data
 from keras.models import load_model
+
+current_dir = os.path.dirname(os.path.realpath(__file__))
+parent_dir = os.path.dirname(current_dir)
+sys.path.append(parent_dir)
+
+from models.tf_model import *
+from models.Divergences import *
+from models.GAN import *
 
 # read input arguments
 parser = argparse.ArgumentParser(description='Neural-based Estimation of Divergences between MNIST Digit Distributions')

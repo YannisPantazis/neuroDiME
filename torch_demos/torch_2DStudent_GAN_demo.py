@@ -4,13 +4,20 @@ import torch
 import torch.nn as nn
 import csv
 import os
+import sys
 import argparse
 #import json
 import matplotlib.pyplot as plt
 from scipy.stats import norm
 from bisect import bisect_left, bisect_right
-from torch_model import *
-from GAN_torch import *
+
+current_dir = os.path.dirname(os.path.realpath(__file__))
+parent_dir = os.path.dirname(current_dir)
+sys.path.append(parent_dir)
+
+from models.torch_model import *
+from models.Divergences_torch import *
+from models.GAN_torch import *
 
 
 # read input arguments

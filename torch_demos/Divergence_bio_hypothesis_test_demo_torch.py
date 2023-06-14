@@ -2,11 +2,17 @@ import numpy as np
 import argparse
 import csv
 import os
+import sys
 import json
 #from aux_funcs import *
 from numpy import genfromtxt
-from torch_model import *
 
+current_dir = os.path.dirname(os.path.realpath(__file__))
+parent_dir = os.path.dirname(current_dir)
+sys.path.append(parent_dir)
+
+from models.torch_model import *
+from models.Divergences_torch import *
 
 # read input arguments
 parser = argparse.ArgumentParser(description='AUC for Sick Cell Detection using Neural-based Variational Divergences ')

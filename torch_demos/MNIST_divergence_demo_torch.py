@@ -3,17 +3,24 @@ import pandas as pd
 
 import csv
 import os
+import sys
 import argparse
 #import json
 import matplotlib.pyplot as plt
 from scipy.stats import norm
 from bisect import bisect_left, bisect_right
-from Divergences_torch import *
-from GAN_torch import *
 import torchvision.datasets as datasets
 from torch.nn import Sequential, Conv2d, LeakyReLU, Linear, Flatten, Dropout
 from torchsummary import summary
 import time
+
+current_dir = os.path.dirname(os.path.realpath(__file__))
+parent_dir = os.path.dirname(current_dir)
+sys.path.append(parent_dir)
+
+from models.torch_model import *
+from models.Divergences_torch import *
+from models.GAN_torch import *
 
 start_time = time.time()
 # read input arguments
