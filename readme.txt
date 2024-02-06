@@ -28,6 +28,9 @@ Divergence
 
 REQUIREMENTS
 ------------
+All the requirements are in the requirements.txt file, instructions on how to create a new environment are provided.
+
+
 Python 3.10.4
 pip install tensorflow==2.8.0 (for the Divergences.py)
 

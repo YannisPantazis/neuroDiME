@@ -50,6 +50,7 @@ class Divergence(nn.Module):
         self.disc_optimizer.zero_grad()
         x.requires_grad_(True)
         y.requires_grad_(True)
+        
         loss = -self.discriminator_loss(x, y) # with minus because we maximize the discriminator loss
         if self.discriminator_penalty is not None:
             loss = loss + self.discriminator_penalty.evaluate(self.discriminator, x, y)
@@ -57,12 +58,12 @@ class Divergence(nn.Module):
         loss.backward()
         self.disc_optimizer.step()
 
-    def train(self, data_P, data_Q, device, save_estimates=True):
+    def train(self, data_P, data_Q, device = 'cuda' if torch.cuda.is_available() else 'cpu', save_estimates=True):
         ''' training function of our discriminator '''
         # dataset slicing into minibatches
         P_dataset = torch.utils.data.DataLoader(data_P, batch_size=self.batch_size, shuffle=True)
         Q_dataset = torch.utils.data.DataLoader(data_Q, batch_size=self.batch_size, shuffle=True)
-
+        print(device)
         estimates = []
         for _ in range(self.epochs):
             for P_batch, Q_batch in zip(P_dataset, Q_dataset):
