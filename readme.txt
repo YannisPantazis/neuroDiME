@@ -28,19 +28,23 @@ Divergence
 
 REQUIREMENTS
 ------------
-All the requirements are in the requirements.txt file, instructions on how to create a new environment are provided.
+All the requirements are in the conda_requirements and pip_requirements txt files.
+To create a new enviornment with the specific requirements just run the commands: 
+$ conda create --name <env> python=3.10.4
+$ pip install -r requirements.txt
 
-
-Python 3.10.4
-pip install tensorflow==2.8.0 (for the Divergences.py)
-
+conda create --name <env> python=3.10.4
+pip install tensorflow==2.8.0 (for the Divergences.py) (version 2.8.0 does not support CUDA)
 pip install tensorflow_addons==0.16.1 (for the 1d_Gaussian_demo.py)
-pip install keras==2.8.0
 pip install pandas==1.4.2
 pip install argparse==1.1
 pip install protobuf==3.20.3
 pip install matplotlib==3.7.1
 pip install scipy==1.10.1
+pip install torchsummary
+
+pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121 (if cuda is available)
+pip3 install torch torchvision torchaudio (if cuda is not available)
 
 
 

@@ -28,7 +28,7 @@ class Divergence(nn.Module):
         if not torch.is_tensor(x):
             x = torch.from_numpy(x)
             
-        y = self.discriminator(x.float())
+        y = self.discriminator(x.float().to('cuda' if torch.cuda.is_available() else 'cpu'))
         return y
     
     def eval_var_formula(self, x, y): 
@@ -63,7 +63,7 @@ class Divergence(nn.Module):
         # dataset slicing into minibatches
         P_dataset = torch.utils.data.DataLoader(data_P, batch_size=self.batch_size, shuffle=True)
         Q_dataset = torch.utils.data.DataLoader(data_Q, batch_size=self.batch_size, shuffle=True)
-        print(device)
+
         estimates = []
         for _ in range(self.epochs):
             for P_batch, Q_batch in zip(P_dataset, Q_dataset):

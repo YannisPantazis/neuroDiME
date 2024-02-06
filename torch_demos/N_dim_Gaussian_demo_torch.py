@@ -104,10 +104,10 @@ layers_list = [64] # UNCECOMP's NN: [16, 16, 8]
 act_func = 'relu'
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
+print(device)
 
 print(f'Predicting the {mthd} divergence using PyTorch\n')
 discriminator = Discriminator(input_dim=d, batch_size=m, spec_norm=spec_norm, bounded=bounded, layers_list=layers_list)
-discriminator.to(device)
 
 optimizer = 'RMS' # Adam, RMS
 #construct optimizers

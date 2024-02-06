@@ -2,7 +2,7 @@ from torch.nn import Module, Linear, ReLU, Sequential
 from torch.nn.utils import spectral_norm
 from torchsummary import summary
 from collections import OrderedDict as OrderedDict
-
+import torch
 
 class BoundedActivation(Module):
     '''
@@ -50,7 +50,7 @@ class Discriminator(Module):
         if bounded:
             model_dict[f'Bounded_Activation'] = BoundedActivation()
 
-        self.discriminator = Sequential(model_dict)
+        self.discriminator = Sequential(model_dict).to('cuda' if torch.cuda.is_available() else 'cpu')
         print()
         print('Discriminator Summary:')
         summary(self.discriminator, (self.batch_size, self.input_dim))
