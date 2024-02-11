@@ -46,6 +46,8 @@ pip install torchsummary
 pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121 (if cuda is available)
 pip3 install torch torchvision torchaudio (if cuda is not available)
 
+(pip install --upgrade "jax[cuda12_pip]" -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html)
+pip install flax
 
 
 
