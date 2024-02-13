@@ -12,6 +12,10 @@ class Discriminator(nn.Module):
     bounded: bool
     layers_list: list
 
+    def bounded_activation(x):
+        M = 100.0
+        return M * jnp.tanh(x / M)
+
     @nn.compact
     def __call__(self, x):
 
@@ -27,7 +31,7 @@ class Discriminator(nn.Module):
             x = nn.Dense(1)(x)
 
         if self.bounded:
-            x = bounded_activation(x)
+            x = self.bounded_activation(x)
 
         return x
 
@@ -55,8 +59,3 @@ class Generator(nn.Module):
             x = nn.Dense(self.X_dim)(x)
         
         return x
-
-
-def bounded_activation(x):
-    M = 100.0
-    return M * jnp.tanh(x / M)

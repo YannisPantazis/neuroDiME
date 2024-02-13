@@ -22,16 +22,18 @@ state = TrainState.create(
 
 def loss_fn(params, x, y):
   predictions = state.apply_fn({'params': params}, x)
-  print(predictions.shape)
+  print(predictions)
   loss = optax.l2_loss(predictions=predictions, targets=y).mean()
   return loss
+
 # loss_fn(state.params, x, y)
 
-print('Before')
-print(state.params)
+# print('Before')
+# print(state.params)
 
-grads = jax.grad(loss_fn)(state.params, x, y)
+loss, grads = jax.value_and_grad(loss_fn)(state.params, x, y)
+# print(loss)
 state = state.apply_gradients(grads=grads)
-print('After')
-print(state.params)
+# print('After')
+# print(state.params)
 # loss_fn(state.params, x, y)
