@@ -8,6 +8,7 @@ import argparse
 import matplotlib.pyplot as plt
 from scipy.stats import norm
 from bisect import bisect_left, bisect_right
+import time
 
 current_dir = os.path.dirname(os.path.realpath(__file__))
 parent_dir = os.path.dirname(current_dir)
@@ -17,6 +18,8 @@ from models.torch_model import *
 from models.Divergences_torch import *
 from models.GAN_torch import *
 
+
+start = time.perf_counter()
 
 # read input arguments
 parser = argparse.ArgumentParser(description='Neural-based Estimation of Divergences between Gaussians')
@@ -256,4 +259,6 @@ with open(test_name+'/true_'+mthd+'_dim_'+str(d)+'_delta_mu_{:.2f}'.format(delta
     writer.writerow([div_value_true])  
 
 
+end = time.perf_counter()
 
+print(end - start)

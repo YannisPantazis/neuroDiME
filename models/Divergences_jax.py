@@ -4,6 +4,8 @@ import time
 import math
 from flax.training import train_state
 import optax
+from functools import partial
+from jax import jit
 
 class Divergence:
     '''
@@ -11,57 +13,61 @@ class Divergence:
     Parent class where the common parameters and the common functions are defined.
     '''
     # initialize
-    def __init__(self, discriminator, disc_optimizer, epochs, batch_size, init_state, discriminator_penalty=None):
+    def __init__(self, discriminator, disc_optimizer, epochs, batch_size, discriminator_penalty=None):
         self.batch_size = batch_size
         self.epochs = epochs
         self.discriminator = discriminator
         self.disc_optimizer = disc_optimizer
         self.discriminator_penalty = discriminator_penalty
-        self.state = init_state
+
 
     def __repr__(self):
         return 'discriminator: {}'.format(self.discriminator)
 
-    def discriminate(self, x): 
+
+    def discriminate(self, x, params): 
         ''' g(x) '''
-        # y = self.discriminator(x)
-        y = self.state.apply_fn({"params": self.state.params}, x)
+        y = self.discriminator.apply(params, x)
         return y
 
-    def eval_var_formula(self, x, y):
+
+    def eval_var_formula(self, x, y, params):
         ''' depends on the variational formula to be used '''
         return None
 
-    def estimate(self, x, y): 
+
+    def estimate(self, x, y, params): 
         ''' same as self.eval_var_formula() '''
-        divergence_loss = self.eval_var_formula(x, y)
+        divergence_loss = self.eval_var_formula(x, y, params)
         return divergence_loss
 
-    def discriminator_loss(self, x, y): 
+
+    def discriminator_loss(self, x, y, params): 
         ''' same as self.estimate() (in principle) '''
-        divergence_loss = self.eval_var_formula(x, y)
+        divergence_loss = self.eval_var_formula(x, y, params)
         return divergence_loss
 
 
-    # @jax.jit
-    def train_step(self, x, y):
-        # grad_loss = jax.grad(loss_fn)(x, y)
+    @partial(jit, static_argnums=(0,))
+    def train_step(self, x, y, params, opt_state):
 
         ''' discriminator's parameters update '''
-        def loss_fn(_, x, y):
-            loss = -self.discriminator_loss(x, y) # with minus because we maximize the discrimination loss
+        def loss_fn(params, x, y):
+            loss = -self.discriminator_loss(x, y, params) # with minus because we maximize the discrimination loss
 
             if self.discriminator_penalty is not None:
-                loss += self.discriminator_penalty.evaluate(self.discriminator, x, y)
+                loss += self.discriminator_penalty.evaluate(self.discriminator, x, y, params)
                 
             return loss
         
-        grads_fn = jax.grad(loss_fn)
-        grads = grads_fn(self.state.params, x, y)
-        self.state = self.state.apply_gradients(grads=grads)
+        grads = jax.grad(loss_fn, allow_int=True)(params, x, y)
+        updates, opt_state = self.disc_optimizer.update(grads, opt_state)
+        params = optax.apply_updates(params, updates)
+
+        return opt_state, params
 
 
-    def train(self, data_P, data_Q, save_estimates=True):
+    def train(self, data_P, data_Q, params, opt_state, save_estimates=True):
         ''' training function for our models '''
         # dataset slicing into minibatches
         P_dataset = DataLoader(data_P, batch_size=self.batch_size, shuffle=True)
@@ -71,12 +77,13 @@ class Divergence:
         
         for i in range(self.epochs):
             for P_batch, Q_batch in zip(P_dataset, Q_dataset):
-                self.train_step(P_batch, Q_batch)
+                opt_state, params = self.train_step(P_batch, Q_batch, params, opt_state)
 
             if save_estimates:
-                estimates.append(float(self.estimate(P_batch, Q_batch)))
+                estimates.append(float(self.estimate(P_batch, Q_batch, params)))
 
-        return estimates
+        return estimates, params
+    
 
     def get_discriminator(self):
         return self.discriminator
@@ -107,10 +114,10 @@ class IPM(Divergence):
     '''
     IPM class
     '''
-    def eval_var_formula(self, x, y):
+    def eval_var_formula(self, x, y, params):
         ''' Evaluation of variational formula of IPM. '''
-        D_P = self.discriminate(x)
-        D_Q = self.discriminate(y)
+        D_P = self.discriminate(x, params)
+        D_Q = self.discriminate(y, params)
 
         D_loss_P = jnp.mean(D_P)
         D_loss_Q = jnp.mean(D_Q)
@@ -132,11 +139,11 @@ class f_Divergence(Divergence):
     def final_layer_activation(self, y):
         return y
 
-    def eval_var_formula(self, x, y):
+    def eval_var_formula(self, x, y, params):
         ''' Evaluation of variational formula of f-divergence, D_f(P||Q), x~P, y~Q. '''
-        D_P = self.discriminate(x)
+        D_P = self.discriminate(x, params)
         D_P = self.final_layer_activation(D_P)
-        D_Q = self.discriminate(y)
+        D_Q = self.discriminate(y, params)
         D_Q = self.final_layer_activation(D_Q)
         
         D_loss_P = jnp.mean(D_P)
@@ -151,10 +158,10 @@ class KLD_DV(Divergence):
     KL divergence class (based on the Donsker-Varahdan variational formula)
     KL(P||Q), x~P, y~Q.
     '''
-    def eval_var_formula(self, x, y):
+    def eval_var_formula(self, x, y, params):
         ''' Evaluation of variational formula of KL divergence (based on the Donsker-Varahdan variational formula), KL(P||Q), x~P, y~Q.'''
-        D_P = self.discriminate(x)
-        D_Q = self.discriminate(y)
+        D_P = self.discriminate(x, params)
+        D_Q = self.discriminate(y, params)
         
         D_loss_P = jnp.mean(D_P)
         
@@ -253,10 +260,10 @@ class Pearson_chi_squared_HCR(Divergence):
     Pearson chi^2-divergence class (based on Hammersley-Chapman-Robbins bound)
     chi^2(P||Q), x~P, y~Q.
     '''
-    def eval_var_formula(self, x, y):
+    def eval_var_formula(self, x, y, params):
         ''' Evaluation of variational formula of Pearson chi^2-divergence (based on Hammersley-Chapman-Robbins bound), chi^2(P||Q), x~P, y~Q.'''
-        D_P = self.discriminate(x)
-        D_Q = self.discriminate(y)
+        D_P = self.discriminate(x, params)
+        D_Q = self.discriminate(y, params)
 
         D_loss_P = jnp.mean(D_P)
         D_loss_Q = jnp.mean(D_Q)
@@ -288,13 +295,13 @@ class Renyi_Divergence_DV(Renyi_Divergence):
     Renyi divergence class (based on the Renyi-Donsker-Varahdan variational formula)
     R_alpha(P||Q), x~P, y~Q.
     '''
-    def eval_var_formula(self, x, y):
+    def eval_var_formula(self, x, y, params):
         ''' Evaluation of variational formula of Renyi divergence (based on the Renyi-Donsker-Varahdan variational formula), R_alpha(P||Q), x~P, y~Q. '''
         gamma = self.alpha
         beta = 1.0 - self.alpha
 
-        D_P = self.discriminate(x)
-        D_Q = self.discriminate(y)
+        D_P = self.discriminate(x, params)
+        D_Q = self.discriminate(y, params)
 
         if beta == 0.0:
             D_loss_P = jnp.mean(D_P)
@@ -334,11 +341,11 @@ class Renyi_Divergence_CC(Renyi_Divergence):
         
         return out
     
-    def eval_var_formula(self, x, y):
+    def eval_var_formula(self, x, y, params):
         ''' Evaluation of variational formula of Renyi divergence (based on the convex-conjugate variational formula), R_alpha(P||Q), x~P, y~Q. '''
-        D_P = self.discriminate(x)
+        D_P = self.discriminate(x, params)
         D_P = self.final_layer_activation(D_P)
-        D_Q = self.discriminate(y)
+        D_Q = self.discriminate(y, params)
         D_Q = self.final_layer_activation(D_Q)
         
         D_loss_Q = -jnp.mean(D_Q)
@@ -361,10 +368,10 @@ class Renyi_Divergence_CC_rescaled(Renyi_Divergence_CC):
         
         return out
 
-    def eval_var_formula(self, x, y):
+    def eval_var_formula(self, x, y, params):
         ''' Evaluation of variational formula of Rescaled Renyi divergence class (based on the rescaled convex-conjugate variational formula), alpha*R_alpha(P||Q), x~P, y~Q.'''
 #        super(Renyi_Divergence_CC, self).eval_var_formula(self, x, y)
-        D_loss = Renyi_Divergence_CC.eval_var_formula(self, x, y)
+        D_loss = Renyi_Divergence_CC.eval_var_formula(self, x, y, params)
         D_loss = D_loss * self.alpha
         
         return D_loss
@@ -380,11 +387,11 @@ class Renyi_Divergence_WCR(Renyi_Divergence_CC):
 
         Renyi_Divergence_CC.__init__(self, discriminator, disc_optimizer, math.inf, epochs, batch_size, final_act_func, discriminator_penalty)
    
-    def eval_var_formula(self, x, y):
+    def eval_var_formula(self, x, y, params):
         ''' Evaluation of variational formula of Rescaled Renyi divergence class as alpha --> infinity (aka worst-case regret divergence), D_\infty(P||Q), x~P, y~Q. '''
-        D_P = self.discriminate(x)
+        D_P = self.discriminate(x, params)
         D_P = self.final_layer_activation(D_P)
-        D_Q = self.discriminate(y)
+        D_Q = self.discriminate(y, params)
         D_Q = self.final_layer_activation(D_Q)
         
         D_loss_P = jnp.log(jnp.mean(D_P))
@@ -409,7 +416,7 @@ class Discriminator_Penalty():
     def set_penalty_weight(self, weight):
         self.penalty_weight = weight
     
-    def evaluate(self, discriminator, x, y): 
+    def evaluate(self, discriminator, x, y, params): 
         ''' depends on the choice of penalty '''
         return None
 
@@ -431,7 +438,7 @@ class Gradient_Penalty_1Sided(Discriminator_Penalty):
     def set_Lip_constant(self, L):
         self.Lip_const = L
     
-    def evaluate(self, discriminator, x, y): 
+    def evaluate(self, discriminator, x, y, params): 
         ''' Computes the one-sided gradient penalty (constraint: Lipschitz constant  <= Lip_const). '''
         temp_shape = [x.shape[0]] + [1 for _ in  range(len(x.shape)-1)]
         ratio = jax.random.uniform(jax.random.PRNGKey(0), temp_shape, 0.0, 1.0, dtype=jax.dtypes.float32)
@@ -470,7 +477,7 @@ class Gradient_Penalty_2Sided(Discriminator_Penalty):
         self.Lip_const = L
     
 
-    def evaluate(self, discriminator, x, y): 
+    def evaluate(self, discriminator, x, y, params): 
         ''' Computes the two-sided gradient penalty (constraint: Lipschitz constant = Lip_const). '''
         temp_shape = [x.shape[0]] + [1 for _ in  range(len(x.shape)-1)]
         ratio = jax.random.uniform(jax.random.PRNGKey(0), temp_shape, 0.0, 1.0, dtype=jax.dtypes.float32)

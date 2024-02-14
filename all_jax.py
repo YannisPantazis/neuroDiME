@@ -68,24 +68,22 @@ class Discriminator(nn.Module):
 
 class KLD_DV:
 
-    def __init__(self, discriminator, disc_optimizer, epochs, batch_size, params, opt_init_state):
+    def __init__(self, discriminator, disc_optimizer, epochs, batch_size):
         self.batch_size = batch_size
         self.epochs = epochs
         self.discriminator = discriminator
         self.disc_optimizer = disc_optimizer
-        self.params = params
-        self.opt_state = opt_init_state
 
 
-    def discriminate(self, x):
-        y = self.discriminator.apply(self.params, x)
+    def discriminate(self, x, params):
+        y = self.discriminator.apply(params, x)
         return y
 
 
-    def eval_var_formula(self, x, y):
+    def eval_var_formula(self, x, y, params):
         ''' Evaluation of variational formula of KL divergence (based on the Donsker-Varahdan variational formula), KL(P||Q), x~P, y~Q.'''
-        D_P = self.discriminate(x)
-        D_Q = self.discriminate(y)
+        D_P = self.discriminate(x, params)
+        D_Q = self.discriminate(y, params)
         
         D_loss_P = jnp.mean(D_P)
         
@@ -96,37 +94,35 @@ class KLD_DV:
         return D_loss
    
 
-    def estimate(self, x, y):
-        divergence_loss = self.eval_var_formula(x, y)
+    def estimate(self, x, y, params):
+        divergence_loss = self.eval_var_formula(x, y, params)
         return divergence_loss
     
 
-    def discriminator_loss(self, x, y):
-        divergnece_loss = self.eval_var_formula(x, y)
+    def discriminator_loss(self, x, y, params):
+        divergnece_loss = self.eval_var_formula(x, y, params)
         return divergnece_loss
     
 
     @partial(jit, static_argnums=(0,))
-    def train_step(self, x, y):
+    def train_step(self, x, y, params, opt_state):
 
         def loss_fn(params, x, y):
-            D_P = self.discriminator.apply(params, x)
-            D_Q = self.discriminator.apply(params, y)
-        
-            D_loss_P = jnp.mean(D_P)
-        
-            max_val = jnp.max(D_Q)
-            D_loss_Q = jnp.log(jnp.mean(jnp.exp(D_Q - max_val))) + max_val
+            loss = -self.discriminator_loss(x, y, params)
 
-            D_loss = D_loss_P - D_loss_Q
-            return -D_loss
+            if self.discriminator_penalty is not None:
+                loss += self.discriminator_penalty.evaluate(self.discriminator, x, y)
+                
+            return loss
         
-        grads = jax.grad(loss_fn, allow_int=True)(self.params, x, y)
-        updates, self.opt_state = disc_optimizer.update(grads, self.opt_state)
-        self.params = optax.apply_updates(self.params, updates)
+        grads = jax.grad(loss_fn, allow_int=True)(params, x, y)
+        updates, opt_state = disc_optimizer.update(grads, opt_state)
+        params = optax.apply_updates(params, updates)
+
+        return opt_state, params
 
         
-    def train(self, data_P, data_Q):
+    def train(self, data_P, data_Q, params, opt_state):
         P_dataset = DataLoader(data_P, batch_size=self.batch_size, shuffle=True)
         Q_dataset = DataLoader(data_Q, batch_size=self.batch_size, shuffle=True)
 
@@ -134,11 +130,11 @@ class KLD_DV:
 
         for i in range(self.epochs):
             for P_batch, Q_batch in zip(P_dataset, Q_dataset):
-                self.train_step(P_batch, Q_batch)
+                opt_state, params = self.train_step(P_batch, Q_batch, params, opt_state)
 
-            estimates.append(float(self.estimate(P_batch, Q_batch)))    
+            estimates.append(float(self.estimate(P_batch, Q_batch, params)))    
 
-        return estimates, self.params
+        return estimates, params
 
 
 start = time.perf_counter()
@@ -225,8 +221,8 @@ opt_state = disc_optimizer.init(params)
 # print('Before training')
 # print(params)
 
-div_dense = KLD_DV(discriminator, disc_optimizer, epochs, m, params, opt_state)
-estimates, params = div_dense.train(data_P, data_Q)
+div_dense = KLD_DV(discriminator, disc_optimizer, epochs, m)
+estimates, params = div_dense.train(data_P, data_Q, params, opt_state)
 
 # print()
 # print('After training')
