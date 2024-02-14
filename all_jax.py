@@ -8,7 +8,8 @@ import numpy as np
 import argparse
 import optax
 from functools import partial
-
+import time
+from jax import jit 
 
 
 class DataLoader:
@@ -105,7 +106,7 @@ class KLD_DV:
         return divergnece_loss
     
 
-    # @jax.jit
+    @partial(jit, static_argnums=(0,))
     def train_step(self, x, y):
 
         def loss_fn(params, x, y):
@@ -139,6 +140,8 @@ class KLD_DV:
 
         return estimates, self.params
 
+
+start = time.perf_counter()
 
 # Read input arguments
 parser = argparse.ArgumentParser(description='Neural-based Estimation of Divergences between Gaussians')
@@ -219,17 +222,20 @@ if optimizer == 'RMS':
 
 opt_state = disc_optimizer.init(params)
 
-print('Before training')
-print(params)
+# print('Before training')
+# print(params)
 
 div_dense = KLD_DV(discriminator, disc_optimizer, epochs, m, params, opt_state)
 estimates, params = div_dense.train(data_P, data_Q)
 
-print()
-print('After training')
-print(params)
+# print()
+# print('After training')
+# print(params)
 
 div_value_true = float(1.0 / 2.0 * (np.log(np.abs(np.linalg.det(Sigma_q) / np.linalg.det(Sigma_p))) + np.matmul(np.transpose(mu_q - mu_p), np.matmul(np.linalg.inv(Sigma_q), mu_q - mu_p)) - d + np.trace(np.matmul(Sigma_p, np.linalg.inv(Sigma_q)))))
 print('KLD (true):\t\t {:.4}'.format(div_value_true))
 print('KLD-DV (estimated):\t {:.4}'.format(estimates[-1]))
 print()
+
+end = time.perf_counter()
+print(end - start)
