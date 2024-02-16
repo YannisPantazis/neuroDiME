@@ -13,13 +13,13 @@ class Divergence:
     Parent class where the common parameters and the common functions are defined.
     '''
     # initialize
-    def __init__(self, discriminator, disc_optimizer, epochs, batch_size, discriminator_penalty=None):
+    def __init__(self, discriminator, disc_optimizer, epochs, batch_size, discriminator_penalty=None, cnn=False):
         self.batch_size = batch_size
         self.epochs = epochs
         self.discriminator = discriminator
         self.disc_optimizer = disc_optimizer
         self.discriminator_penalty = discriminator_penalty
-
+        self.cnn = cnn
 
     def __repr__(self):
         return 'discriminator: {}'.format(self.discriminator)
@@ -27,7 +27,10 @@ class Divergence:
 
     def discriminate(self, x, params): 
         ''' g(x) '''
-        y = self.discriminator.apply(params, x)
+        if self.cnn:
+            y = self.discriminator.apply(params, x, train=True, rngs={'dropout': jax.random.PRNGKey(0)})
+        else:
+            y = self.discriminator.apply(params, x)
         return y
 
 
@@ -81,6 +84,7 @@ class Divergence:
 
             if save_estimates:
                 estimates.append(float(self.estimate(P_batch, Q_batch, params)))
+            # print(f'Epoch: {i}/{self.epochs}')
 
         return estimates, params
     

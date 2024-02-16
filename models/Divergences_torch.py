@@ -65,12 +65,14 @@ class Divergence(nn.Module):
         Q_dataset = torch.utils.data.DataLoader(data_Q, batch_size=self.batch_size, shuffle=True)
 
         estimates = []
-        for _ in range(self.epochs):
+        for i in range(self.epochs):
             for P_batch, Q_batch in zip(P_dataset, Q_dataset):
                 P_batch.to(device)
                 Q_batch.to(device)
                 self.train_step(P_batch, Q_batch)
             
+            print(f'Epoch: {i}/{self.epochs}')
+
             if save_estimates:
                 estimates.append(float(self.estimate(P_batch, Q_batch)))
 

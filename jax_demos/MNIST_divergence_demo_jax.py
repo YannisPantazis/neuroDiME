@@ -1,28 +1,25 @@
+import jax.numpy as jnp
 import numpy as np
-import pandas as pd
-
-import csv
 import os
 import sys
+import csv
 import argparse
-#import json
-import matplotlib.pyplot as plt
-from scipy.stats import norm
-from bisect import bisect_left, bisect_right
-import torchvision.datasets as datasets
-from torch.nn import Sequential, Conv2d, LeakyReLU, Linear, Flatten, Dropout
-from torchsummary import summary
+import optax
 import time
+import torchvision.datasets as datasets
+import flax.linen as nn
+from flax.training import checkpoints
 
+# Add parent directory to sys.path
 current_dir = os.path.dirname(os.path.realpath(__file__))
 parent_dir = os.path.dirname(current_dir)
 sys.path.append(parent_dir)
 
-from models.torch_model import *
-from models.Divergences_torch import *
-from models.GAN_torch import *
+from models.jax_model import *
+from models.Divergences_jax import *
 
-start_time = time.perf_counter()
+start = time.perf_counter()
+
 # read input arguments
 parser = argparse.ArgumentParser(description='Neural-based Estimation of Divergences between MNIST Digit Distributions')
 parser.add_argument('--P_digit', type=int)          
@@ -31,7 +28,7 @@ parser.add_argument('--method', default='KLD-DV', type=str, metavar='method',
                     help='values: IPM, KLD-DV, KLD-LT, squared-Hel-LT, chi-squared-LT, JS-LT, alpha-LT, Renyi-DV, Renyi-CC, rescaled-Renyi-CC, Renyi-CC-WCR')
                         
 parser.add_argument('--sample_size', default=10000, type=int, metavar='N')
-parser.add_argument('--batch_size', default=100, type=int, metavar='m')
+parser.add_argument('--batch_size', default=1000, type=int, metavar='m')
 parser.add_argument('--lr', default=0.001, type=float)
 parser.add_argument('--epochs', default=100, type=int,
                     help='number of total epochs to run')
@@ -72,16 +69,26 @@ print("Use Gradient Penalty: "+str(use_GP))
 optimizer = "Adam" #Adam, RMS
 fl_act_func_CC = 'poly-softplus' # abs, softplus, poly-softplus
 
+class CNN_discriminator(nn.Module):
+    @nn.compact
+    def __call__(self, x, train):
+        x = nn.Conv(features=64, kernel_size=(3,3), strides=(2,2), padding='SAME')(x)
+        x = nn.activation.leaky_relu(x, negative_slope=0.2)
+        x = nn.Dropout(rate=0.4, deterministic=not train)(x)
+        x = nn.Conv(features=64, kernel_size=(3,3), strides=(2,2), padding='SAME')(x)
+        x = nn.Dropout(rate=0.4, deterministic=not train)(x)
+        x = x.reshape((x.shape[0], -1))
+        x = nn.Dense(features=1)(x)
+        return x
+
 
 mnist_trainset = datasets.MNIST(root='./data', train=True, download=True, transform=None)
 
-device = 'cuda' if torch.cuda.is_available() else 'cpu'
-
 #data distribution
-trainX = mnist_trainset.train_data
-trainy = mnist_trainset.train_labels
+trainX = mnist_trainset.train_data.numpy()
+trainy = mnist_trainset.train_labels.numpy()
 
-X = np.expand_dims(trainX, axis=1)
+X = np.expand_dims(trainX, axis=-1)
 # convert from unsigned ints to floats
 X = X.astype('float32')
 # scale from [0,255] to [0,1]
@@ -89,7 +96,6 @@ X = X / 255.0
 
 P_digits=X[trainy==P_digit].astype('f')
 Q_digits=X[trainy==Q_digit].astype('f')
-
 
 P_idx = np.random.randint(0,len(P_digits),size=N)
 Q_idx = np.random.randint(0,len(Q_digits),size=N)
@@ -103,44 +109,31 @@ print('Q-Data Shape')
 print(data_Q.shape)
 
 #Saved models folder    
-saved_name = f'MNIST_{mthd}_saved_models'
+saved_name ='MNIST_saved_models'
 if not os.path.exists(saved_name):
 	os.makedirs(saved_name)
-        
+
 model_file = f'{saved_name}/{mthd}_{P_digit}_{Q_digit}_{N}_{m}_{lr}_{epochs}_{alpha}_{L}_{gp_weight}_{use_GP}_{run_num}.pth'
 
-if os.path.exists(model_file):
-    # load the model
-    # discriminator = pickle.load(open(model_file, 'rb'))
-    print()
-    print('Loading Model...')
-    print()
-    discriminator = torch.load(model_file)
-else:
-    # construct the discriminator neural network
-    discriminator = nn.Sequential(
-                    nn.Conv2d(in_channels=1, out_channels=64, kernel_size=(3,3), stride=(2, 2), padding=1),
-                    nn.LeakyReLU(negative_slope=0.2),
-                    nn.Dropout(p=0.4),
-                    nn.Conv2d(in_channels=64, out_channels=64, kernel_size=(3,3), stride=(2, 2), padding=1),
-                    nn.LeakyReLU(negative_slope=0.2),
-                    nn.Dropout(p=0.4),
-                    nn.Flatten(),
-                    nn.Linear(in_features=3136, out_features=1)
-                    )
 
-print()
-print('Discriminator Summary:')
-summary(discriminator, (1, 28, 28), device="cpu")
+discriminator = CNN_discriminator()
 
-discriminator.to(device)
+x = jnp.ones((1, 28, 28, 1))
+test = nn.tabulate(discriminator, jax.random.key(0))
+print(test(x, train=False))
+
+# Initialize the model's parameters with a dummy input
+rng = jax.random.PRNGKey(0)
+params = discriminator.init(rng, x, train=False)
+print(jax.tree_map(lambda x: x.shape, params)) # Check the parameters
+optimizer = "RMS"  # Adam, RMS
 
 #construct optimizers
 if optimizer == 'Adam':
-    disc_optimizer = torch.optim.Adam(discriminator.parameters(), lr=lr)
+    disc_optimizer = optax.adam(lr)
 
 if optimizer == 'RMS':
-    disc_optimizer = torch.optim.RMSprop(discriminator.parameters(), lr=lr)
+    disc_optimizer = optax.rmsprop(lr)
 
 
 # construct gradient penalty
@@ -149,63 +142,77 @@ if use_GP:
 else:
     discriminator_penalty=None
 
+# if os.path.exists(model_file):
+#     # load the model
+#     # discriminator = pickle.load(open(model_file, 'rb'))
+#     print()
+#     print('Loading Model...')
+#     print()
+#     discriminator = checkpoints.restore_checkpoint(ckpt_dir='my_checkpoints/',
+#                                                    target=params,
+#                                                    prefix='my_model')
+
 
 # construct divergence
 if mthd=="IPM":
-    divergence_CNN = IPM(discriminator, disc_optimizer, epochs, m, discriminator_penalty)
+    divergence_CNN = IPM(discriminator, disc_optimizer, epochs, m, discriminator_penalty, cnn=True)
 
 if mthd=="KLD-LT":
-    divergence_CNN = KLD_LT(discriminator, disc_optimizer, epochs, m, discriminator_penalty)
+    divergence_CNN = KLD_LT(discriminator, disc_optimizer, epochs, m, discriminator_penalty, cnn=True)
     
 if mthd=="KLD-DV":
-    divergence_CNN = KLD_DV(discriminator, disc_optimizer, epochs, m, discriminator_penalty)
+    divergence_CNN = KLD_DV(discriminator, disc_optimizer, epochs, m, discriminator_penalty, cnn=True)
 
 if mthd=="squared-Hel-LT":
-    divergence_CNN = squared_Hellinger_LT(discriminator, disc_optimizer, epochs, m, discriminator_penalty)
+    divergence_CNN = squared_Hellinger_LT(discriminator, disc_optimizer, epochs, m, discriminator_penalty, cnn=True)
 
 if mthd=="chi-squared-LT":
-    divergence_CNN = Pearson_chi_squared_LT(discriminator, disc_optimizer, epochs, m, discriminator_penalty)
+    divergence_CNN = Pearson_chi_squared_LT(discriminator, disc_optimizer, epochs, m, discriminator_penalty, cnn=True)
 
 if mthd=="chi-squared-HCR":
-    divergence_CNN = Pearson_chi_squared_HCR(discriminator, disc_optimizer, epochs, m, discriminator_penalty)
+    divergence_CNN = Pearson_chi_squared_HCR(discriminator, disc_optimizer, epochs, m, discriminator_penalty, cnn=True)
 
 if mthd=="JS-LT":
-    divergence_CNN = Jensen_Shannon_LT(discriminator, disc_optimizer, epochs, m, discriminator_penalty)    
+    divergence_CNN = Jensen_Shannon_LT(discriminator, disc_optimizer, epochs, m, discriminator_penalty, cnn=True)    
 
 if mthd=="alpha-LT":
-    divergence_CNN = alpha_Divergence_LT(discriminator, disc_optimizer, alpha, epochs, m, discriminator_penalty)
+    divergence_CNN = alpha_Divergence_LT(discriminator, disc_optimizer, alpha, epochs, m, discriminator_penalty, cnn=True)
 
 if mthd=="Renyi-DV":
-    divergence_CNN = Renyi_Divergence_DV(discriminator, disc_optimizer, alpha, epochs, m, discriminator_penalty)
+    divergence_CNN = Renyi_Divergence_DV(discriminator, disc_optimizer, alpha, epochs, m, discriminator_penalty, cnn=True)
     
 if mthd=="Renyi-CC":
-    divergence_CNN = Renyi_Divergence_CC(discriminator, disc_optimizer, alpha, epochs, m, fl_act_func_CC, discriminator_penalty)
+    divergence_CNN = Renyi_Divergence_CC(discriminator, disc_optimizer, alpha, epochs, m, fl_act_func_CC, discriminator_penalty, cnn=True)
 
 if mthd=="rescaled-Renyi-CC":
-    divergence_CNN = Renyi_Divergence_CC_rescaled(discriminator, disc_optimizer, alpha, epochs, m, fl_act_func_CC, discriminator_penalty)
+    divergence_CNN = Renyi_Divergence_CC_rescaled(discriminator, disc_optimizer, alpha, epochs, m, fl_act_func_CC, discriminator_penalty, cnn=True)
 
 if mthd=="Renyi-WCR":
-    divergence_CNN = Renyi_Divergence_WCR(discriminator, disc_optimizer, epochs, m, fl_act_func_CC, discriminator_penalty)
+    divergence_CNN = Renyi_Divergence_WCR(discriminator, disc_optimizer, epochs, m, fl_act_func_CC, discriminator_penalty, cnn=True)
 
 
 if not os.path.exists(model_file):
     #train Discriminator
     print('Training the model...')
-    divergence_estimates=divergence_CNN.train(data_P, data_Q, device)
+    opt_state = disc_optimizer.init(params)
+    divergence_estimates, params = divergence_CNN.train(data_P, data_Q, params, opt_state)
     print()
     print("Training Complete")
 
-    # save the model
-    print('Saving Model...')
-    torch.save(discriminator, model_file)
-
+    # Save the model
+    # print('Saving Model...')
+    # checkpoints.save_checkpoint(ckpt_dir='my_checkpoints/',
+    #                             target=params,
+    #                             step=100,
+    #                             prefix='my_model',
+    #                             overwrite=True)
 
 #Save results    
 test_name = f'MNIST_{mthd}_divergence_demo'
 if not os.path.exists(test_name):
 	os.makedirs(test_name)
 	
-estimate = divergence_CNN.estimate(data_P, data_Q).cpu().detach().numpy()
+estimate = divergence_CNN.estimate(data_P, data_Q, params)
 print(f'{mthd} estimate between digits {P_digit} and {Q_digit}: {estimate}')
 
 
@@ -214,4 +221,4 @@ with open(test_name+'/'+mthd+'_div_estimate_P_digit_' +str(P_digit)+'_Q_digit_' 
     writer.writerow([estimate])
 
 
-print(f'--- {time.perf_counter() - start_time} seconds ---')
+print(f'--- {time.perf_counter() - start} seconds ---')

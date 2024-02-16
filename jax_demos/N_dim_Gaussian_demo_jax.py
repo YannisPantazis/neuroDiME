@@ -97,6 +97,7 @@ if optimizer == 'Adam':
 if optimizer == 'RMS':
     disc_optimizer = optax.rmsprop(lr)
 
+
 opt_state = disc_optimizer.init(params)
 
 # opt_state = disc_optimizer.init(params)
