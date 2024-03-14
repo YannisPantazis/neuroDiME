@@ -103,7 +103,7 @@ class Divergence(tf.keras.Model):
 
 class IPM(Divergence):
     '''
-    IPM class
+    Integral Probability Metric (IPM) class ++ REFERENCE
     '''
     def eval_var_formula(self, x, y):
         ''' Evaluation of variational formula of IPM. '''
