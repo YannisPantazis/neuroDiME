@@ -4,7 +4,7 @@ import os
 import sys
 import csv
 import argparse
-import optax
+from optax import rmsprop, adam
 import time
 import torchvision.datasets as datasets
 import flax.linen as nn
@@ -30,7 +30,7 @@ parser.add_argument('--method', default='KLD-DV', type=str, metavar='method',
 parser.add_argument('--sample_size', default=10000, type=int, metavar='N')
 parser.add_argument('--batch_size', default=1000, type=int, metavar='m')
 parser.add_argument('--lr', default=0.001, type=float)
-parser.add_argument('--epochs', default=100, type=int,
+parser.add_argument('--epochs', default=10, type=int,
                     help='number of total epochs to run')
 parser.add_argument('--alpha', default=2.0, type=float, metavar='alpha')
 parser.add_argument('--Lip_constant', default=1.0, type=float, metavar='Lipschitz constant')
@@ -130,10 +130,10 @@ optimizer = "RMS"  # Adam, RMS
 
 #construct optimizers
 if optimizer == 'Adam':
-    disc_optimizer = optax.adam(lr)
+    disc_optimizer = adam(lr)
 
 if optimizer == 'RMS':
-    disc_optimizer = optax.rmsprop(lr)
+    disc_optimizer = rmsprop(lr)
 
 
 # construct gradient penalty
@@ -191,13 +191,8 @@ if mthd=="Renyi-WCR":
     divergence_CNN = Renyi_Divergence_WCR(discriminator, disc_optimizer, epochs, m, fl_act_func_CC, discriminator_penalty, cnn=True)
 
 
-if not os.path.exists(model_file):
-    #train Discriminator
-    print('Training the model...')
-    opt_state = disc_optimizer.init(params)
-    divergence_estimates, params = divergence_CNN.train(data_P, data_Q, params, opt_state)
-    print()
-    print("Training Complete")
+opt_state = disc_optimizer.init(params)
+divergence_estimates, params, opt_state = divergence_CNN.train(data_P, data_Q, params, opt_state)
 
     # Save the model
     # print('Saving Model...')

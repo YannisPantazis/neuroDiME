@@ -3,7 +3,7 @@ import jax.numpy as jnp
 import time
 import math
 from flax.training import train_state
-import optax
+from optax import apply_updates
 from functools import partial
 from jax import jit
 
@@ -28,7 +28,7 @@ class Divergence:
     def discriminate(self, x, params): 
         ''' g(x) '''
         if self.cnn:
-            y = self.discriminator.apply(params, x, train=True, rngs={'dropout': jax.random.PRNGKey(0)})
+            y = self.discriminator.apply(params, x, train=False, rngs={'dropout': jax.random.PRNGKey(0)})
         else:
             y = self.discriminator.apply(params, x)
         return y
@@ -65,7 +65,7 @@ class Divergence:
         
         grads = jax.grad(loss_fn, allow_int=True)(params, x, y)
         updates, opt_state = self.disc_optimizer.update(grads, opt_state)
-        params = optax.apply_updates(params, updates)
+        params = apply_updates(params, updates)
 
         return opt_state, params
 
@@ -84,9 +84,10 @@ class Divergence:
 
             if save_estimates:
                 estimates.append(float(self.estimate(P_batch, Q_batch, params)))
-            # print(f'Epoch: {i}/{self.epochs}')
+            
+            print(f'Epoch: {i+1}/{self.epochs}')
 
-        return estimates, params
+        return estimates, params, opt_state
     
 
     def get_discriminator(self):

@@ -28,7 +28,7 @@ Divergence
 
 REQUIREMENTS
 ------------
-All the requirements are in the conda_requirements and pip_requirements txt files.
+All the requirements are in the requirements txt file.
 To create a new enviornment with the specific requirements just run the commands: 
 $ conda create --name <env> python=3.10.4
 $ pip install -r requirements.txt
@@ -40,7 +40,7 @@ pip install pandas==1.4.2
 pip install argparse==1.1
 pip install protobuf==3.20.3
 pip install matplotlib==3.7.1
-pip install scipy==1.10.1
+pip install scipy
 pip install torchsummary
 
 pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121 (if cuda is available)

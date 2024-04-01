@@ -191,6 +191,7 @@ if mthd=="Renyi-WCR":
 if not os.path.exists(model_file):
     #train Discriminator
     print('Training the model...')
+    print(device)
     divergence_estimates=divergence_CNN.train(data_P, data_Q, device)
     print()
     print("Training Complete")
