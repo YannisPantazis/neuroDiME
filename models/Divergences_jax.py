@@ -6,6 +6,7 @@ from flax.training import train_state
 from optax import apply_updates
 from functools import partial
 from jax import jit
+from tqdm import tqdm
 
 class Divergence:
     '''
@@ -53,8 +54,8 @@ class Divergence:
 
     @partial(jit, static_argnums=(0,))
     def train_step(self, x, y, params, opt_state):
-
         ''' discriminator's parameters update '''
+        
         def loss_fn(params, x, y):
             loss = -self.discriminator_loss(x, y, params) # with minus because we maximize the discrimination loss
 
@@ -78,14 +79,14 @@ class Divergence:
 
         estimates=[]
         
-        for i in range(self.epochs):
+        for i in tqdm(range(self.epochs), desc='Epochs'):
             for P_batch, Q_batch in zip(P_dataset, Q_dataset):
                 opt_state, params = self.train_step(P_batch, Q_batch, params, opt_state)
 
             if save_estimates:
                 estimates.append(float(self.estimate(P_batch, Q_batch, params)))
             
-            print(f'Epoch: {i+1}/{self.epochs}')
+            # print(f'Epoch: {i+1}/{self.epochs}')
 
         return estimates, params, opt_state
     

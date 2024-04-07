@@ -30,7 +30,7 @@ parser.add_argument('--method', default='KLD-DV', type=str, metavar='method',
 parser.add_argument('--sample_size', default=10000, type=int, metavar='N')
 parser.add_argument('--batch_size', default=1000, type=int, metavar='m')
 parser.add_argument('--lr', default=0.001, type=float)
-parser.add_argument('--epochs', default=10, type=int,
+parser.add_argument('--epochs', default=100, type=int,
                     help='number of total epochs to run')
 parser.add_argument('--alpha', default=2.0, type=float, metavar='alpha')
 parser.add_argument('--Lip_constant', default=1.0, type=float, metavar='Lipschitz constant')

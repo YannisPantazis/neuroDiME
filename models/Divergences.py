@@ -1,7 +1,7 @@
 import tensorflow as tf
 import math
 import time
-
+from tqdm import tqdm
 
 
 class Divergence(tf.keras.Model):
@@ -63,7 +63,7 @@ class Divergence(tf.keras.Model):
         Q_dataset=Q_dataset.batch(self.batch_size)
 
         estimates=[]
-        for epoch in range(self.epochs):
+        for epoch in tqdm(range(self.epochs)):
             start = time.time()
 
             for P_batch, Q_batch in zip(P_dataset, Q_dataset):

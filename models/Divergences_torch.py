@@ -3,8 +3,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
 from torch.autograd import grad as torch_grad
-
-
+from tqdm import tqdm
 
 class Divergence(nn.Module):
     '''
@@ -65,13 +64,13 @@ class Divergence(nn.Module):
         Q_dataset = torch.utils.data.DataLoader(data_Q, batch_size=self.batch_size, shuffle=True)
 
         estimates = []
-        for i in range(self.epochs):
+        for i in tqdm(range(self.epochs), desc='Epochs'):
             for P_batch, Q_batch in zip(P_dataset, Q_dataset):
                 P_batch.to(device)
                 Q_batch.to(device)
                 self.train_step(P_batch, Q_batch)
             
-            print(f'Epoch: {i}/{self.epochs}')
+            # print(f'Epoch: {i}/{self.epochs}')
 
             if save_estimates:
                 estimates.append(float(self.estimate(P_batch, Q_batch)))

@@ -23,6 +23,9 @@ from models.tf_model import *
 from models.Divergences import *
 from models.GAN import *
 
+start = time.perf_counter()
+
+
 # read input arguments
 parser = argparse.ArgumentParser(description='Neural-based Estimation of Divergences between MNIST Digit Distributions')
 parser.add_argument('--P_digit', type=int)          
@@ -211,3 +214,4 @@ with open(test_name+'/'+mthd+'_div_estimate_P_digit_' +str(P_digit)+'_Q_digit_' 
 
 
 
+print(f'--- {time.perf_counter() - start} seconds ---')

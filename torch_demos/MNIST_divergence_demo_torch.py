@@ -109,16 +109,16 @@ if not os.path.exists(saved_name):
         
 model_file = f'{saved_name}/{mthd}_{P_digit}_{Q_digit}_{N}_{m}_{lr}_{epochs}_{alpha}_{L}_{gp_weight}_{use_GP}_{run_num}.pth'
 
-if os.path.exists(model_file):
-    # load the model
-    # discriminator = pickle.load(open(model_file, 'rb'))
-    print()
-    print('Loading Model...')
-    print()
-    discriminator = torch.load(model_file)
-else:
+# if os.path.exists(model_file):
+#     # load the model
+#     # discriminator = pickle.load(open(model_file, 'rb'))
+#     print()
+#     print('Loading Model...')
+#     print()
+#     discriminator = torch.load(model_file)
+# else:
     # construct the discriminator neural network
-    discriminator = nn.Sequential(
+discriminator = nn.Sequential(
                     nn.Conv2d(in_channels=1, out_channels=64, kernel_size=(3,3), stride=(2, 2), padding=1),
                     nn.LeakyReLU(negative_slope=0.2),
                     nn.Dropout(p=0.4),
@@ -188,17 +188,17 @@ if mthd=="Renyi-WCR":
     divergence_CNN = Renyi_Divergence_WCR(discriminator, disc_optimizer, epochs, m, fl_act_func_CC, discriminator_penalty)
 
 
-if not os.path.exists(model_file):
-    #train Discriminator
-    print('Training the model...')
-    print(device)
-    divergence_estimates=divergence_CNN.train(data_P, data_Q, device)
-    print()
-    print("Training Complete")
+# if not os.path.exists(model_file):
+#     #train Discriminator
+#     print('Training the model...')
+#     print(device)
+#     divergence_estimates=divergence_CNN.train(data_P, data_Q, device)
+#     print()
+#     print("Training Complete")
 
-    # save the model
-    print('Saving Model...')
-    torch.save(discriminator, model_file)
+#     # save the model
+#     print('Saving Model...')
+#     torch.save(discriminator, model_file)
 
 
 #Save results    

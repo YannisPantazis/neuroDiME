@@ -23,6 +23,7 @@ from models.Divergences_torch import *
 from models.GAN_torch import *
 
 start_time = time.time()
+
 # read input arguments
 parser = argparse.ArgumentParser(description='Neural-based Estimation of Divergences between MNIST Digit Distributions')
 parser.add_argument('--method', default='KLD-DV', type=str, metavar='method',
@@ -72,6 +73,7 @@ fl_act_func_CC = 'poly-softplus' # abs, softplus, poly-softplus
 mnist_trainset = datasets.MNIST(root='./data', train=True, download=True, transform=None)
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
+print(device)
 
 #data distribution
 trainX = mnist_trainset.train_data
@@ -192,12 +194,11 @@ for P_digit in P_digit_arr:
             print("Training Complete")
 
             # save the model
-            print('Saving Model...')
-            torch.save(discriminator, model_file)
+            # print('Saving Model...')
+            # torch.save(discriminator, model_file)
 
 
-	
-        estimate = divergence_CNN.estimate(data_P, data_Q).detach().numpy()
+        estimate = divergence_CNN.estimate(data_P, data_Q).detach().cpu().numpy()
         print(f'{mthd} estimate between digits {P_digit} and {Q_digit}: {estimate}')
 
 
@@ -206,4 +207,4 @@ for P_digit in P_digit_arr:
             writer.writerow([estimate])
 
 
-# print(f'--- {time.time() - start_time} seconds ---')
+print(f'--- {time.time() - start_time} seconds ---')
