@@ -21,7 +21,7 @@ from models.torch_model import *
 from models.Divergences_torch import *
 from models.GAN_torch import *
 
-start_time = time.time()
+start = time.perf_counter()
 
 # read input arguments
 parser = argparse.ArgumentParser(description='Neural-based Estimation of Divergences between MNIST Digit Distributions')
@@ -187,11 +187,7 @@ for P_digit in P_digit_arr:
 
         # if not os.path.exists(model_file)
         #train Discriminator
-        print('Training the model...')
         divergence_estimates=divergence_CNN.train(data_P, data_Q, device)
-        print()
-        print("Training Complete")
-
             # save the model
             # print('Saving Model...')
             # torch.save(discriminator, model_file)
@@ -206,4 +202,4 @@ for P_digit in P_digit_arr:
             writer.writerow([estimate])
 
 
-print(f'--- {time.time() - start_time} seconds ---')
+print(f'--- {time.perf_counter() - start} seconds ---')

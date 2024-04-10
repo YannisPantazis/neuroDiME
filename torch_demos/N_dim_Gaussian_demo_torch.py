@@ -261,4 +261,4 @@ with open(test_name+'/true_'+mthd+'_dim_'+str(d)+'_delta_mu_{:.2f}'.format(delta
 
 end = time.perf_counter()
 
-print(end - start)
+print(f'--- {start - end} seconds ---')

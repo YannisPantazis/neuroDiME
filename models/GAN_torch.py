@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-
+from tqdm import tqdm
 
 class GAN():
     '''
@@ -26,7 +26,7 @@ class GAN():
         
     def estimate_loss(self, x, z):
         ''' Estimating the loss '''
-        z = torch.from_numpy(z).float()
+        # z = torch.from_numpy(z).float()
         if self.reverse_order:
             data1 = self.generator(z)
             data2 = x
@@ -42,7 +42,7 @@ class GAN():
         # x.requires_grad_(True)
         # z.requires_grad_(True)
 
-        z = torch.from_numpy(z).float()
+        # z = torch.from_numpy(z).float()
         if self.reverse_order:
             data1 = self.generator(z)
             data2 = x
@@ -59,7 +59,7 @@ class GAN():
 
     def disc_train_step(self, x, z):
         ''' discriminator's parameters update '''
-        z = torch.from_numpy(z).float()
+        # z = torch.from_numpy(z).float()
         if self.reverse_order:
             data1 = self.generator(z)
             data2 = x
@@ -69,17 +69,18 @@ class GAN():
         
         self.divergence.train_step(data1, data2)
 
-    def train(self, data_P, save_frequency=None, num_gen_samples_to_save=None, save_loss_estimates=False):
+    def train(self, data_P, save_frequency=None, num_gen_samples_to_save=None, save_loss_estimates=False, device = 'cuda' if torch.cuda.is_available() else 'cpu'):
         ''' training function of our GAN '''
         # dataset slicing into minibatches
         P_dataset = torch.utils.data.DataLoader(data_P, batch_size=self.batch_size, shuffle=True)
 
         generator_samples = []
         loss_estimates = []
-        for epoch in range(self.epochs):
-            print(epoch)
+        for epoch in tqdm(range(self.epochs), desc='Epochs'):
             for P_batch in P_dataset:
-                Z_batch = self.noise_source(self.batch_size)
+                Z_batch = torch.from_numpy(self.noise_source(self.batch_size)).float()
+                P_batch = P_batch.to(device)
+                Z_batch = Z_batch.to(device)
                 
                 for disc_step in range(self.disc_steps_per_gen_step):
                     self.disc_train_step(P_batch, Z_batch)
@@ -95,7 +96,9 @@ class GAN():
 
         return generator_samples, loss_estimates
     
-    def generate_samples(self, N_samples):
-        generator_samples = self.generator(torch.from_numpy(self.noise_source(N_samples)).float())
-        return generator_samples.detach().numpy()
+    def generate_samples(self, N_samples, device = 'cuda' if torch.cuda.is_available() else 'cpu'):
+        samples = torch.from_numpy(self.noise_source(N_samples)).float()
+        samples = samples.to(device)
+        generator_samples = self.generator(samples)
+        return generator_samples.cpu().detach().numpy()
     

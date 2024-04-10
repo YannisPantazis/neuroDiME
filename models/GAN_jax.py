@@ -30,93 +30,94 @@ class GAN():
         else:
             self.batch_size = batch_size
             
-    def estimate_loss(self, x, z, params):
+    def estimate_loss(self, x, z, gen_params):
         ''' Estimating the loss '''
         z = jnp.array(z)
         if self.cnn:
             if self.reverse_order:
-                data1 = self.generator.apply(params, z, train=False, rngs={'dropout': jax.random.PRNGKey(0)})
+                data1 = self.generator.apply(gen_params, z, train=False, rngs={'dropout': jax.random.PRNGKey(0)})
                 data2 = x
             else:
                 data1 = x
-                data2 = self.generator.apply(params, z, train=False, rngs={'dropout': jax.random.PRNGKey(0)})
+                data2 = self.generator.apply(gen_params, z, train=False, rngs={'dropout': jax.random.PRNGKey(0)})
         else:
             if self.reverse_order:
-                data1 = self.generator.apply(params, z)
+                data1 = self.generator.apply(gen_params, z)
                 data2 = x
             else:
                 data1 = x
-                data2 = self.generator.apply(params, z)
+                data2 = self.generator.apply(gen_params, z)
             
         return self.divergence.estimate(data1, data2)
     
     @partial(jax.jit, static_argnums=(0,))
-    def gen_train_step(self, x, z, params, gen_opt_state):
+    def gen_train_step(self, x, z, gen_params, gen_opt_state):
         ''' generator's parameters update '''
         
         z = jnp.array(z)
         if self.reverse_order:
-            data1 = self.generator.apply(params, z, train=False, rngs={'dropout': jax.random.PRNGKey(0)})
+            data1 = self.generator.apply(gen_params, z, train=False, rngs={'dropout': jax.random.PRNGKey(0)})
             data2 = x
         else:
             data1 = x
-            data2 = self.generator.apply(params, z, train=False, rngs={'dropout': jax.random.PRNGKey(0)})
+            data2 = self.generator.apply(gen_params, z, train=False, rngs={'dropout': jax.random.PRNGKey(0)})
         
-        def loss_fn(params, data1, data2):
-            loss = self.divergence.discriminator_loss(data1, data2, params)
+        def loss_fn(gen_params, data1, data2):
+            loss = self.divergence.discriminator_loss(data1, data2, gen_params)
 
             if self.discriminator_penalty is not None:
-                loss -= self.discriminator_penalty.evaluate(self.discriminator, data1, data2, params)
+                loss -= self.discriminator_penalty.evaluate(self.discriminator, data1, data2, gen_params)
                 
             return loss        
         
-        grads = jax.grad(loss_fn, allow_int=True)(params, data1, data2)
-        updates, opt_state = self.gen_optimizer.update(grads, gen_opt_state)
-        params = apply_updates(params, updates)
+        grads = jax.grad(loss_fn, allow_int=True)(gen_params, data1, data2)
+        updates, gen_opt_state = self.gen_optimizer.update(grads, gen_opt_state)
+        gen_params = apply_updates(gen_params, updates)
         
-        return params, opt_state
+        return gen_opt_state, gen_params
     
     @partial(jax.jit, static_argnums=(0,))
-    def disc_train_step(self, x, z, params):
+    def disc_train_step(self, x, z, disc_params, disc_opt_state):
         ''' discriminator's parameters update '''
         
         z = jnp.array(z)
         if self.reverse_order:
-            data1 = self.generator.apply(params, z, train=False, rngs={'dropout': jax.random.PRNGKey(0)})
+            data1 = self.generator.apply(disc_params, z, train=False, rngs={'dropout': jax.random.PRNGKey(0)})
             data2 = x
         else:
             data1 = x
-            data2 = self.generator.apply(params, z, train=False, rngs={'dropout': jax.random.PRNGKey(0)})
+            data2 = self.generator.apply(disc_params, z, train=False, rngs={'dropout': jax.random.PRNGKey(0)})
         
-        self.divergence.train_step(data1, data2, params)
+        disc_params, disc_opt_state = self.divergence.train_step(data1, data2, disc_params, disc_opt_state)
+        return disc_opt_state, disc_params
         
-    def train(self, data_P, save_frequency=None,  num_gen_samples_to_save=None, save_loss_estimates=False):
+    def train(self, data_P, disc_params, gen_params, disc_opt_state, gen_opt_state, save_frequency=None,  num_gen_samples_to_save=None, save_loss_estimates=False):
         ''' training function of our GAN '''
         # dataset slicing into minibatches
         P_dataset = DataLoader(data_P, batch_size=self.batch_size, shuffle=True)
         
         generator_samples = []
         loss_estimates = []
-        for epoch in tqdm(range(self.epochs)):
+        for epoch in tqdm(range(self.epochs), desc='Epochs'):
             for P_batch in P_dataset:
                 Z_batch = self.noise_source(self.batch_size)
                 
                 for _ in range(self.disc_steps_per_gen_step):
-                    self.disc_train_step(P_batch, Z_batch)
+                    disc_opt_state, disc_params = self.disc_train_step(P_batch, Z_batch, disc_params, disc_opt_state)
                     
-                self.gen_train_step(P_batch, Z_batch)
+                gen_opt_state, gen_params = self.gen_train_step(P_batch, Z_batch, gen_params, gen_opt_state)
                 
                 if save_frequency is not None and (epoch+1) % save_frequency == 0:
                     if save_loss_estimates:
-                        loss_estimates.append(float(self.estimate_loss(P_batch, Z_batch)))
+                        loss_estimates.append(float(self.estimate_loss(P_batch, Z_batch), gen_params))
                     
                     if num_gen_samples_to_save is not None:
-                        generator_samples.append(self.generate_samples(num_gen_samples_to_save))
+                        generator_samples.append(self.generate_samples(num_gen_samples_to_save), gen_params)
         
-        return generator_samples, loss_estimates
+        return generator_samples, loss_estimates, disc_params, gen_params, disc_opt_state, gen_opt_state
 
-    def generate_samples(self, num_samples):
-        generator_samples = self.generator(float(self.noise_source(num_samples)))
+    def generate_samples(self, num_samples, gen_params):
+        generator_samples = self.generator.apply(gen_params, float(self.noise_source(num_samples)))
         return generator_samples
     
 

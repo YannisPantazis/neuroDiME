@@ -66,12 +66,10 @@ class Divergence(nn.Module):
         estimates = []
         for i in tqdm(range(self.epochs), desc='Epochs'):
             for P_batch, Q_batch in zip(P_dataset, Q_dataset):
-                P_batch.to(device)
-                Q_batch.to(device)
+                P_batch = P_batch.to(device)
+                Q_batch = Q_batch.to(device)
                 self.train_step(P_batch, Q_batch)
             
-            # print(f'Epoch: {i}/{self.epochs}')
-
             if save_estimates:
                 estimates.append(float(self.estimate(P_batch, Q_batch)))
 

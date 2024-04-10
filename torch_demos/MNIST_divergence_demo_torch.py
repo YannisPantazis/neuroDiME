@@ -188,17 +188,12 @@ if mthd=="Renyi-WCR":
     divergence_CNN = Renyi_Divergence_WCR(discriminator, disc_optimizer, epochs, m, fl_act_func_CC, discriminator_penalty)
 
 
-# if not os.path.exists(model_file):
-#     #train Discriminator
-#     print('Training the model...')
-#     print(device)
-#     divergence_estimates=divergence_CNN.train(data_P, data_Q, device)
-#     print()
-#     print("Training Complete")
-
-#     # save the model
-#     print('Saving Model...')
-#     torch.save(discriminator, model_file)
+#train Discriminator
+print('Training the model...')
+print(device)
+divergence_estimates=divergence_CNN.train(data_P, data_Q, device)
+print()
+print("Training Complete")
 
 
 #Save results    

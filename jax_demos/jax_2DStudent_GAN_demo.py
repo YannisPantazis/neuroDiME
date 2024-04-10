@@ -1,24 +1,23 @@
+import jax.numpy as jnp
 import numpy as np
-import pandas as pd
-import torch
-import torch.nn as nn
-import csv
 import os
 import sys
+import csv
 import argparse
-#import json
+from optax import rmsprop, adam
 import time
-import matplotlib.pyplot as plt
-from scipy.stats import norm
-from bisect import bisect_left, bisect_right
+import torchvision.datasets as datasets
+import flax.linen as nn
+from flax.training import checkpoints
 
+# Add parent directory to sys.path
 current_dir = os.path.dirname(os.path.realpath(__file__))
 parent_dir = os.path.dirname(current_dir)
 sys.path.append(parent_dir)
 
-from models.torch_model import *
-from models.Divergences_torch import *
-from models.GAN_torch import *
+from models.jax_model import *
+from models.Divergences_jax import *
+from models.GAN_jax import *
 
 start = time.perf_counter()
 
@@ -123,45 +122,56 @@ def sample_P(N_samp):
 data_P = sample_P(N)
 data_P = data_P.astype('f')
 
-device = 'cuda' if torch.cuda.is_available() else 'cpu'
-print(device)
-
 # construct the discriminator neural network
 act_func = 'relu'
 
 D_hidden_layers=[64,32,16] #sizes of hidden layers for the discriminator
 
 discriminator = Discriminator(input_dim=X_dim, batch_size=m, spec_norm=spec_norm, bounded=bounded, layers_list=D_hidden_layers)
-discriminator.to(device)
 
 #construct the generator neural network
 G_hidden_layers=[64,32,16] #sizes of hidden layers for the generator
 Z_dim=10 #dimension of the noise source for the generator
 
 generator = Generator(X_dim=X_dim, Z_dim=Z_dim, batch_size=m, spec_norm=spec_norm, layers_list=G_hidden_layers)
-generator.to(device)
 
 #Function for sampling from the noise source
 def noise_source(N_samp):
     return np.random.normal(0., 1.0, size=[N_samp, Z_dim])
 
-#construct optimizers
+x = jnp.ones((m, d))
+rng = jax.random.PRNGKey(0)
+
+# Initialize the discriminator's parameters with a dummy input
+disc_params = discriminator.init(rng, x)
+print(jax.tree_map(lambda x: x.shape, disc_params)) # Check the parameters
+test = nn.tabulate(discriminator, jax.random.key(0))
+print(test(x))
+
+# Initialize the generator's parameters with a dummy input
+gen_params = generator.init(rng, x)
+print(jax.tree_map(lambda x: x.shape, gen_params)) # Check the parameters
+test = nn.tabulate(generator, jax.random.key(0))
+print(test(x))
+
+# Construct optimizers
 if optimizer == 'Adam':
-    disc_optimizer = torch.optim.Adam(discriminator.parameters(), lr=lr)
-    gen_optimizer = torch.optim.Adam(generator.parameters(), lr=lr)
-
+    disc_optimizer = adam(lr)
+    gen_optimizer = adam(lr)
+    
 if optimizer == 'RMS':
-    disc_optimizer = torch.optim.RMSprop(discriminator.parameters(), lr=lr)
-    gen_optimizer = torch.optim.RMSprop(generator.parameters(), lr=lr)
+    disc_optimizer = rmsprop(lr)
+    gen_optimizer = rmsprop(lr)
 
+disc_opt_state = disc_optimizer.init(disc_params)
+gen_opt_state = gen_optimizer.init(gen_params)
 
-# construct gradient penalty
+# Construct gradient penalty
 if use_GP:
-    discriminator_penalty=Gradient_Penalty_1Sided(gp_weight, L)
+    discriminator_penalty = Gradient_Penalty_1Sided(gp_weight, L)
 else:
-    discriminator_penalty=None
-
-
+    discriminator_penalty = None
+    
 # construct divergence
 if mthd=="IPM":
     div_dense = IPM(discriminator, disc_optimizer, epochs, m, discriminator_penalty)
@@ -200,11 +210,9 @@ if mthd=="Renyi-WCR":
     div_dense = Renyi_Divergence_WCR(discriminator, disc_optimizer, epochs, m, fl_act_func_CC, discriminator_penalty)
 
 
-#train GAN
+# train GAN
 GAN_dense = GAN(div_dense, generator, gen_optimizer, noise_source, epochs, disc_steps_per_gen_step, m, reverse_order)
-generator_samples, loss_array = GAN_dense.train(data_P, save_frequency, num_gen_samples_to_save, save_loss_estimates=True)
-
-
+generator_samples, loss_array, disc_params, gen_params, disc_opt_state, gen_opt_state = div_dense.train(data_P, disc_params, gen_params, disc_opt_state, gen_opt_state)
 
 #Save results    
 test_name='2Dstudent_submanifold_GAN_demo'
@@ -224,3 +232,6 @@ for j in range(len(generator_samples)):
             writer.writerow(sample) 
 
 print(f'--- {time.perf_counter() - start} seconds ---')
+
+
+

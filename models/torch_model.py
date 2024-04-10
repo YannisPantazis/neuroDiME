@@ -22,7 +22,7 @@ class BoundedActivation(Module):
 class Discriminator(Module):
     """Discriminator Class which is responsible of initializing the discriminator"""
 
-    def __init__(self, input_dim, batch_size, spec_norm, bounded, layers_list):
+    def __init__(self, input_dim, batch_size, spec_norm, bounded, layers_list, device='cuda' if torch.cuda.is_available() else 'cpu'):
         super(Discriminator, self).__init__()
 
         self.input_dim = input_dim
@@ -50,7 +50,7 @@ class Discriminator(Module):
         if bounded:
             model_dict[f'Bounded_Activation'] = BoundedActivation()
 
-        self.discriminator = Sequential(model_dict).to('cuda' if torch.cuda.is_available() else 'cpu')
+        self.discriminator = Sequential(model_dict).to(device)
         print()
         print('Discriminator Summary:')
         summary(self.discriminator, (self.batch_size, self.input_dim))
@@ -63,7 +63,7 @@ class Discriminator(Module):
 class Generator(Module):
     """Generator Class which is responsible of initializing the generator"""
 
-    def __init__(self, X_dim, Z_dim, batch_size, spec_norm, layers_list):
+    def __init__(self, X_dim, Z_dim, batch_size, spec_norm, layers_list, device='cuda' if torch.cuda.is_available() else 'cpu'):
         super(Generator, self).__init__()
 
         self.X_dim = X_dim
@@ -89,7 +89,7 @@ class Generator(Module):
             
             model_dict[f'Dense{i+1}'] = Linear(input_dim, X_dim)
         
-        self.generator = Sequential(model_dict)
+        self.generator = Sequential(model_dict).to(device)
         print()
         print('Generator Summary:')
         summary(self.generator, (self.batch_size, self.Z_dim))

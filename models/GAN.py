@@ -1,5 +1,5 @@
 import tensorflow as tf
-
+from tqdm import tqdm
 
 class GAN():
     '''
@@ -76,7 +76,7 @@ class GAN():
 
         generator_samples=[]
         loss_estimates=[]
-        for epoch in range(self.epochs):
+        for epoch in tqdm(range(self.epochs), desc='Epochs'):
             for P_batch in P_dataset:
 
                 Z_batch=self.noise_source(self.batch_size)
