@@ -170,7 +170,7 @@ for P_digit in P_digit_arr:
         divergence_estimates, params, opt_state = divergence_CNN.train(data_P, data_Q, params, opt_state)
 
         #Save results    
-        test_name = f'MNIST_{mthd}_divergence_demo'
+        test_name = f'MNIST_{mthd}_divergence_demo_jax'
         if not os.path.exists(test_name):
             os.makedirs(test_name)
             

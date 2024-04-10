@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import argparse
+import seaborn as sns
 
 
 def main():
@@ -14,37 +15,25 @@ def main():
     opt_dict = vars(opt)
     method = opt_dict['method']
 
-    path = f'./MNIST_{method}_divergence_demo'
+    path = f'./MNIST_{method}_divergence_demo_torch/'
 
     # Reading and storing all the estimates from all the csv files
-    csv_files = glob.glob(path + "/*.csv")
-
-    df_list = (pd.read_csv(file, header=None, index_col=None) for file in csv_files)
+    csv_files = sorted(glob.glob(path + "*.csv"))
+    numbers = []
     
-    df = pd.concat(df_list, ignore_index=True)
+    for file in csv_files:
+        divergence = pd.read_csv(file, header=None).iloc[0,0]
+        numbers.append(np.log10((np.abs(divergence))))
 
-    div_values = np.zeros((10, 10))
+    numbers = np.array(numbers)
+    numbers = numbers.reshape(10,10)
 
-    # Storing the divergence of each combination in a 10x10 matrix
-    i = 0
-    for j, divergence in enumerate(df.values):
-        div_values[i][j % 10] = np.log10((np.abs(divergence)))
-
-        if (j+1) % 10 == 0:
-            i = i + 1
-
-    print(div_values)
-
-    # Plotting the colormap of the estimates
-    x = np.arange(0, 10, 1)
-    y = np.arange(0, 10, 1)
-    plt.imshow(div_values, interpolation='none', cmap=plt.get_cmap('binary'))
-    plt.title(f'Colormap of {method} estimates between all pair of digits using PyTorch')
-    plt.xticks(x)
-    plt.yticks(y)
-    cbar = plt.colorbar()
-    cbar.set_label(r'$\log_{10}{\left({\left|{estimate}\right|}\right)}$')
+    plt.figure(figsize=(10, 10))
+    sns.heatmap(numbers, annot=True, fmt='.2f', linewidth=2)
+    plt.title(f'Colormap of {method} estimates between all pair of digits using JaX')
+    plt.savefig("colormap_jax.png")
     plt.show()
+    plt.close()
 
 
 if __name__ == "__main__":

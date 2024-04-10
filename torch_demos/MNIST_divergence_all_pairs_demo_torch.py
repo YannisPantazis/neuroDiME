@@ -173,7 +173,7 @@ for P_digit in P_digit_arr:
             divergence_CNN = Renyi_Divergence_WCR(discriminator, disc_optimizer, epochs, m, fl_act_func_CC, discriminator_penalty)
 
         #Save results    
-        test_name=f'MNIST_{mthd}_divergence_demo'
+        test_name=f'MNIST_{mthd}_divergence_demo_torch'
         if not os.path.exists(test_name):
             os.makedirs(test_name)
 
