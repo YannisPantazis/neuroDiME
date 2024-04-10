@@ -1,6 +1,5 @@
 import numpy as np
 import pandas as pd
-
 import csv
 import os
 import sys
@@ -95,24 +94,24 @@ P_digit_arr = np.array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
 Q_digit_arr = np.array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
 
 #Saved models folder    
-saved_name = f'MNIST_{mthd}_saved_models'
-if not os.path.exists(saved_name):
-	os.makedirs(saved_name)
+# saved_name = f'MNIST_{mthd}_saved_models'
+# if not os.path.exists(saved_name):
+# 	os.makedirs(saved_name)
 
 for P_digit in P_digit_arr:
     for Q_digit in Q_digit_arr:
-        model_file = f'{saved_name}/{mthd}_{P_digit}_{Q_digit}_{N}_{m}_{lr}_{epochs}_{alpha}_{L}_{gp_weight}_{use_GP}_{run_num}.pth'
+        # model_file = f'{saved_name}/{mthd}_{P_digit}_{Q_digit}_{N}_{m}_{lr}_{epochs}_{alpha}_{L}_{gp_weight}_{use_GP}_{run_num}.pth'
 
-        if os.path.exists(model_file):
-            # load the model
-            # discriminator = pickle.load(open(model_file, 'rb'))
-            print()
-            print('Loading Model...')
-            print()
-            discriminator = torch.load(model_file)
-        else:
+        # if os.path.exists(model_file):
+        #     # load the model
+        #     # discriminator = pickle.load(open(model_file, 'rb'))
+        #     print()
+        #     print('Loading Model...')
+        #     print()
+        #     discriminator = torch.load(model_file)
+        # else:
             # construct the discriminator neural network
-            discriminator = Sequential(
+        discriminator = Sequential(
                             Conv2d(in_channels=1, out_channels=64, kernel_size=(3,3), stride=(2, 2), padding=1),
                             LeakyReLU(negative_slope=0.2),
                             Dropout(p=0.4),
@@ -186,12 +185,12 @@ for P_digit in P_digit_arr:
         data_P = P_digits[P_idx, :]
         data_Q = Q_digits[Q_idx, :]
 
-        if not os.path.exists(model_file):
-            #train Discriminator
-            print('Training the model...')
-            divergence_estimates=divergence_CNN.train(data_P, data_Q, device)
-            print()
-            print("Training Complete")
+        # if not os.path.exists(model_file)
+        #train Discriminator
+        print('Training the model...')
+        divergence_estimates=divergence_CNN.train(data_P, data_Q, device)
+        print()
+        print("Training Complete")
 
             # save the model
             # print('Saving Model...')
