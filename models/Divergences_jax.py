@@ -22,10 +22,12 @@ class Divergence:
         self.discriminator_penalty = discriminator_penalty
         self.cnn = cnn
 
+
     def __repr__(self):
         return 'discriminator: {}'.format(self.discriminator)
 
 
+    @partial(jit, static_argnums=(0,))
     def discriminate(self, x, params): 
         ''' g(x) '''
         if self.cnn:

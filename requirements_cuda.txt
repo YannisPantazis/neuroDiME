@@ -1,0 +1,12 @@
+# REQUIREMENTS WITH CUDA 11.8 AND CUDNN 8.6
+tensorflow==2.10.0
+--index-url https://download.pytorch.org/whl/cu118
+torch 
+torchvision 
+torchaudio
+pandas
+matplotlib
+scipy
+tensorflow_addons
+tqdm
+torchsummary
