@@ -1,18 +1,25 @@
+import jax.numpy as jnp
 import numpy as np
-import argparse
-import csv
 import os
 import sys
-import json
-#from aux_funcs import *
-from numpy import genfromtxt
+import csv
+import argparse
+from optax import rmsprop, adam
+import time
+import torchvision.datasets as datasets
+import flax.linen as nn
+from flax.training import checkpoints
 
+# Add parent directory to sys.path
 current_dir = os.path.dirname(os.path.realpath(__file__))
 parent_dir = os.path.dirname(current_dir)
 sys.path.append(parent_dir)
 
-from models.torch_model import *
-from models.Divergences_torch import *
+from models.jax_model import *
+from models.Divergences_jax import *
+from models.GAN_jax import *
+
+start = time.perf_counter()
 
 # read input arguments
 parser = argparse.ArgumentParser(description='AUC for Sick Cell Detection using Neural-based Variational Divergences ')
@@ -74,17 +81,23 @@ layers_list = [32, 32]
 act_func = 'relu'
 
 # load data
-data_h = np.genfromtxt("../bio_csv/healthy.csv", delimiter=",").astype('float32')
-data_s = np.genfromtxt("../bio_csv/sick.csv", delimiter=",").astype('float32')
+data_h = np.genfromtxt("bio_csv/healthy.csv", delimiter=",").astype('float32')
+data_s = np.genfromtxt("bio_csv/sick.csv", delimiter=",").astype('float32')
 
 d = data_h.shape[1]
 layers_list.insert(0, d)
 
-device = 'cuda' if torch.cuda.is_available() else 'cpu'
+print(f'Predicting the {mthd} divergence using JAX\n')
+discriminator = Discriminator(input_dim=d, spec_norm=spec_norm, bounded=bounded, layers_list=layers_list)
 
-print(f'Predicting the {mthd} divergence using PyTorch\n')
-discriminator = Discriminator(input_dim=d, batch_size=m, spec_norm=spec_norm, bounded=bounded, layers_list=layers_list)
-discriminator.to(device)
+x = jnp.ones((m, d))
+test = nn.tabulate(discriminator, jax.random.key(0))
+print(test(x))
+
+# Initialize the model's parameters with a dummy input
+rng = jax.random.PRNGKey(0)
+params = discriminator.init(rng, x)
+print(jax.tree_map(lambda x: x.shape, params)) # Check the parameters
 
 # number of sample per class
 N2 = int(np.ceil(N*p))
@@ -119,12 +132,16 @@ print(data_P.shape)
 print(data_Q.shape)
 
 optimizer = 'RMS' # Adam, RMS
+
 #construct optimizers
 if optimizer == 'Adam':
-    disc_optimizer = torch.optim.Adam(discriminator.parameters(), lr=lr)
+    disc_optimizer = adam(lr)
 
 if optimizer == 'RMS':
-    disc_optimizer = torch.optim.RMSprop(discriminator.parameters(), lr=lr)
+    disc_optimizer = rmsprop(lr)
+
+opt_state = disc_optimizer.init(params)
+
 
 # construct gradient penalty
 if use_GP:
@@ -173,14 +190,14 @@ if mthd=="Renyi-WCR":
        	              
     	    
 # Estimate divergence    
-divergence_estimates = div_dense.train(data_P, data_Q)
+divergence_estimates, params, opt_state = div_dense.train(data_P, data_Q, params, opt_state)
 
 print('prob sick: '+str(p))      
 print(mthd+':\t\t {:.4}'.format(divergence_estimates[-1]))
 print()
         
 #save result       
-test_name="Bio_hypothesis_test_torch"
+test_name="Bio_hypothesis_test_jax"
 
 if not os.path.exists(test_name):
 	os.makedirs(test_name)
@@ -192,8 +209,4 @@ with open(test_name+'/estimated_'+mthd+'_p_{:.1e}'.format(p)+'_N_'+str(N)+'_m_'+
         writer.writerow([divergence_estimate]) 
     
 
-
-
-
-     
-        
+print(f'Elapsed time: {time.perf_counter()-start:.2f} seconds.')

@@ -109,12 +109,11 @@ print('Q-Data Shape')
 print(data_Q.shape)
 
 #Saved models folder    
-saved_name ='MNIST_saved_models'
-if not os.path.exists(saved_name):
-	os.makedirs(saved_name)
+# saved_name ='MNIST_saved_models'
+# if not os.path.exists(saved_name):
+# 	os.makedirs(saved_name)
 
-model_file = f'{saved_name}/{mthd}_{P_digit}_{Q_digit}_{N}_{m}_{lr}_{epochs}_{alpha}_{L}_{gp_weight}_{use_GP}_{run_num}.pth'
-
+# model_file = f'{saved_name}/{mthd}_{P_digit}_{Q_digit}_{N}_{m}_{lr}_{epochs}_{alpha}_{L}_{gp_weight}_{use_GP}_{run_num}.pth'
 
 discriminator = CNN_discriminator()
 

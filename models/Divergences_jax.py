@@ -86,8 +86,6 @@ class Divergence:
             if save_estimates:
                 estimates.append(float(self.estimate(P_batch, Q_batch, params)))
             
-            # print(f'Epoch: {i+1}/{self.epochs}')
-
         return estimates, params, opt_state
     
 

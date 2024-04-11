@@ -101,30 +101,30 @@ print('Q-Data Shape')
 print(data_Q.shape)
 
 #Saved models folder    
-saved_name ='MNIST_saved_models'
-if not os.path.exists(saved_name):
-	os.makedirs(saved_name)
+# saved_name ='MNIST_saved_models'
+# if not os.path.exists(saved_name):
+# 	os.makedirs(saved_name)
 
-model_file = f'{saved_name}/{mthd}_{P_digit}_{Q_digit}_{N}_{m}_{lr}_{epochs}_{alpha}_{L}_{gp_weight}_{use_GP}_{run_num}.h5'
+# model_file = f'{saved_name}/{mthd}_{P_digit}_{Q_digit}_{N}_{m}_{lr}_{epochs}_{alpha}_{L}_{gp_weight}_{use_GP}_{run_num}.h5'
 
-if os.path.exists(model_file):
-    # load the model
-    # discriminator = pickle.load(open(model_file, 'rb'))
-    print()
-    print('Loading Model...')
-    print()
-    discriminator = load_model(model_file)
-else:
-    # construct the discriminator neural network
-    discriminator = tf.keras.Sequential()
-    discriminator.add(Conv2D(64, (3,3), strides=(2, 2), padding='same', input_shape=(28,28,1)))
-    discriminator.add(LeakyReLU(alpha=0.2))
-    discriminator.add(Dropout(0.4))
-    discriminator.add(Conv2D(64, (3,3), strides=(2, 2), padding='same'))
-    discriminator.add(LeakyReLU(alpha=0.2))
-    discriminator.add(Dropout(0.4))
-    discriminator.add(Flatten())
-    discriminator.add(Dense(1, activation='linear'))
+# if os.path.exists(model_file):
+#     # load the model
+#     # discriminator = pickle.load(open(model_file, 'rb'))
+#     print()
+#     print('Loading Model...')
+#     print()
+#     discriminator = load_model(model_file)
+# else:
+# construct the discriminator neural network
+discriminator = tf.keras.Sequential()
+discriminator.add(Conv2D(64, (3,3), strides=(2, 2), padding='same', input_shape=(28,28,1)))
+discriminator.add(LeakyReLU(alpha=0.2))
+discriminator.add(Dropout(0.4))
+discriminator.add(Conv2D(64, (3,3), strides=(2, 2), padding='same'))
+discriminator.add(LeakyReLU(alpha=0.2))
+discriminator.add(Dropout(0.4))
+discriminator.add(Flatten())
+discriminator.add(Dense(1, activation='linear'))
 
 print()
 print("Discriminator Summary:")
@@ -183,17 +183,17 @@ if mthd=="Renyi-WCR":
     divergence_CNN = Renyi_Divergence_WCR(discriminator, disc_optimizer, epochs, m, fl_act_func_CC, discriminator_penalty)
 
 
-if not os.path.exists(model_file):
-    #train Discriminator
-    print('Training the model...')
-    divergence_estimates=divergence_CNN.train(data_P, data_Q)
-    print()
-    print("Training Complete")
+# if not os.path.exists(model_file):
+#train Discriminator
+# print('Training the model...')
+divergence_estimates=divergence_CNN.train(data_P, data_Q)
+# print()
+# print("Training Complete")
 
     # save the model
     # pickle.dump(discriminator, open(model_file, 'wb'))
-    print('Saving Model...')
-    discriminator.save(model_file)
+    # print('Saving Model...')
+    # discriminator.save(model_file)
 
 
 #Save results    
