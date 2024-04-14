@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
+import math
 from torch.autograd import grad as torch_grad
 from tqdm import tqdm
 
@@ -133,13 +134,15 @@ class f_Divergence(Divergence):
     def eval_var_formula(self, x, y):
         ''' Evaluation of variational formula of f-divergence '''
         D_P = self.discriminate(x)
+        print(x, D_P)
         D_P = self.final_layer_activation(D_P)
         D_Q = self.discriminate(y)
         D_Q = self.final_layer_activation(D_Q)
-        
         D_loss_P = torch.mean(D_P)
+        # if math.isnan(D_loss_P.item()):
+        #     print(D_loss_P, D_P, x)
+        #     exit()
         D_loss_Q = torch.mean(self.f_star(D_Q))
-        
         D_loss = D_loss_P - D_loss_Q
         return D_loss
 
@@ -204,8 +207,8 @@ class alpha_Divergence_LT(f_Divergence):
     D_{f_alpha}(P||Q), x~P, y~Q.
     '''
     # initialize
-    def __init__(self, discriminator, alpha, epochs, learning_rate, batch_size, discriminator_penalty=None):        
-        Divergence.__init__(self, discriminator, epochs, learning_rate, batch_size, discriminator_penalty)
+    def __init__(self, discriminator, disc_optimizer, alpha, epochs, batch_size, discriminator_penalty=None):        
+        Divergence.__init__(self, discriminator, disc_optimizer, epochs, batch_size, discriminator_penalty)
         self.alpha = alpha # order
     
     def get_order(self):
@@ -265,8 +268,8 @@ class Renyi_Divergence(Divergence):
     R_alpha(P||Q), x~P, y~Q.
     '''
     # initialize
-    def __init__(self, discriminator, alpha, epochs, learning_rate, batch_size, discriminator_penalty=None):        
-        Divergence.__init__(self, discriminator, epochs, learning_rate, batch_size, discriminator_penalty)
+    def __init__(self, discriminator, disc_optimizer, alpha, epochs, batch_size, discriminator_penalty=None):        
+        Divergence.__init__(self, discriminator, disc_optimizer, epochs, batch_size, discriminator_penalty)
         self.alpha = alpha # Renyi Divergence order
 
     def get_order(self):
@@ -311,8 +314,8 @@ class Renyi_Divergence_CC(Renyi_Divergence):
     R_alpha(P||Q), x~P, y~Q.
     '''   
     # initialize
-    def __init__(self, discriminator, alpha, epochs, learning_rate, batch_size, fl_act_func, discriminator_penalty=None):        
-        Renyi_Divergence.__init__(self, discriminator, alpha, epochs, learning_rate, batch_size, discriminator_penalty)
+    def __init__(self, discriminator, disc_optimizer, alpha, epochs, batch_size, fl_act_func, discriminator_penalty=None):        
+        Renyi_Divergence.__init__(self, discriminator, disc_optimizer, alpha, epochs, batch_size, discriminator_penalty)
         self.act_func = fl_act_func
     
     def final_layer_activation(self, y): 

@@ -168,8 +168,8 @@ for P_digit in P_digit_arr:
         if mthd=="rescaled-Renyi-CC":
             divergence_CNN = Renyi_Divergence_CC_rescaled(discriminator, disc_optimizer, alpha, epochs, m, fl_act_func_CC, discriminator_penalty)
 
-        if mthd=="Renyi-WCR":
-            divergence_CNN = Renyi_Divergence_WCR(discriminator, disc_optimizer, epochs, m, fl_act_func_CC, discriminator_penalty)
+        if mthd=="Renyi-CC-WCR":
+            divergence_CNN = Renyi_Divergence_WCR(discriminator, disc_optimizer, alpha, epochs, m, fl_act_func_CC, discriminator_penalty)
 
         #Save results    
         test_name=f'MNIST_{mthd}_divergence_demo_torch'
@@ -191,7 +191,6 @@ for P_digit in P_digit_arr:
             # save the model
             # print('Saving Model...')
             # torch.save(discriminator, model_file)
-
 
         estimate = divergence_CNN.estimate(data_P, data_Q).detach().cpu().numpy()
         print(f'{mthd} estimate between digits {P_digit} and {Q_digit}: {estimate}')

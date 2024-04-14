@@ -31,7 +31,7 @@ def main():
     plt.figure(figsize=(10, 10))
     sns.heatmap(numbers, annot=True, fmt='.2f', linewidth=2, cmap='coolwarm')
     plt.title(f'Colormap of {method} estimates between all pair of digits using Torch')
-    plt.savefig("colormap_torch.png")
+    plt.savefig(f"colormap_torch_{method}.png")
     plt.show()
     plt.close()
 
