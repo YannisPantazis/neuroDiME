@@ -31,9 +31,10 @@ INCEPTION_FREQUENCY = 100 # How frequently to calculate Inception score
 j=0
 
 LR = 2e-4 # Initial learning rate
-ITERS = 150
+ITERS = 50
 alpha = 0
 rev = 0
+print_every = 5
 
 # WGAN-GP parameter
 CONDITIONAL = False # Whether to train a conditional or unconditional model
@@ -50,9 +51,9 @@ def generate_image(generator, frame):
     generator.eval()
     n_samples = 12
     fixed_noise = torch.randn(n_samples, 128, device=device)
-    fixed_labels = torch.tensor(np.array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9] * 10), dtype=torch.long, device=device)
+    # fixed_labels = torch.tensor(np.array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9] * 10), dtype=torch.long, device=device)
     with torch.no_grad():
-        samples = generator(n_samples, fixed_labels, fixed_noise).detach().cpu()
+        samples = generator(n_samples, labels=None, noise=fixed_noise).detach().cpu()
         samples = ((samples + 1) * 127.5).clamp(0, 255).to(torch.uint8)
         samples = samples.view(n_samples, 3, 32, 32)
         samples = samples.permute(0, 2, 3, 1)
@@ -176,8 +177,9 @@ def train(generator, discriminator, gen_opt, disc_opt, train_loader):
         disc_costs[iteration] = disc_loss / len(train_loader)
         gen_costs[iteration] = gen_loss / len(train_loader)
         print(f'Iteration {iteration}, Generator loss: {gen_costs[iteration]}, Discriminator loss: {disc_costs[iteration]}')
+        
         # Save checkpoints
-        if iteration % 10 == 0:
+        if iteration % print_every == 0:
             torch.save({
                 'generator': generator.state_dict(),
                 'discriminator': discriminator.state_dict(),
