@@ -134,7 +134,6 @@ class f_Divergence(Divergence):
     def eval_var_formula(self, x, y):
         ''' Evaluation of variational formula of f-divergence '''
         D_P = self.discriminate(x)
-        print(x, D_P)
         D_P = self.final_layer_activation(D_P)
         D_Q = self.discriminate(y)
         D_Q = self.final_layer_activation(D_Q)

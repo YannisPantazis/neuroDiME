@@ -4,6 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import argparse
 import seaborn as sns
+import math
 
 
 def main():
@@ -23,7 +24,10 @@ def main():
     
     for file in csv_files:
         divergence = pd.read_csv(file, header=None).iloc[0,0]
-        numbers.append(np.log10((np.abs(divergence))))
+        if math.isnan(divergence):
+            numbers.append(math.inf)
+        else:
+            numbers.append(np.log10((np.abs(divergence))))
 
     numbers = np.array(numbers)
     numbers = numbers.reshape(10,10)

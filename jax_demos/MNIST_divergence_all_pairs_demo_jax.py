@@ -103,7 +103,7 @@ for P_digit in P_digit_arr:
         x = jnp.ones((1, 28, 28, 1))
         rng = jax.random.PRNGKey(0)
         params = discriminator.init(rng, x, train=False)
-        print(jax.tree_map(lambda x: x.shape, params)) # Check the parameters
+        # print(jax.tree_map(lambda x: x.shape, params)) # Check the parameters
         optimizer = "RMS"  # Adam, RMS
 
         #construct optimizers

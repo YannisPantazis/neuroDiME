@@ -191,8 +191,12 @@ for P_digit in P_digit_arr:
             # save the model
             # print('Saving Model...')
             # torch.save(discriminator, model_file)
-
         estimate = divergence_CNN.estimate(data_P, data_Q).detach().cpu().numpy()
+        while np.isnan(estimate):
+            print('Nan estimate, retraining...')
+            divergence_estimates=divergence_CNN.train(data_P, data_Q, device)
+            estimate = divergence_CNN.estimate(data_P, data_Q).detach().cpu().numpy()
+            
         print(f'{mthd} estimate between digits {P_digit} and {Q_digit}: {estimate}')
 
 
