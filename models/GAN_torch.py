@@ -57,6 +57,8 @@ class GAN():
         loss.backward()
         self.gen_optimizer.step()
 
+        return loss.item()
+
     def disc_train_step(self, x, z):
         ''' discriminator's parameters update '''
         # z = torch.from_numpy(z).float()
@@ -67,7 +69,10 @@ class GAN():
             data1 = x
             data2 = self.generator(z)
         
-        self.divergence.train_step(data1, data2)
+        loss = self.divergence.train_step(data1, data2)
+
+        return loss.item()
+
 
     def train(self, data_P, save_frequency=None, num_gen_samples_to_save=None, save_loss_estimates=False, device = 'cuda' if torch.cuda.is_available() else 'cpu'):
         ''' training function of our GAN '''
@@ -76,16 +81,27 @@ class GAN():
 
         generator_samples = []
         loss_estimates = []
+        gen_losses = []
+        disc_losses = []
+
         for epoch in tqdm(range(self.epochs), desc='Epochs'):
+            disc_loss = 0
+            gen_loss = 0
+
             for P_batch in P_dataset:
                 Z_batch = torch.from_numpy(self.noise_source(self.batch_size)).float()
                 P_batch = P_batch.to(device)
                 Z_batch = Z_batch.to(device)
                 
                 for disc_step in range(self.disc_steps_per_gen_step):
-                    self.disc_train_step(P_batch, Z_batch)
-                
-                self.gen_train_step(P_batch, Z_batch)
+                    disc_cost = self.disc_train_step(P_batch, Z_batch)
+                    disc_loss += disc_cost
+
+                gen_cost = self.gen_train_step(P_batch, Z_batch)
+                gen_loss += gen_cost
+            
+            gen_losses[epoch] = gen_loss / len(P_dataset)
+            disc_losses[epoch] = disc_loss / len(P_dataset)
             
             if save_frequency is not None and (epoch+1) % save_frequency == 0:
                 if num_gen_samples_to_save is not None:
@@ -94,7 +110,7 @@ class GAN():
                 if save_loss_estimates:
                     loss_estimates.append(float(self.estimate_loss(P_batch, Z_batch)))
 
-        return generator_samples, loss_estimates
+        return generator_samples, loss_estimates, gen_losses, disc_losses
     
     def generate_samples(self, N_samples, device = 'cuda' if torch.cuda.is_available() else 'cpu'):
         samples = torch.from_numpy(self.noise_source(N_samples)).float()

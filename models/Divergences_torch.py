@@ -58,6 +58,8 @@ class Divergence(nn.Module):
         loss.backward()
         self.disc_optimizer.step()
 
+        return loss
+
     def train(self, data_P, data_Q, device = 'cuda' if torch.cuda.is_available() else 'cpu', save_estimates=True):
         ''' training function of our discriminator '''
         # dataset slicing into minibatches

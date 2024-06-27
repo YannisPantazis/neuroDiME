@@ -202,7 +202,7 @@ if mthd=="Renyi-WCR":
 
 #train GAN
 GAN_dense = GAN(div_dense, generator, gen_optimizer, noise_source, epochs, disc_steps_per_gen_step, m, reverse_order)
-generator_samples, loss_array = GAN_dense.train(data_P, save_frequency, num_gen_samples_to_save, save_loss_estimates=True)
+generator_samples, loss_array, gen_losses, disc_losses = GAN_dense.train(data_P, save_frequency, num_gen_samples_to_save, save_loss_estimates=True)
 
 
 
