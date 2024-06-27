@@ -31,7 +31,7 @@ INCEPTION_FREQUENCY = 100 # How frequently to calculate Inception score
 j=0
 
 LR = 2e-4 # Initial learning rate
-ITERS = 50
+ITERS = 150
 alpha = 0
 rev = 0
 print_every = 5
@@ -48,12 +48,13 @@ device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 
 def generate_image(generator, frame):
+    """Generate a batch of images and save them to a grid."""
     generator.eval()
     n_samples = 12
     fixed_noise = torch.randn(n_samples, 128, device=device)
-    # fixed_labels = torch.tensor(np.array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9] * 10), dtype=torch.long, device=device)
+    fixed_labels = torch.tensor(np.array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9] * n_samples), dtype=torch.long, device=device)
     with torch.no_grad():
-        samples = generator(n_samples, labels=None, noise=fixed_noise).detach().cpu()
+        samples = generator(n_samples, labels=fixed_labels, noise=fixed_noise).detach().cpu()
         samples = ((samples + 1) * 127.5).clamp(0, 255).to(torch.uint8)
         samples = samples.view(n_samples, 3, 32, 32)
         samples = samples.permute(0, 2, 3, 1)
@@ -76,6 +77,7 @@ def generate_image(generator, frame):
 
 
 def train(generator, discriminator, gen_opt, disc_opt, train_loader):
+    """Train the generator and discriminator for a number of epochs."""
     disc_costs = np.zeros(ITERS)
     gen_costs = np.zeros(ITERS)
     
@@ -176,7 +178,6 @@ def train(generator, discriminator, gen_opt, disc_opt, train_loader):
         
         disc_costs[iteration] = disc_loss / len(train_loader)
         gen_costs[iteration] = gen_loss / len(train_loader)
-        print(f'Iteration {iteration}, Generator loss: {gen_costs[iteration]}, Discriminator loss: {disc_costs[iteration]}')
         
         # Save checkpoints
         if iteration % print_every == 0:
@@ -186,6 +187,7 @@ def train(generator, discriminator, gen_opt, disc_opt, train_loader):
                 'gen_opt': gen_opt.state_dict(),
                 'disc_opt': disc_opt.state_dict(),
             }, f'cifar_resnet_sn/checkpoint_{iteration}.pth')
+            print(f'Iteration {iteration}, Generator loss: {gen_costs[iteration]}, Discriminator loss: {disc_costs[iteration]}')
             
             generate_image(generator, iteration)
             # # Calculate and log the inception score
@@ -209,6 +211,7 @@ def main():
     summary(discriminator)
 
     print('Using device:', device)
+    
     # Optimizers
     gen_opt = optim.Adam(generator.parameters(), lr=LR, betas=(0., 0.9))
     disc_opt = optim.Adam(discriminator.parameters(), lr=LR, betas=(0., 0.9))
@@ -222,6 +225,7 @@ def main():
     train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True, num_workers=4)
     d_loss, g_loss = train(generator, discriminator, gen_opt, disc_opt, train_loader)
     
+    # Save the loss vs epoch plot
     epoch_ax = np.arange(start=1, stop=ITERS+1, step=1)
     _, ax = plt.subplots(1, 2, figsize=(15, 5))
 
@@ -239,6 +243,7 @@ def main():
     plt.savefig('cifar_resnet_sn/loss_vs_epoch.png')
     plt.show()
     plt.close()    
+    
     
 if __name__ == "__main__":
     main()

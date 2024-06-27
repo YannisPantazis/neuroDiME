@@ -89,15 +89,15 @@ class GAN():
             gen_loss = 0
 
             for P_batch in P_dataset:
-                Z_batch = torch.from_numpy(self.noise_source(self.batch_size)).float()
+                noise_batch = torch.from_numpy(self.noise_source(self.batch_size)).float()
                 P_batch = P_batch.to(device)
-                Z_batch = Z_batch.to(device)
+                noise_batch = noise_batch.to(device)
                 
                 for disc_step in range(self.disc_steps_per_gen_step):
-                    disc_cost = self.disc_train_step(P_batch, Z_batch)
+                    disc_cost = self.disc_train_step(P_batch, noise_batch)
                     disc_loss += disc_cost
 
-                gen_cost = self.gen_train_step(P_batch, Z_batch)
+                gen_cost = self.gen_train_step(P_batch, noise_batch)
                 gen_loss += gen_cost
             
             gen_losses[epoch] = gen_loss / len(P_dataset)
@@ -108,7 +108,7 @@ class GAN():
                     generator_samples.append(self.generate_samples(num_gen_samples_to_save))
                 
                 if save_loss_estimates:
-                    loss_estimates.append(float(self.estimate_loss(P_batch, Z_batch)))
+                    loss_estimates.append(float(self.estimate_loss(P_batch, noise_batch)))
 
         return generator_samples, loss_estimates, gen_losses, disc_losses
     
