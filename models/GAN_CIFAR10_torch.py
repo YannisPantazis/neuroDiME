@@ -1,6 +1,5 @@
 import torch.nn as nn
 from torch.nn.utils import spectral_norm
-from torchsummary import summary
 from collections import OrderedDict as OrderedDict
 import torch
 import torch.nn.functional as F
@@ -342,7 +341,7 @@ class Generator(nn.Module):
         self.res_block3 = ResidualBlock(dim_g, dim_g, 3, resample='up')
         self.norm = Normalize(dim_g)
         self.conv = nn.Conv2d(dim_g, 3, 3, padding=1)
-
+    
     def forward(self, n_samples, labels=None, noise=None):
         if noise is None:
             noise = torch.randn(n_samples, 128)
@@ -387,3 +386,4 @@ class Discriminator(nn.Module):
 #for alpha>1
 def f_alpha_star(y,alpha):
     return torch.math.pow(F.relu(y),alpha/(alpha-1.0))*torch.math.pow((alpha-1.0),alpha/(alpha-1.0))/alpha+1/(alpha*(alpha-1.0))
+

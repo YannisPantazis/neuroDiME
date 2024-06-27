@@ -9,7 +9,7 @@ import sys
 from tqdm import tqdm
 from PIL import Image
 import matplotlib.pyplot as plt
-
+from torchinfo import summary
 
 # Add the path to the system path
 current_dir = os.path.dirname(os.path.realpath(__file__))
@@ -203,9 +203,11 @@ def main():
     # Initialize models
     generator = Generator(dim_g=DIM_G, output_dim=OUTPUT_DIM).to(device)
     discriminator = Discriminator(input_dim=3, dim_d=DIM_D).to(device)
-    print(generator)
+
+    summary(generator)
     print()
-    print(discriminator)
+    summary(discriminator)
+
     print('Using device:', device)
     # Optimizers
     gen_opt = optim.Adam(generator.parameters(), lr=LR, betas=(0., 0.9))
