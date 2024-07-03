@@ -3,6 +3,9 @@ from torch.nn.utils import spectral_norm
 from collections import OrderedDict as OrderedDict
 import torch
 import torch.nn.functional as F
+import numpy as np
+import matplotlib.pyplot as plt
+import os
 
 DIM_G = 128 # Generator dimensionality
 DIM_D = 128 # Critic dimensionality
@@ -12,8 +15,7 @@ CONDITIONAL = False # Whether to train a conditional or unconditional model
 ACGAN = False # If CONDITIONAL, whether to use ACGAN or "vanilla" conditioning
 ACGAN_SCALE = 1. # How to scale the critic's ACGAN loss relative to WGAN loss
 ACGAN_SCALE_G = 0.1 # How to scale generator's ACGAN loss relative to WGAN loss
-
-
+device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 class ConditionalBatchNorm2d(nn.Module):
     def __init__(self, num_features, num_classes):
@@ -387,3 +389,161 @@ class Discriminator(nn.Module):
 def f_alpha_star(y,alpha):
     return torch.math.pow(F.relu(y),alpha/(alpha-1.0))*torch.math.pow((alpha-1.0),alpha/(alpha-1.0))/alpha+1/(alpha*(alpha-1.0))
 
+
+import torch
+import torch.nn as nn
+from tqdm import tqdm
+
+class GAN_CIFAR10():
+    '''
+    Class for training a GAN for CIFAR-10 using one of the provided divergences
+    If reverse_order=False the GAN works to minimize min_theta D(P||g_theta(Z)) where P is the distribution to be leared, Z is the noise source and g_theta is the generator (with parameters theta).
+    If reverse_order=True the GAN works to minimize min_theta D(g_theta(Z)||P) where P is the distribution to be leared, Z is the noise source and g_theta is the generator (with parameters theta).
+    '''
+    # initialize
+    def __init__(self, divergence, generator, gen_optimizer, noise_source, epochs, disc_steps_per_gen_step, method, batch_size=None, reverse_order=False, include_penalty_in_gen_loss=False, conditional=False):
+        self.divergence = divergence # Variational divergence
+        self.generator = generator
+        self.epochs = epochs
+        self.disc_steps_per_gen_step = disc_steps_per_gen_step
+        self.gen_optimizer = gen_optimizer
+        self.reverse_order = reverse_order
+        self.include_penalty_in_gen_loss = include_penalty_in_gen_loss
+        self.noise_source = noise_source
+        self.conditional = conditional
+        self.method = method
+
+        if batch_size is None:
+            self.batch_size = self.divergence.batch_size
+        else:
+            self.batch_size = batch_size
+        
+    def estimate_loss(self, x, z, labels):
+        ''' Estimating the loss '''
+        # z = torch.from_numpy(z).float()
+        if self.reverse_order:
+            data1 = self.generator(z)
+            data2 = x
+        else:
+            data1 = x
+            data2 = self.generator(z)
+
+        return self.divergence.estimate(data1, data2)
+    
+    def gen_train_step(self, x, z, labels):
+        ''' generator's parameters update '''
+        self.gen_optimizer.zero_grad()
+        # x.requires_grad_(True)
+        # z.requires_grad_(True)
+
+        # z = torch.from_numpy(z).float()
+        if self.reverse_order:
+            data1 = self.generator(self.batch_size, labels, z)
+            data2 = x
+        else:
+            data1 = x
+            data2 = self.generator(self.batch_size, labels, z)
+
+        loss = self.divergence.discriminator_loss(data1, data2, labels)
+        if self.include_penalty_in_gen_loss and self.divergence.discriminator_penalty is not None:
+            loss = loss - self.divergence.discriminator_penalty.evaluate(self.divergence.discriminator, data1, data2, labels)
+        
+        loss.backward()
+        self.gen_optimizer.step()
+
+        return loss.item()
+
+    def disc_train_step(self, x, z, labels):
+        ''' discriminator's parameters update '''
+        # z = torch.from_numpy(z).float()
+        if self.reverse_order:
+            data1 = self.generator(self.batch_size, labels, z)
+            data2 = x
+        else:
+            data1 = x
+            data2 = self.generator(self.batch_size, labels, z)
+        
+        loss = self.divergence.train_step(data1, data2, labels)
+
+        for p in self.divergence.discriminator.parameters():
+            p.data.clamp_(-0.01, 0.01)
+
+        return loss.item()
+
+
+    def train(self, dataloader, save_frequency=None, num_gen_samples_to_save=None, save_loss_estimates=False):
+        ''' training function of our GAN '''
+        generator_samples = []
+        loss_estimates = []
+        gen_losses = np.zeros(self.epochs)
+        disc_losses = np.zeros(self.epochs)
+
+        for epoch in tqdm(range(self.epochs), desc='Epochs'):
+            disc_loss = 0
+            gen_loss = 0
+
+            for data, labels in dataloader:
+                noise_batch = self.noise_source(self.batch_size)
+                data = data.to(device)
+                labels = labels.to(device)
+                
+                if not self.conditional:
+                    labels = None
+                    
+                for disc_step in range(self.disc_steps_per_gen_step):
+                    disc_cost = self.disc_train_step(data, noise_batch, labels)
+                    disc_loss += disc_cost
+
+                gen_cost = self.gen_train_step(data, noise_batch, labels)
+                gen_loss += gen_cost
+            
+            gen_losses[epoch] = gen_loss / len(dataloader)
+            disc_losses[epoch] = disc_loss / len(dataloader)
+            
+            if save_frequency is not None and (epoch+1) % save_frequency == 0:
+                print('Epoch:', epoch+1, 'Gen Loss:', gen_losses[epoch], 'Disc Loss:', disc_losses[epoch])
+                
+                self.generate_image(self.generator, epoch+1)
+                
+                # if save_loss_estimates:
+                #     loss_estimates.append(float(self.estimate_loss(data, noise_batch)))
+
+        return generator_samples, loss_estimates, gen_losses, disc_losses
+    
+    def generate_image(self, generator, frame):
+        if self.divergence.discriminator_penalty:
+            if not os.path.exists(f'samples_{self.method}_GP/'):
+                os.makedirs(f'samples_{self.method}_GP/')
+        else:
+            if not os.path.exists(f'samples_{self.method}/'):
+                os.makedirs(f'samples_{self.method}/')
+
+        """Generate a batch of images and save them to a grid."""
+        generator.eval()
+        n_samples = 12
+        fixed_noise = torch.randn(n_samples, 128, device=device)
+        fixed_labels = torch.tensor(np.array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9] * n_samples), dtype=torch.long, device=device)
+        with torch.no_grad():
+            samples = generator(n_samples, labels=fixed_labels, noise=fixed_noise).detach().cpu()
+            samples = ((samples + 1) * 127.5).clamp(0, 255).to(torch.uint8)
+            samples = samples.view(n_samples, 3, 32, 32)
+            samples = samples.permute(0, 2, 3, 1)
+
+            n_rows = (n_samples + 3) // 4
+            fig, axs = plt.subplots(
+                nrows=n_rows,
+                ncols=4,
+                figsize=(8, 2*n_rows),
+                subplot_kw={'xticks': [], 'yticks': [], 'frame_on': False}
+            )
+            for i, axis in enumerate(axs.flat[:n_samples]):
+                axis.imshow(samples[i], cmap='binary')
+            plt.subplots_adjust(wspace=0.1, hspace=0.1)
+            if self.divergence.discriminator_penalty:
+                plt.savefig(f'samples_{self.method}_GP/gen_images_{frame}.png')
+            else:
+                plt.savefig(f'samples_{self.method}/gen_images_{frame}.png')
+            # plt.show()
+            plt.close(fig)
+
+        generator.train()

@@ -6,16 +6,16 @@ import math
 from torch.autograd import grad as torch_grad
 from tqdm import tqdm
 
-device = 'cuda' if torch.cuda.is_available() else 'cpu', 
+device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
-class Divergence(nn.Module):
+class Divergence_CIFAR10(nn.Module):
     '''
     Divergence D(P||Q) between random variables x~P, y~Q.
     Parent class where the common parameters and the common functions are defined.
     '''
     # initialize
     def __init__(self, discriminator, disc_optimizer, epochs, batch_size, discriminator_penalty=None):
-        super(Divergence, self).__init__()
+        super(Divergence_CIFAR10, self).__init__()
         self.batch_size = batch_size
         self.epochs = epochs
         self.discriminator_penalty = discriminator_penalty
@@ -25,37 +25,33 @@ class Divergence(nn.Module):
     def __repr__(self):
         return 'discriminator: {}'.format(self.discriminator)
 
-    def discriminate(self, x): 
-        ''' g(x) '''
-        if not torch.is_tensor(x):
-            x = torch.from_numpy(x)
-            
-        y = self.discriminator(x.float().to('cuda' if torch.cuda.is_available() else 'cpu'))
+    def discriminate(self, x, labels):            
+        y, _ = self.discriminator(x, labels)
         return y
     
-    def eval_var_formula(self, x, y): 
+    def eval_var_formula(self, x, y, labels): 
         ''' evaluation of variational formula (depends on the variational formula to be used) '''
         return None
     
-    def estimate(self, x, y): 
+    def estimate(self, x, y, labels): 
         ''' same as self.eval_val_formula() '''
-        divergece_loss = self.eval_var_formula(x,y)
+        divergece_loss = self.eval_var_formula(x, y, labels)
         return divergece_loss
 
-    def discriminator_loss(self, x, y):
+    def discriminator_loss(self, x, y, labels):
         ''' same as self.estimate() (in principle) '''
-        divergence_loss = self.eval_var_formula(x, y)
+        divergence_loss = self.eval_var_formula(x, y, labels)
         return divergence_loss
     
-    def train_step(self, x, y):
+    def train_step(self, data, noise, labels):
         ''' discriminator's parameters update '''
         self.disc_optimizer.zero_grad()
-        x.requires_grad_(True)
-        y.requires_grad_(True)
+        # data.requires_grad_(True)
+        # noise.requires_grad_(True)
         
-        loss = -self.discriminator_loss(x, y) # with minus because we maximize the discriminator loss
+        loss = -self.discriminator_loss(data, noise, labels) # with minus because we maximize the discriminator loss
         if self.discriminator_penalty is not None:
-            loss = loss + self.discriminator_penalty.evaluate(self.discriminator, x, y)
+            loss = loss + self.discriminator_penalty.evaluate(self.discriminator, data, noise, labels)
         
         loss.backward()
         self.disc_optimizer.step()
@@ -103,16 +99,16 @@ class Divergence(nn.Module):
 
     def set_learning_rate(self, lr):
         self.learning_rate = lr
+        
 
-
-class IPM(Divergence):
+class IPM(Divergence_CIFAR10):
     '''
     IPM class
     '''
-    def eval_var_formula(self, x, y):
+    def eval_var_formula(self, x, y, labels):
         ''' Evaluation of variational formula of IPM '''
-        D_P = self.discriminate(x)
-        D_Q = self.discriminate(y)
+        D_P = self.discriminate(x, labels)
+        D_Q = self.discriminate(y, labels)
 
         D_loss_P = torch.mean(D_P)
         D_loss_Q = torch.mean(D_Q)
@@ -122,7 +118,7 @@ class IPM(Divergence):
 
 
 
-class f_Divergence(Divergence):
+class f_Divergence(Divergence_CIFAR10):
     '''
     f-divergence class (parent class)
     D_f(P||Q), x~P, y~Q.
@@ -135,11 +131,11 @@ class f_Divergence(Divergence):
         ''' Final layer activation '''
         return y
 
-    def eval_var_formula(self, x, y):
+    def eval_var_formula(self, x, y, labels):
         ''' Evaluation of variational formula of f-divergence '''
-        D_P = self.discriminate(x)
+        D_P = self.discriminate(x, labels)
         D_P = self.final_layer_activation(D_P)
-        D_Q = self.discriminate(y)
+        D_Q = self.discriminate(y, labels)
         D_Q = self.final_layer_activation(D_Q)
         D_loss_P = torch.mean(D_P)
         # if math.isnan(D_loss_P.item()):
@@ -147,7 +143,7 @@ class f_Divergence(Divergence):
         #     exit()
         D_loss_Q = torch.mean(self.f_star(D_Q))
         D_loss = D_loss_P - D_loss_Q
-        return D_loss 
+        return D_loss
 
 
 class KLD_LT(f_Divergence):
@@ -211,7 +207,7 @@ class alpha_Divergence_LT(f_Divergence):
     '''
     # initialize
     def __init__(self, discriminator, disc_optimizer, alpha, epochs, batch_size, discriminator_penalty=None):        
-        Divergence.__init__(self, discriminator, disc_optimizer, epochs, batch_size, discriminator_penalty)
+        Divergence_CIFAR10.__init__(self, discriminator, disc_optimizer, epochs, batch_size, discriminator_penalty)
         self.alpha = alpha # order
     
     def get_order(self):
@@ -230,15 +226,15 @@ class alpha_Divergence_LT(f_Divergence):
         return f_star_y
 
 
-class Pearson_chi_squared_HCR(Divergence):
+class Pearson_chi_squared_HCR(Divergence_CIFAR10):
     '''
     Pearson chi^2-divergence class (based on Hammersley-Chapman-Robbins bound)
     chi^2(P||Q), x~P, y~Q.
     '''
-    def eval_var_formula(self, x, y):
+    def eval_var_formula(self, x, y, labels):
         ''' Evaluation of variational formula Pearson chi^2-divergence (based on Hammersley-Chapman-Robbins bound), chi^2(P||Q), x~P, y~Q'''
-        D_P = self.discriminate(x)
-        D_Q = self.discriminate(y)
+        D_P = self.discriminate(x, labels)
+        D_Q = self.discriminate(y, labels)
 
         D_loss_P = torch.mean(D_P)
         D_loss_Q = torch.mean(D_Q)
@@ -247,15 +243,15 @@ class Pearson_chi_squared_HCR(Divergence):
         return D_loss
 
 
-class KLD_DV(Divergence):
+class KLD_DV(Divergence_CIFAR10):
     '''
     KL divergence class (based on the Donsker-Varahdan variational formula)
     KL(P||Q), x~P, y~Q.
     '''
-    def eval_var_formula(self, x, y):
+    def eval_var_formula(self, x, y, labels):
         ''' Evaluation of variational formula of KL divergence (based on the Donsker-Varahdan variational formula), KL(P||Q), x~P, y~Q '''
-        D_P = self.discriminate(x)
-        D_Q = self.discriminate(y)
+        D_P = self.discriminate(x, labels)
+        D_Q = self.discriminate(y, labels)
 
         D_loss_P = torch.mean(D_P)
         
@@ -265,14 +261,14 @@ class KLD_DV(Divergence):
         return D_loss
 
 
-class Renyi_Divergence(Divergence):
+class Renyi_Divergence(Divergence_CIFAR10):
     '''
     Renyi divergence class
     R_alpha(P||Q), x~P, y~Q.
     '''
     # initialize
     def __init__(self, discriminator, disc_optimizer, alpha, epochs, batch_size, discriminator_penalty=None):        
-        Divergence.__init__(self, discriminator, disc_optimizer, epochs, batch_size, discriminator_penalty)
+        Divergence_CIFAR10.__init__(self, discriminator, disc_optimizer, epochs, batch_size, discriminator_penalty)
         self.alpha = alpha # Renyi Divergence order
 
     def get_order(self):
@@ -287,13 +283,13 @@ class Renyi_Divergence_DV(Renyi_Divergence):
     Renyi divergence class (based on the Renyi-Donsker-Varahdan variational formula)
     R_alpha(P||Q), x~P, y~Q.
     '''
-    def eval_var_formula(self, x, y):
+    def eval_var_formula(self, x, y, labels):
         ''' Evaluation of variational formula of Renyi divergence (based on the Renyi-Donsker-Varahdan variational formula), R_alpha(P||Q), x~P, y~Q'''
         gamma = self.alpha
         beta = 1.0 - self.alpha
 
-        D_P = self.discriminate(x)
-        D_Q = self.discriminate(y)
+        D_P = self.discriminate(x, labels)
+        D_Q = self.discriminate(y, labels)
 
         if beta == 0.0:
             D_loss_P = torch.mean(D_P)
@@ -332,11 +328,11 @@ class Renyi_Divergence_CC(Renyi_Divergence):
         
         return out
     
-    def eval_var_formula(self, x, y):
+    def eval_var_formula(self, x, y, labels):
         ''' Evaluation of variational formula of Renyi divergence (based on the convex-conjugate variational formula), R_alpha(P||Q), x~P, y~Q'''
-        D_P = self.discriminate(x)
+        D_P = self.discriminate(x, labels)
         D_P = self.final_layer_activation(D_P)
-        D_Q = self.discriminate(y)
+        D_Q = self.discriminate(y, labels)
         D_Q = self.final_layer_activation(D_Q)
         
         D_loss_P = -torch.mean(D_P)
@@ -359,10 +355,10 @@ class Renyi_Divergence_CC_rescaled(Renyi_Divergence_CC):
         
         return out
 
-    def eval_var_formula(self, x, y):
+    def eval_var_formula(self, x, y, labels):
         ''' Evaluation of variational formula of Rescaled Renyi (based on the rescaled convex-conjugate variational formula), alpha*R_alpha(P||Q), x~P, y~Q'''
 #        super(Renyi_Divergence_CC, self).eval_var_formula(self, x, y)
-        D_loss = Renyi_Divergence_CC.eval_var_formula(self, x, y)
+        D_loss = Renyi_Divergence_CC.eval_var_formula(self, x, y, labels)
         D_loss = D_loss * self.alpha
         
         return D_loss
@@ -373,11 +369,11 @@ class Renyi_Divergence_WCR(Renyi_Divergence_CC):
     Rescaled Renyi divergence class as alpha --> infinity (aka worst-case regret divergence)
     D_\infty(P||Q), x~P, y~Q.
     '''   
-    def eval_var_formula(self, x, y):
+    def eval_var_formula(self, x, y, labels):
         ''' Evaluation of variational formula of Rescaled Renyi divergence as alpha --> infinity (aka worst-case regret divergence), D_\infty(P||Q), x~P, y~Q'''
-        D_P = self.discriminate(x)
+        D_P = self.discriminate(x, labels)
         D_P = self.final_layer_activation(D_P)
-        D_Q = self.discriminate(y)
+        D_Q = self.discriminate(y, labels)
         D_Q = self.final_layer_activation(D_Q)
         
         D_loss_P = torch.log(torch.mean(D_P))
@@ -402,7 +398,7 @@ class Discriminator_Penalty():
     def set_penalty_weight(self, weight):
         self.penalty_weight = weight
     
-    def evaluate(self, discriminator, x, y): 
+    def evaluate(self, discriminator, x, y, labels): 
         ''' depends on the choice of penalty '''
         return None
 
@@ -424,17 +420,18 @@ class Gradient_Penalty_1Sided(Discriminator_Penalty):
     def set_Lip_constant(self, L):
         self.Lip_const = L
     
-    def evaluate(self, discriminator, x, y): 
+    def evaluate(self, discriminator, x, y, labels): 
         ''' computed the one-sided gradient penalty '''
         temp_shape = [x.shape[0]] + [1 for _ in  range(len(x.shape)-1)]
-        ratio = torch.rand(temp_shape, dtype=torch.float32, requires_grad=True)
+        ratio = torch.rand(temp_shape, dtype=torch.float32, requires_grad=True, device=device)
+        x = x.view(x.shape[0], -1)
         diff = y - x
         interpltd = x + (ratio * diff) # get the interpolated samples
 
         # interpltd = torch.autograd.Variable(interpltd, requires_grad=True) 
-        D_pred = discriminator(interpltd)
+        D_pred, _ = discriminator(interpltd, labels)
 
-        grads = torch_grad(outputs=D_pred, inputs=interpltd, grad_outputs=torch.ones(D_pred.size()), create_graph=True, retain_graph=True)[0]
+        grads = torch_grad(outputs=D_pred, inputs=interpltd, grad_outputs=torch.ones(D_pred.size(), device=device), create_graph=True, retain_graph=True)[0]
         if x.shape[1]==1: # calculate the norm
             norm = torch.sqrt(torch.square(grads))
         else:
@@ -462,14 +459,14 @@ class Gradient_Penalty_2Sided(Discriminator_Penalty):
         self.Lip_const = L
     
 
-    def evaluate(self, discriminator, x, y): 
+    def evaluate(self, discriminator, x, y, labels): 
         ''' computed the two-sided gradient penalty '''
         temp_shape = [x.shape[0]] + [1 for _ in  range(len(x.shape)-1)]
         ratio = torch.rand(temp_shape, dtype=torch.float32)
         diff = y - x
         interpltd = x + (ratio * diff) # get the interpolated samples
 
-        D_pred = discriminator(interpltd)
+        D_pred, _ = discriminator(interpltd, labels)
 
         grads = torch_grad(outputs=D_pred, inputs=interpltd, grad_outputs=torch.ones(interpltd.size()), create_graph=True, retain_graph=True)[0]
         if x.shape[1]==1: # calculate the norm
