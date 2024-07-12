@@ -6,7 +6,7 @@ import math
 from torch.autograd import grad as torch_grad
 from tqdm import tqdm
 
-device = 'cuda' if torch.cuda.is_available() else 'cpu', 
+device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 class Divergence(nn.Module):
     '''
@@ -427,14 +427,14 @@ class Gradient_Penalty_1Sided(Discriminator_Penalty):
     def evaluate(self, discriminator, x, y): 
         ''' computed the one-sided gradient penalty '''
         temp_shape = [x.shape[0]] + [1 for _ in  range(len(x.shape)-1)]
-        ratio = torch.rand(temp_shape, dtype=torch.float32, requires_grad=True)
+        ratio = torch.rand(temp_shape, dtype=torch.float32, requires_grad=True, device=device)
         diff = y - x
         interpltd = x + (ratio * diff) # get the interpolated samples
 
         # interpltd = torch.autograd.Variable(interpltd, requires_grad=True) 
         D_pred = discriminator(interpltd)
 
-        grads = torch_grad(outputs=D_pred, inputs=interpltd, grad_outputs=torch.ones(D_pred.size()), create_graph=True, retain_graph=True)[0]
+        grads = torch_grad(outputs=D_pred, inputs=interpltd, grad_outputs=torch.ones(D_pred.size(), device=device), create_graph=True, retain_graph=True)[0]
         if x.shape[1]==1: # calculate the norm
             norm = torch.sqrt(torch.square(grads))
         else:

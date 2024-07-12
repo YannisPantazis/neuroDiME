@@ -34,7 +34,6 @@ DIM_G = 128 # Generator dimensionality
 DIM_D = 128 # Critic dimensionality
 NORMALIZATION_G = True # Use batchnorm in generator?
 NORMALIZATION_D = False # Use batchnorm (or layernorm) in critic? This doesn't do anything at the moment.
-OUTPUT_DIM = 3072 # Number of pixels in cifar10 (32*32*3)
 DECAY = True # Whether to decay LR over learning
 INCEPTION_FREQUENCY = 100 # How frequently to calculate Inception score
 j=0
@@ -42,12 +41,13 @@ LR = 2e-4 # Initial learning rate
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
+
 def main():
     # read input arguments
     parser = argparse.ArgumentParser(description='Neural-based Estimation of Divergences between Gaussians')
     parser.add_argument('--method', default='KLD-DV', type=str, metavar='method',
                         help='values: IPM, KLD-DV, KLD-LT, squared-Hel-LT, chi-squared-LT, JS-LT, alpha-LT, Renyi-DV, Renyi-CC, rescaled-Renyi-CC, Renyi-CC-WCR')
-    parser.add_argument('--disc_steps_per_gen_step', default=5, type=int)
+    parser.add_argument('--disc_steps_per_gen_step', default=1, type=int)
     parser.add_argument('--batch_size', default=64, type=int, metavar='m')
     parser.add_argument('--lr', default=0.001, type=float)
     parser.add_argument('--epochs', default=100, type=int,
@@ -59,9 +59,11 @@ def main():
     parser.add_argument('--bounded', choices=('True','False'), default='False')
     parser.add_argument('--reverse_order', choices=('True','False'), default='False')
     parser.add_argument('--use_GP', choices=('True','False'), default='False')
-
-
-
+    parser.add_argument('--dataset', choices=('cifar10', 'mnist'), default='cifar10', type=str, metavar='dataset')
+    parser.add_argument('--save_model', choices=('True','False'), default='False', type=str, metavar='save_model')
+    parser.add_argument('--save_model_path', default='./trained_models/', type=str, metavar='save_model_path')
+    parser.add_argument('--load_model', choices=('True','False'), default='False', type=str, metavar='load_model')  
+    parser.add_argument('--load_model_path', default='trained_models/', type=str, metavar='load_model_path')
     parser.add_argument('--run_number', default=1, type=int, metavar='run_num')
 
     opt = parser.parse_args()
@@ -89,15 +91,38 @@ def main():
     bounded=opt_dict['bounded']=='True'
     reverse_order = opt_dict['reverse_order']=='True'
     use_GP = opt_dict['use_GP']=='True'
-
+    dataset = opt_dict['dataset']
+    save_model = opt_dict['save_model']=='True'
+    save_model_path = opt_dict['save_model_path']
+    load_model = opt_dict['load_model']=='True'
+    load_model_path = opt_dict['load_model_path']
+    
     print("Spectral_norm: "+str(spec_norm))
     print("Bounded: "+str(bounded))
     print("Reversed: "+str(reverse_order))
     print("Use Gradient Penalty: "+str(use_GP))
-
+        
+    if dataset=="cifar10":
+        transform = transforms.Compose([
+            transforms.ToTensor(),
+            transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
+        ])
+        train_dataset = datasets.CIFAR10(root='data', train=True, transform=transform, download=True)
+        input_dim=3
+        OUTPUT_DIM = 3072 # Number of pixels in cifar10 (32*32*3)
+    elif dataset=="mnist":
+        transform = transforms.Compose([
+            transforms.ToTensor(),
+            transforms.Normalize((0.5,), (0.5,))
+        ])        
+        train_dataset = datasets.MNIST(root='data', train=True, transform=transform, download=True)
+        input_dim=1
+        OUTPUT_DIM = 784 # Number of pixels in mnist (28*28)
+        
+    train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True, num_workers=4)
 
     generator = Generator(dim_g=DIM_G, output_dim=OUTPUT_DIM).to(device)
-    discriminator = Discriminator(input_dim=3, dim_d=DIM_D).to(device)
+    discriminator = Discriminator(input_dim=input_dim, dim_d=DIM_D).to(device)
 
     summary(generator)
     print()
@@ -111,15 +136,7 @@ def main():
     elif optimizer == 'Adam':
         gen_opt = optim.Adam(generator.parameters(), lr=LR, betas=(0., 0.9))
         disc_opt = optim.Adam(discriminator.parameters(), lr=LR, betas=(0., 0.9))
-
-    transform = transforms.Compose([
-        transforms.ToTensor(),
-        transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
-    ])
-
-    train_dataset = datasets.CIFAR10(root='data', train=True, transform=transform, download=True)
-    train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True, num_workers=4)
-
+    
     # construct gradient penalty
     if use_GP:
         discriminator_penalty=Gradient_Penalty_1Sided(gp_weight, L)
@@ -166,35 +183,47 @@ def main():
     def noise_source(batch_size):
         return torch.randn(batch_size, DIM_G, device=device)
 
-    GAN_model = GAN_CIFAR10(div_dense, generator, gen_opt, noise_source, epochs, disc_steps_per_gen_step, mthd, m, reverse_order)
-    generator_samples, loss_array, gen_losses, disc_losses = GAN_model.train(train_loader, save_frequency, num_gen_samples_to_save)
+    GAN_model = GAN_CIFAR10(div_dense, generator, gen_opt, noise_source, epochs, disc_steps_per_gen_step, mthd, dataset, m, reverse_order)
     
-    if not os.path.exists(f'generated_samples/'):
-        os.makedirs(f'generated_samples/')
-    
-    # Save the loss vs epoch plot
-    epoch_ax = np.arange(start=1, stop=epochs+1, step=1)
-    _, ax = plt.subplots(1, 2, figsize=(15, 5))
-
-    ax[0].plot(epoch_ax, disc_losses, color='blue')
-    ax[0].set_xlim(1, epochs)
-    ax[0].set_title("Discriminator Loss vs Epoch")
-    ax[0].grid()
-
-    ax[1].plot(epoch_ax, gen_losses, color='red')
-    ax[1].set_xlim(1, epochs)
-    ax[1].set_title("Generator Loss vs Epoch")
-    ax[1].grid()
-
-    plt.tight_layout()
-    if use_GP:
-        plt.savefig(f'samples_{mthd}_GP/loss_vs_epoch.png')
+    # Load the model if specified
+    if load_model:
+        load_model_path = os.path.join(load_model_path, f'{mthd}_{dataset}.pt')
+        GAN_model.load(load_model_path)
+        print(f"Model loaded from {load_model_path}")
     else:
-        plt.savefig(f'samples_{mthd}/loss_vs_epoch.png')
-    plt.show()
-    plt.close()    
+        generator_samples, loss_array, gen_losses, disc_losses = GAN_model.train(train_loader, save_frequency, num_gen_samples_to_save)
     
+        if not os.path.exists(f'generated_samples/'):
+            os.makedirs(f'generated_samples/')
+        
+        # Save the loss vs epoch plot
+        epoch_ax = np.arange(start=1, stop=epochs+1, step=1)
+        _, ax = plt.subplots(1, 2, figsize=(15, 5))
 
+        ax[0].plot(epoch_ax, disc_losses, color='blue')
+        ax[0].set_xlim(1, epochs)
+        ax[0].set_title("Discriminator Loss vs Epoch")
+        ax[0].grid()
+
+        ax[1].plot(epoch_ax, gen_losses, color='red')
+        ax[1].set_xlim(1, epochs)
+        ax[1].set_title("Generator Loss vs Epoch")
+        ax[1].grid()
+
+        plt.tight_layout()
+        if use_GP:
+            plt.savefig(f'samples_{mthd}_GP_{dataset}/loss_vs_epoch.png')
+        else:
+            plt.savefig(f'samples_{mthd}_{dataset}/loss_vs_epoch.png')
+        plt.show()
+        plt.close()    
+    
+    # Save the model
+    if save_model:
+        save_model_path = os.path.join(save_model_path, f'{mthd}_{dataset}.pt')
+        GAN_model.save(save_model_path)
+        print(f"Model saved at {save_model_path}")
+    
     
 if __name__ == '__main__':
     main()

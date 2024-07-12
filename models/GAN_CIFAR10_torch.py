@@ -6,6 +6,12 @@ import torch.nn.functional as F
 import numpy as np
 import matplotlib.pyplot as plt
 import os
+from torchvision.models import inception_v3
+from scipy.linalg import sqrtm
+from torch.nn.functional import adaptive_avg_pool2d
+from tqdm import tqdm
+from torchvision import datasets, transforms
+from PIL import Image
 
 DIM_G = 128 # Generator dimensionality
 DIM_D = 128 # Critic dimensionality
@@ -303,11 +309,11 @@ class ConvBlockSpecNorm(nn.Module):
     
     
 class OptimizedConvBlockDisc1(nn.Module):
-    def __init__(self):
+    def __init__(self, input_dim):
         super(OptimizedConvBlockDisc1, self).__init__()
-        self.conv_1 = nn.Conv2D(in_channels=3, out_channels=DIM_D, kernel_size=3)
+        self.conv_1 = nn.Conv2D(in_channels=input_dim, out_channels=DIM_D, kernel_size=3)
         self.conv_2 = ConvMeanPool(input_dim=DIM_D, output_dim=DIM_D, filter_size=3)
-        self.conv_shortcut = MeanPoolConv(input_dim=3, output_dim=DIM_D, filter_size=1, he_init=False, biases=True)
+        self.conv_shortcut = MeanPoolConv(input_dim=input_dim, output_dim=DIM_D, filter_size=1, he_init=False, biases=True)
 
     def forward(self, inputs):
         shortcut = self.conv_shortcut(inputs)
@@ -320,9 +326,9 @@ class OptimizedConvBlockDisc1(nn.Module):
     
     
 class OptimizedConvBlockDisc1SpecNorm(nn.Module):
-    def __init__(self):
+    def __init__(self, input_dim):
         super(OptimizedConvBlockDisc1SpecNorm, self).__init__()
-        self.conv_1 = spectral_norm(nn.Conv2d(in_channels=3, out_channels=DIM_D, kernel_size=3))
+        self.conv_1 = spectral_norm(nn.Conv2d(in_channels=input_dim, out_channels=DIM_D, kernel_size=3))
         self.conv_2 = ConvMeanPoolSpecNorm(input_dim=DIM_D, output_dim=DIM_D, filter_size=3)
 
     def forward(self, inputs):
@@ -342,11 +348,14 @@ class Generator(nn.Module):
         self.res_block2 = ResidualBlock(dim_g, dim_g, 3, resample='up')
         self.res_block3 = ResidualBlock(dim_g, dim_g, 3, resample='up')
         self.norm = Normalize(dim_g)
-        self.conv = nn.Conv2d(dim_g, 3, 3, padding=1)
-    
+        self.conv = nn.Conv2d(dim_g, 1 if output_dim == 784 else 3, 3, padding=1)
+        if output_dim == 784:
+            self.adjust_conv = nn.Conv2d(1, 1, 3, padding=1)  # Additional conv layer to adjust size for MNIST
+
     def forward(self, n_samples, labels=None, noise=None):
         if noise is None:
             noise = torch.randn(n_samples, 128)
+            
         output = self.linear(noise)
         output = output.view(-1, self.dim_g, 4, 4)
 
@@ -354,26 +363,35 @@ class Generator(nn.Module):
 
         output = self.res_block2(output, labels=labels)
 
-        output = self.res_block3(output, labels=labels)
-        
+        output = self.res_block3(output, labels=labels)        
         output = self.norm(output)
+
         output = F.relu(output)
         output = self.conv(output)
         output = torch.tanh(output)
-        return output.view(-1, self.output_dim)
+        
+        if self.output_dim == 1 * 28 * 28:
+            output = F.interpolate(output, size=(28, 28), mode='bilinear', align_corners=False)
+            return output.view(-1, 1, 28, 28)  # MNIST
+        else:
+            return output.view(-1, 3, 32, 32)  # CIFAR-10
     
 
 class Discriminator(nn.Module):
     def __init__(self, input_dim, dim_d):
         super(Discriminator, self).__init__()
-        self.optimized_block = OptimizedConvBlockDisc1SpecNorm()
+        self.optimized_block = OptimizedConvBlockDisc1SpecNorm(input_dim)
         self.conv_block_2 = ConvBlockSpecNorm(dim_d, dim_d, 3, resample='down')
         self.conv_block_3 = ConvBlockSpecNorm(dim_d, dim_d, 3, resample=None)
         self.conv_block_4 = ConvBlockSpecNorm(dim_d, dim_d, 3, resample=None)
         self.linear = spectral_norm(nn.Linear(dim_d, 1))
 
+        
     def forward(self, inputs, labels=None):
-        output = inputs.view(-1, 3, 32, 32)
+        if inputs.shape[1] == 1:
+            output = inputs.view(-1, 1, 28, 28)
+        else:
+            output = inputs.view(-1, 3, 32, 32)
         output = self.optimized_block(output)
         output = self.conv_block_2(output)
         output = self.conv_block_3(output)
@@ -389,10 +407,56 @@ class Discriminator(nn.Module):
 def f_alpha_star(y,alpha):
     return torch.math.pow(F.relu(y),alpha/(alpha-1.0))*torch.math.pow((alpha-1.0),alpha/(alpha-1.0))/alpha+1/(alpha*(alpha-1.0))
 
+def calculate_fid(real_images, generated_images, batch_size=50):
+    model = inception_v3(pretrained=True, transform_input=False).to(device)
+    model.eval()
 
-import torch
-import torch.nn as nn
-from tqdm import tqdm
+    def get_activations(images):
+        n_batches = images.size(0) // batch_size
+        pred_arr = np.empty((images.size(0), 2048))
+
+        for i in range(n_batches):
+            batch = images[i * batch_size: (i + 1) * batch_size].to(device)
+            print(batch.shape)
+            pred = model(batch)[0]
+            pred = adaptive_avg_pool2d(pred, (1, 1)).squeeze().cpu().data.numpy()
+            pred_arr[i * batch_size: (i + 1) * batch_size] = pred
+
+        return pred_arr
+
+    real_activations = get_activations(real_images)
+    generated_activations = get_activations(generated_images)
+
+    mu1, sigma1 = real_activations.mean(axis=0), np.cov(real_activations, rowvar=False)
+    mu2, sigma2 = generated_activations.mean(axis=0), np.cov(generated_activations, rowvar=False)
+
+    ssdiff = np.sum((mu1 - mu2) ** 2.0)
+    covmean = sqrtm(sigma1.dot(sigma2))
+
+    if np.iscomplexobj(covmean):
+        covmean = covmean.real
+
+    fid = ssdiff + np.trace(sigma1 + sigma2 - 2.0 * covmean)
+    return fid
+
+
+def transform_image(image):
+    # Check if the image is already a tensor
+    if isinstance(image, torch.Tensor):
+        return image  # If it is, return it as is
+    elif isinstance(image, np.ndarray):
+        image = Image.fromarray(image)  # Convert ndarray to PIL Image
+    elif not isinstance(image, Image.Image):
+        raise TypeError(f"Expected image to be of type PIL Image or ndarray, but got {type(image)}")
+
+    transform = transforms.Compose([
+            transforms.Resize((299, 299)),
+            transforms.ToTensor(),
+            transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])  # Normalize the image
+            ])
+
+    # Apply the necessary transformations
+    return transform(image)
 
 class GAN_CIFAR10():
     '''
@@ -401,7 +465,7 @@ class GAN_CIFAR10():
     If reverse_order=True the GAN works to minimize min_theta D(g_theta(Z)||P) where P is the distribution to be leared, Z is the noise source and g_theta is the generator (with parameters theta).
     '''
     # initialize
-    def __init__(self, divergence, generator, gen_optimizer, noise_source, epochs, disc_steps_per_gen_step, method, batch_size=None, reverse_order=False, include_penalty_in_gen_loss=False, conditional=False):
+    def __init__(self, divergence, generator, gen_optimizer, noise_source, epochs, disc_steps_per_gen_step, method, dataset, batch_size=None, reverse_order=False, include_penalty_in_gen_loss=False, conditional=False):
         self.divergence = divergence # Variational divergence
         self.generator = generator
         self.epochs = epochs
@@ -412,7 +476,8 @@ class GAN_CIFAR10():
         self.noise_source = noise_source
         self.conditional = conditional
         self.method = method
-
+        self.dataset = dataset
+        
         if batch_size is None:
             self.batch_size = self.divergence.batch_size
         else:
@@ -422,11 +487,11 @@ class GAN_CIFAR10():
         ''' Estimating the loss '''
         # z = torch.from_numpy(z).float()
         if self.reverse_order:
-            data1 = self.generator(z)
+            data1 = self.generator(self.batch_size, labels, z)
             data2 = x
         else:
             data1 = x
-            data2 = self.generator(z)
+            data2 = self.generator(self.batch_size, labels, z)
 
         return self.divergence.estimate(data1, data2)
     
@@ -465,8 +530,9 @@ class GAN_CIFAR10():
         
         loss = self.divergence.train_step(data1, data2, labels)
 
-        for p in self.divergence.discriminator.parameters():
-            p.data.clamp_(-0.01, 0.01)
+        if self.divergence.discriminator_penalty is not None:
+            for p in self.divergence.discriminator.parameters():
+                p.data.clamp_(-0.01, 0.01)
 
         return loss.item()
 
@@ -475,6 +541,7 @@ class GAN_CIFAR10():
         ''' training function of our GAN '''
         generator_samples = []
         loss_estimates = []
+        fids = []
         gen_losses = np.zeros(self.epochs)
         disc_losses = np.zeros(self.epochs)
 
@@ -499,34 +566,62 @@ class GAN_CIFAR10():
             
             gen_losses[epoch] = gen_loss / len(dataloader)
             disc_losses[epoch] = disc_loss / len(dataloader)
+           
+            # Generate images
+            generated_images = []
+            for _ in range(10000 // self.batch_size):
+                noise = self.noise_source(self.batch_size).to(device)
+                with torch.no_grad():
+                    generated = self.generator(self.batch_size, labels=None, noise=noise).detach().cpu()
+                    generated = torch.stack([transform_image(img) for img in generated])
+                    print(generated.shape)
+                    generated_images.append(generated)
+            generated_images = torch.cat(generated_images, 0)
             
+            # Load real images
+            real_images = []
+            for _, (images, _) in zip(range(10000 // self.batch_size), dataloader):
+                images = images.to(device)
+                images = torch.stack([transform_image(img) for img in images])
+                real_images.append(images)
+            real_images = torch.cat(real_images, 0)
+
+            fid = calculate_fid(real_images, generated_images)
+            fids.append(fid)
+
             if save_frequency is not None and (epoch+1) % save_frequency == 0:
-                print('Epoch:', epoch+1, 'Gen Loss:', gen_losses[epoch], 'Disc Loss:', disc_losses[epoch])
+                print('Epoch:', epoch+1, 'Gen Loss:', gen_losses[epoch], 'Disc Loss:', disc_losses[epoch], 'FID:', fids[epoch])
                 
-                self.generate_image(self.generator, epoch+1)
+                self.generate_image(self.generator, epoch+1, show=False)
                 
                 # if save_loss_estimates:
                 #     loss_estimates.append(float(self.estimate_loss(data, noise_batch)))
 
         return generator_samples, loss_estimates, gen_losses, disc_losses
     
-    def generate_image(self, generator, frame):
+    def generate_image(self, generator, frame, n_samples=12, show=True, labels=None):
+        
         if self.divergence.discriminator_penalty:
-            if not os.path.exists(f'samples_{self.method}_GP/'):
-                os.makedirs(f'samples_{self.method}_GP/')
+            if not os.path.exists(f'samples_{self.method}_GP_{self.dataset}/'):
+                os.makedirs(f'samples_{self.method}_GP_{self.dataset}/')
         else:
-            if not os.path.exists(f'samples_{self.method}/'):
-                os.makedirs(f'samples_{self.method}/')
+            if not os.path.exists(f'samples_{self.method}_{self.dataset}/'):
+                os.makedirs(f'samples_{self.method}_{self.dataset}/')
 
         """Generate a batch of images and save them to a grid."""
         generator.eval()
-        n_samples = 12
-        fixed_noise = torch.randn(n_samples, 128, device=device)
-        fixed_labels = torch.tensor(np.array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9] * n_samples), dtype=torch.long, device=device)
+        fixed_noise = torch.randn(n_samples, DIM_G, device=device)
+        fixed_labels = torch.tensor(np.array([0,1,2,3,4,5,6,7,8,9]*10), dtype=torch.long, device=device)
+        
+        # fixed_labels = torch.tensor(np.array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9] * n_samples), dtype=torch.long, device=device)
+        
         with torch.no_grad():
             samples = generator(n_samples, labels=fixed_labels, noise=fixed_noise).detach().cpu()
             samples = ((samples + 1) * 127.5).clamp(0, 255).to(torch.uint8)
-            samples = samples.view(n_samples, 3, 32, 32)
+            if samples.shape[1] == 1:
+                samples = samples.view(n_samples, 1, 28, 28)
+            else:
+                samples = samples.view(n_samples, 3, 32, 32)
             samples = samples.permute(0, 2, 3, 1)
 
             n_rows = (n_samples + 3) // 4
@@ -539,11 +634,30 @@ class GAN_CIFAR10():
             for i, axis in enumerate(axs.flat[:n_samples]):
                 axis.imshow(samples[i], cmap='binary')
             plt.subplots_adjust(wspace=0.1, hspace=0.1)
+            
             if self.divergence.discriminator_penalty:
-                plt.savefig(f'samples_{self.method}_GP/gen_images_{frame}.png')
+                plt.savefig(f'samples_{self.method}_GP_{self.dataset}/gen_images_{frame}.png')
             else:
-                plt.savefig(f'samples_{self.method}/gen_images_{frame}.png')
-            # plt.show()
+                plt.savefig(f'samples_{self.method}_{self.dataset}/gen_images_{frame}.png')
+            
+            if show:
+                plt.show()
             plt.close(fig)
 
         generator.train()
+        
+    def save(self, path):
+        torch.save({
+            'generator_state_dict': self.generator.state_dict(),
+            'gen_optimizer_state_dict': self.gen_optimizer.state_dict(),
+            'discriminator_state_dict': self.divergence.discriminator.state_dict(),
+            'discriminator_optimizer_state_dict': self.divergence.disc_optimizer.state_dict(),
+        }, path)
+        
+    def load(self, path):
+        checkpoint = torch.load(path)
+        self.generator.load_state_dict(checkpoint['generator_state_dict'])
+        self.gen_optimizer.load_state_dict(checkpoint['gen_optimizer_state_dict'])
+        self.divergence.discriminator.load_state_dict(checkpoint['discriminator_state_dict'])
+        self.divergence.disc_optimizer.load_state_dict(checkpoint['discriminator_optimizer_state_dict'])
+        

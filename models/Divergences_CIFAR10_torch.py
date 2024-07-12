@@ -424,7 +424,13 @@ class Gradient_Penalty_1Sided(Discriminator_Penalty):
         ''' computed the one-sided gradient penalty '''
         temp_shape = [x.shape[0]] + [1 for _ in  range(len(x.shape)-1)]
         ratio = torch.rand(temp_shape, dtype=torch.float32, requires_grad=True, device=device)
-        x = x.view(x.shape[0], -1)
+        
+        if len(x.shape)>2:
+            x = x.view(x.shape[0], -1)
+        
+        if len(y.shape)>2:
+            y = y.view(y.shape[0], -1)
+
         diff = y - x
         interpltd = x + (ratio * diff) # get the interpolated samples
 
@@ -462,13 +468,13 @@ class Gradient_Penalty_2Sided(Discriminator_Penalty):
     def evaluate(self, discriminator, x, y, labels): 
         ''' computed the two-sided gradient penalty '''
         temp_shape = [x.shape[0]] + [1 for _ in  range(len(x.shape)-1)]
-        ratio = torch.rand(temp_shape, dtype=torch.float32)
+        ratio = torch.rand(temp_shape, dtype=torch.float32, requires_grad=True, device=device)
         diff = y - x
         interpltd = x + (ratio * diff) # get the interpolated samples
 
         D_pred, _ = discriminator(interpltd, labels)
 
-        grads = torch_grad(outputs=D_pred, inputs=interpltd, grad_outputs=torch.ones(interpltd.size()), create_graph=True, retain_graph=True)[0]
+        grads = torch_grad(outputs=D_pred, inputs=interpltd, grad_outputs=torch.ones(interpltd.size(), device=device), create_graph=True, retain_graph=True)[0]
         if x.shape[1]==1: # calculate the norm
             norm = torch.sqrt(torch.square(grads))
         else:
