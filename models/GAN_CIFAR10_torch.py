@@ -11,7 +11,9 @@ from scipy.linalg import sqrtm
 from torch.nn.functional import adaptive_avg_pool2d
 from tqdm import tqdm
 from torchvision import datasets, transforms
+from torchvision.utils import make_grid, save_image
 from PIL import Image
+from torchmetrics.image.inception import InceptionScore
 
 DIM_G = 128 # Generator dimensionality
 DIM_D = 128 # Critic dimensionality
@@ -400,63 +402,56 @@ class Discriminator(nn.Module):
         output = F.relu(output)
         output = torch.mean(output, dim=[2, 3])
         output = self.linear(output)
-        return output.view(-1), None
+        return output.view(-1)
 
 
 #for alpha>1
 def f_alpha_star(y,alpha):
     return torch.math.pow(F.relu(y),alpha/(alpha-1.0))*torch.math.pow((alpha-1.0),alpha/(alpha-1.0))/alpha+1/(alpha*(alpha-1.0))
 
-def calculate_fid(real_images, generated_images, batch_size=50):
-    model = inception_v3(pretrained=True, transform_input=False).to(device)
-    model.eval()
 
-    def get_activations(images):
-        n_batches = images.size(0) // batch_size
-        pred_arr = np.empty((images.size(0), 2048))
+def get_inception_score(n, generator):
+    """
+    Calculates the inception score for generated samples from the Generator model.
 
-        for i in range(n_batches):
-            batch = images[i * batch_size: (i + 1) * batch_size].to(device)
-            print(batch.shape)
-            pred = model(batch)[0]
-            pred = adaptive_avg_pool2d(pred, (1, 1)).squeeze().cpu().data.numpy()
-            pred_arr[i * batch_size: (i + 1) * batch_size] = pred
+    Parameters:
+    - n: Total number of samples to generate and evaluate.
+    - generator: The generator model instance.
 
-        return pred_arr
+    Returns:
+    - Inception score for the generated samples.
+    """
+    
+    # Set the generator to evaluation mode
+    generator.eval()
+    
+    all_samples = []
+    
+    # Generate samples in batches of 100
+    with torch.no_grad():
+        for _ in range(int(n / 100)):
+            noise = torch.randn(n, DIM_G, device=device)
+            fake_labels = torch.randint(0, 10, (n,), device=device)
+            fake_labels_one_hot = torch.nn.functional.one_hot(fake_labels, num_classes=10).float()
+            samples = generator(n_samples=n, noise=noise, labels=fake_labels_one_hot)
 
-    real_activations = get_activations(real_images)
-    generated_activations = get_activations(generated_images)
+            if samples.shape[1] == 1:
+                samples = samples.repeat(1, 3, 1, 1)
+                
+            all_samples.append(samples.cpu())
+    
+    # Concatenate all batches into one tensor
+    all_samples = torch.cat(all_samples, dim=0)
+    
+    # Post-process samples to fit the range [0, 255]
+    all_samples = ((all_samples + 1) * 127.5).clamp(0, 255).byte()
+    
+    # Calculate and return the inception score
+    inception_score = InceptionScore()
+    mean_score, std_score = inception_score(all_samples)
 
-    mu1, sigma1 = real_activations.mean(axis=0), np.cov(real_activations, rowvar=False)
-    mu2, sigma2 = generated_activations.mean(axis=0), np.cov(generated_activations, rowvar=False)
+    return mean_score.item(), std_score.item()
 
-    ssdiff = np.sum((mu1 - mu2) ** 2.0)
-    covmean = sqrtm(sigma1.dot(sigma2))
-
-    if np.iscomplexobj(covmean):
-        covmean = covmean.real
-
-    fid = ssdiff + np.trace(sigma1 + sigma2 - 2.0 * covmean)
-    return fid
-
-
-def transform_image(image):
-    # Check if the image is already a tensor
-    if isinstance(image, torch.Tensor):
-        return image  # If it is, return it as is
-    elif isinstance(image, np.ndarray):
-        image = Image.fromarray(image)  # Convert ndarray to PIL Image
-    elif not isinstance(image, Image.Image):
-        raise TypeError(f"Expected image to be of type PIL Image or ndarray, but got {type(image)}")
-
-    transform = transforms.Compose([
-            transforms.Resize((299, 299)),
-            transforms.ToTensor(),
-            transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])  # Normalize the image
-            ])
-
-    # Apply the necessary transformations
-    return transform(image)
 
 class GAN_CIFAR10():
     '''
@@ -541,9 +536,10 @@ class GAN_CIFAR10():
         ''' training function of our GAN '''
         generator_samples = []
         loss_estimates = []
-        fids = []
         gen_losses = np.zeros(self.epochs)
         disc_losses = np.zeros(self.epochs)
+        mean_scores = np.zeros(self.epochs)
+        std_scores = np.zeros(self.epochs)
 
         for epoch in tqdm(range(self.epochs), desc='Epochs'):
             disc_loss = 0
@@ -551,53 +547,33 @@ class GAN_CIFAR10():
 
             for data, labels in dataloader:
                 noise_batch = self.noise_source(self.batch_size)
+
                 data = data.to(device)
                 labels = labels.to(device)
-                
+
                 if not self.conditional:
                     labels = None
-                    
+                
                 for disc_step in range(self.disc_steps_per_gen_step):
                     disc_cost = self.disc_train_step(data, noise_batch, labels)
                     disc_loss += disc_cost
 
                 gen_cost = self.gen_train_step(data, noise_batch, labels)
                 gen_loss += gen_cost
-            
+
             gen_losses[epoch] = gen_loss / len(dataloader)
             disc_losses[epoch] = disc_loss / len(dataloader)
-           
-            # Generate images
-            generated_images = []
-            for _ in range(10000 // self.batch_size):
-                noise = self.noise_source(self.batch_size).to(device)
-                with torch.no_grad():
-                    generated = self.generator(self.batch_size, labels=None, noise=noise).detach().cpu()
-                    generated = torch.stack([transform_image(img) for img in generated])
-                    print(generated.shape)
-                    generated_images.append(generated)
-            generated_images = torch.cat(generated_images, 0)
-            
-            # Load real images
-            real_images = []
-            for _, (images, _) in zip(range(10000 // self.batch_size), dataloader):
-                images = images.to(device)
-                images = torch.stack([transform_image(img) for img in images])
-                real_images.append(images)
-            real_images = torch.cat(real_images, 0)
+            mean_scores[epoch], std_scores[epoch] = get_inception_score(100, self.generator)
 
-            fid = calculate_fid(real_images, generated_images)
-            fids.append(fid)
-
-            if save_frequency is not None and (epoch+1) % save_frequency == 0:
-                print('Epoch:', epoch+1, 'Gen Loss:', gen_losses[epoch], 'Disc Loss:', disc_losses[epoch], 'FID:', fids[epoch])
+            if save_frequency is not None and (epoch) % save_frequency == 0:
+                print('Epoch:', epoch, 'Gen Loss:', gen_losses[epoch], 'Disc Loss:', disc_losses[epoch], 'Mean Score:', mean_scores[epoch], 'STD Score:', std_scores[epoch])   
                 
-                self.generate_image(self.generator, epoch+1, show=False)
+                self.generate_image(self.generator, epoch, show=False, n_samples=100)
                 
                 # if save_loss_estimates:
                 #     loss_estimates.append(float(self.estimate_loss(data, noise_batch)))
 
-        return generator_samples, loss_estimates, gen_losses, disc_losses
+        return generator_samples, loss_estimates, gen_losses, disc_losses, mean_scores, std_scores
     
     def generate_image(self, generator, frame, n_samples=12, show=True, labels=None):
         
@@ -611,41 +587,27 @@ class GAN_CIFAR10():
         """Generate a batch of images and save them to a grid."""
         generator.eval()
         fixed_noise = torch.randn(n_samples, DIM_G, device=device)
-        fixed_labels = torch.tensor(np.array([0,1,2,3,4,5,6,7,8,9]*10), dtype=torch.long, device=device)
+        fixed_labels = torch.tensor(np.arange(n_samples) % 10, dtype=torch.long, device=device)
         
         # fixed_labels = torch.tensor(np.array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9] * n_samples), dtype=torch.long, device=device)
         
         with torch.no_grad():
             samples = generator(n_samples, labels=fixed_labels, noise=fixed_noise).detach().cpu()
-            samples = ((samples + 1) * 127.5).clamp(0, 255).to(torch.uint8)
+            # samples = ((samples + 1) * 127.5).clamp(0, 255).to(torch.uint8)
             if samples.shape[1] == 1:
                 samples = samples.view(n_samples, 1, 28, 28)
             else:
                 samples = samples.view(n_samples, 3, 32, 32)
-            samples = samples.permute(0, 2, 3, 1)
+            # samples = samples.permute(0, 2, 3, 1)
 
-            n_rows = (n_samples + 3) // 4
-            fig, axs = plt.subplots(
-                nrows=n_rows,
-                ncols=4,
-                figsize=(8, 2*n_rows),
-                subplot_kw={'xticks': [], 'yticks': [], 'frame_on': False}
-            )
-            for i, axis in enumerate(axs.flat[:n_samples]):
-                axis.imshow(samples[i], cmap='binary')
-            plt.subplots_adjust(wspace=0.1, hspace=0.1)
-            
             if self.divergence.discriminator_penalty:
-                plt.savefig(f'samples_{self.method}_GP_{self.dataset}/gen_images_{frame}.png')
+                path = f'samples_{self.method}_GP_{self.dataset}/gen_images_{frame}.png'
             else:
-                plt.savefig(f'samples_{self.method}_{self.dataset}/gen_images_{frame}.png')
-            
-            if show:
-                plt.show()
-            plt.close(fig)
+                path = f'samples_{self.method}_{self.dataset}/gen_images_{frame}.png'
 
+            save_image(samples, path, normalize=True)
         generator.train()
-        
+
     def save(self, path):
         torch.save({
             'generator_state_dict': self.generator.state_dict(),
@@ -660,4 +622,3 @@ class GAN_CIFAR10():
         self.gen_optimizer.load_state_dict(checkpoint['gen_optimizer_state_dict'])
         self.divergence.discriminator.load_state_dict(checkpoint['discriminator_state_dict'])
         self.divergence.disc_optimizer.load_state_dict(checkpoint['discriminator_optimizer_state_dict'])
-        

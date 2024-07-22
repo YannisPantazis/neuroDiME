@@ -3,7 +3,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
 import math
-from torch.autograd import grad as torch_grad
+from torch.autograd import grad as torch_grad, Variable 
 from tqdm import tqdm
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
@@ -26,7 +26,7 @@ class Divergence_CIFAR10(nn.Module):
         return 'discriminator: {}'.format(self.discriminator)
 
     def discriminate(self, x, labels):            
-        y, _ = self.discriminator(x, labels)
+        y = self.discriminator(x, labels)
         return y
     
     def eval_var_formula(self, x, y, labels): 
@@ -48,10 +48,11 @@ class Divergence_CIFAR10(nn.Module):
         self.disc_optimizer.zero_grad()
         # data.requires_grad_(True)
         # noise.requires_grad_(True)
-        
+
         loss = -self.discriminator_loss(data, noise, labels) # with minus because we maximize the discriminator loss
         if self.discriminator_penalty is not None:
-            loss = loss + self.discriminator_penalty.evaluate(self.discriminator, data, noise, labels)
+            gp = self.discriminator_penalty.evaluate(self.discriminator, data, noise, labels)
+            loss = loss + gp
         
         loss.backward()
         self.disc_optimizer.step()
@@ -465,20 +466,46 @@ class Gradient_Penalty_2Sided(Discriminator_Penalty):
         self.Lip_const = L
     
 
-    def evaluate(self, discriminator, x, y, labels): 
-        ''' computed the two-sided gradient penalty '''
-        temp_shape = [x.shape[0]] + [1 for _ in  range(len(x.shape)-1)]
-        ratio = torch.rand(temp_shape, dtype=torch.float32, requires_grad=True, device=device)
-        diff = y - x
-        interpltd = x + (ratio * diff) # get the interpolated samples
+    # def evaluate(self, discriminator, x, y, labels): 
+    #     ''' computed the two-sided gradient penalty '''
+    #     temp_shape = [x.shape[0]] + [1 for _ in  range(len(x.shape)-1)]
+    #     ratio = torch.rand(temp_shape, dtype=torch.float32, requires_grad=True, device=device)
+    #     diff = y - x
+    #     interpltd = x + (ratio * diff) # get the interpolated samples
 
-        D_pred, _ = discriminator(interpltd, labels)
+    #     D_pred, _ = discriminator(interpltd, labels)
 
-        grads = torch_grad(outputs=D_pred, inputs=interpltd, grad_outputs=torch.ones(interpltd.size(), device=device), create_graph=True, retain_graph=True)[0]
-        if x.shape[1]==1: # calculate the norm
-            norm = torch.sqrt(torch.square(grads))
-        else:
-            norm = torch.sqrt(torch.sum(torch.square(grads)))
+    #     grads = torch_grad(outputs=D_pred, inputs=interpltd, grad_outputs=torch.ones(interpltd.size(), device=device), create_graph=True, retain_graph=True)[0]
+    #     if x.shape[1]==1: # calculate the norm
+    #         norm = torch.sqrt(torch.square(grads))
+    #     else:
+    #         norm = torch.sqrt(torch.sum(torch.square(grads)))
 
-        gp = self.penalty_weight*torch.mean((norm - self.Lip_const) ** 2) # two-sided gradient penalty
+    #     gp = self.penalty_weight*torch.mean((norm - self.Lip_const) ** 2) # two-sided gradient penalty
+    #     return gp
+
+    def evaluate(self, discriminator, x, y, labels):
+        ''' Compute the one-sided gradient pentalty'''
+        batch_size = x.shape[0]
+
+        # Calculate interpolation
+        alpha = torch.rand(batch_size, 1, 1, 1)
+        alpha = alpha.expand_as(x).to(device)
+
+        interpolated = alpha * x + (1 - alpha) * y
+        interpolated = Variable(interpolated, requires_grad=True).to(device)
+
+        # Calculate probability of interpolated examples
+        prob_interpolated = discriminator(interpolated, labels)
+
+        # Calculate gradients of probabilities with respect to examples
+        gradients = torch_grad(outputs=prob_interpolated, inputs=interpolated,\
+                                grad_outputs=torch.ones(prob_interpolated.size()).to(device),
+                                create_graph=True, retain_graph=True)[0]
+        
+        gradients = gradients.view(batch_size, -1)
+        gradients_norm = torch.sqrt(torch.sum(gradients ** 2, dim=1) + 1e-12)
+
+        gp = self.penalty_weight * torch.mean((gradients_norm - self.Lip_const) ** 2)
+
         return gp

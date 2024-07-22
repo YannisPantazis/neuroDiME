@@ -41,6 +41,12 @@ LR = 2e-4 # Initial learning rate
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
+if device == 'cuda':
+    torch.cuda.init()
+    torch.cuda.current_device()
+    print(f"Current CUDA device: {torch.cuda.current_device()}")
+
+
 
 def main():
     # read input arguments
@@ -49,7 +55,7 @@ def main():
                         help='values: IPM, KLD-DV, KLD-LT, squared-Hel-LT, chi-squared-LT, JS-LT, alpha-LT, Renyi-DV, Renyi-CC, rescaled-Renyi-CC, Renyi-CC-WCR')
     parser.add_argument('--disc_steps_per_gen_step', default=1, type=int)
     parser.add_argument('--batch_size', default=64, type=int, metavar='m')
-    parser.add_argument('--lr', default=0.001, type=float)
+    parser.add_argument('--lr', default=2e-4, type=float)
     parser.add_argument('--epochs', default=100, type=int,
                         help='number of total epochs to run')
     parser.add_argument('--alpha', default=2.0, type=float, metavar='alpha')
@@ -119,7 +125,7 @@ def main():
         input_dim=1
         OUTPUT_DIM = 784 # Number of pixels in mnist (28*28)
         
-    train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True, num_workers=4)
+    train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True, num_workers=4, drop_last=True)
 
     generator = Generator(dim_g=DIM_G, output_dim=OUTPUT_DIM).to(device)
     discriminator = Discriminator(input_dim=input_dim, dim_d=DIM_D).to(device)
@@ -131,15 +137,15 @@ def main():
     print('Using device:', device)
     
     if optimizer == 'RMS':
-        gen_opt = optim.RMSprop(generator.parameters(), lr=LR)
-        disc_opt = optim.RMSprop(discriminator.parameters(), lr=LR)
+        gen_opt = optim.RMSprop(generator.parameters(), lr=lr)
+        disc_opt = optim.RMSprop(discriminator.parameters(), lr=lr)
     elif optimizer == 'Adam':
-        gen_opt = optim.Adam(generator.parameters(), lr=LR, betas=(0., 0.9))
-        disc_opt = optim.Adam(discriminator.parameters(), lr=LR, betas=(0., 0.9))
+        gen_opt = optim.Adam(generator.parameters(), lr=lr, betas=(0., 0.9))
+        disc_opt = optim.Adam(discriminator.parameters(), lr=lr, betas=(0., 0.9))
     
     # construct gradient penalty
     if use_GP:
-        discriminator_penalty=Gradient_Penalty_1Sided(gp_weight, L)
+        discriminator_penalty=Gradient_Penalty_2Sided(gp_weight, L)
     else:
         discriminator_penalty=None
 
@@ -181,7 +187,7 @@ def main():
         div_dense = Renyi_Divergence_WCR(discriminator, disc_opt, epochs, m, fl_act_func_CC, discriminator_penalty)
 
     def noise_source(batch_size):
-        return torch.randn(batch_size, DIM_G, device=device)
+        return torch.randn(batch_size, DIM_G).to(device)
 
     GAN_model = GAN_CIFAR10(div_dense, generator, gen_opt, noise_source, epochs, disc_steps_per_gen_step, mthd, dataset, m, reverse_order)
     
@@ -191,14 +197,14 @@ def main():
         GAN_model.load(load_model_path)
         print(f"Model loaded from {load_model_path}")
     else:
-        generator_samples, loss_array, gen_losses, disc_losses = GAN_model.train(train_loader, save_frequency, num_gen_samples_to_save)
+        generator_samples, loss_array, gen_losses, disc_losses, mean_scores, std_scores = GAN_model.train(train_loader, save_frequency, num_gen_samples_to_save)
     
         if not os.path.exists(f'generated_samples/'):
             os.makedirs(f'generated_samples/')
         
         # Save the loss vs epoch plot
         epoch_ax = np.arange(start=1, stop=epochs+1, step=1)
-        _, ax = plt.subplots(1, 2, figsize=(15, 5))
+        _, ax = plt.subplots(1, 3, figsize=(15, 5))
 
         ax[0].plot(epoch_ax, disc_losses, color='blue')
         ax[0].set_xlim(1, epochs)
@@ -209,6 +215,13 @@ def main():
         ax[1].set_xlim(1, epochs)
         ax[1].set_title("Generator Loss vs Epoch")
         ax[1].grid()
+
+        ax[2].plot(epoch_ax, mean_scores, color='green', label='Inception Score Mean')
+        ax[2].fill_between(epoch_ax, mean_scores-std_scores, mean_scores+std_scores, color='green', alpha=0.2, label='Inception Score Std')
+        ax[2].set_xlim(1, epochs)
+        ax[2].set_title("Inception Score Mean and Std vs Epoch")
+        ax[2].grid()
+        ax[2].legend()
 
         plt.tight_layout()
         if use_GP:
