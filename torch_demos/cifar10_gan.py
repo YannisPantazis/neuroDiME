@@ -47,6 +47,14 @@ if device == 'cuda':
     print(f"Current CUDA device: {torch.cuda.current_device()}")
 
 
+def weights_init(m):
+    classname = m.__class__.__name__
+    if classname.find('Conv') != -1:
+        m.weight.data.normal_(0.0, 0.02)
+    elif classname.find('BatchNorm') != -1:
+        m.weight.data.normal_(1.0, 0.02)
+        m.bias.data.fill_(0)
+
 
 def main():
     # read input arguments
@@ -130,6 +138,9 @@ def main():
     generator = Generator(dim_g=DIM_G, output_dim=OUTPUT_DIM).to(device)
     discriminator = Discriminator(input_dim=input_dim, dim_d=DIM_D).to(device)
 
+    generator.apply(weights_init)
+    discriminator.apply(weights_init)
+    
     summary(generator)
     print()
     summary(discriminator)
