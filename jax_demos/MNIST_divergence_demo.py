@@ -8,7 +8,7 @@ from optax import rmsprop, adam
 import time
 import torchvision.datasets as datasets
 import flax.linen as nn
-from flax.training import checkpoints
+from flax.training import checkpoints, train_state
 
 # Add parent directory to sys.path
 current_dir = os.path.dirname(os.path.realpath(__file__))
@@ -69,17 +69,17 @@ print("Use Gradient Penalty: "+str(use_GP))
 optimizer = "Adam" #Adam, RMS
 fl_act_func_CC = 'poly-softplus' # abs, softplus, poly-softplus
 
-class CNN_discriminator(nn.Module):
-    @nn.compact
-    def __call__(self, x, train):
-        x = nn.Conv(features=64, kernel_size=(3,3), strides=(2,2), padding='SAME')(x)
-        x = nn.activation.leaky_relu(x, negative_slope=0.2)
-        x = nn.Dropout(rate=0.4, deterministic=not train)(x)
-        x = nn.Conv(features=64, kernel_size=(3,3), strides=(2,2), padding='SAME')(x)
-        x = nn.Dropout(rate=0.4, deterministic=not train)(x)
-        x = x.reshape((x.shape[0], -1))
-        x = nn.Dense(features=1)(x)
-        return x
+# class CNN_discriminator(nn.Module):
+#     @nn.compact
+#     def __call__(self, x, train):
+#         x = nn.Conv(features=64, kernel_size=(3,3), strides=(2,2), padding='SAME')(x)
+#         x = nn.activation.leaky_relu(x, negative_slope=0.2)
+#         x = nn.Dropout(rate=0.4, deterministic=not train)(x)
+#         x = nn.Conv(features=64, kernel_size=(3,3), strides=(2,2), padding='SAME')(x)
+#         x = nn.Dropout(rate=0.4, deterministic=not train)(x)
+#         x = x.reshape((x.shape[0], -1))
+#         x = nn.Dense(features=1)(x)
+#         return x
 
 
 mnist_trainset = datasets.MNIST(root='./data', train=True, download=True, transform=None)
@@ -115,16 +115,16 @@ print(data_Q.shape)
 
 # model_file = f'{saved_name}/{mthd}_{P_digit}_{Q_digit}_{N}_{m}_{lr}_{epochs}_{alpha}_{L}_{gp_weight}_{use_GP}_{run_num}.pth'
 
-discriminator = CNN_discriminator()
+discriminator = DiscriminatorMNIST()
 
 x = jnp.ones((1, 28, 28, 1))
 test = nn.tabulate(discriminator, jax.random.key(0))
-print(test(x, train=False))
+print(test(x))
 
 # Initialize the model's parameters with a dummy input
 rng = jax.random.PRNGKey(0)
-params = discriminator.init(rng, x, train=False)
-print(jax.tree_map(lambda x: x.shape, params)) # Check the parameters
+vars = discriminator.init(rng, x)
+print(jax.tree_map(lambda x: x.shape, vars['params'])) # Check the parameters
 optimizer = "RMS"  # Adam, RMS
 
 #construct optimizers
@@ -154,44 +154,44 @@ else:
 
 # construct divergence
 if mthd=="IPM":
-    divergence_CNN = IPM(discriminator, disc_optimizer, epochs, m, discriminator_penalty, cnn=True)
+    divergence_CNN = IPM(discriminator, disc_optimizer, epochs, m, discriminator_penalty)
 
 if mthd=="KLD-LT":
-    divergence_CNN = KLD_LT(discriminator, disc_optimizer, epochs, m, discriminator_penalty, cnn=True)
+    divergence_CNN = KLD_LT(discriminator, disc_optimizer, epochs, m, discriminator_penalty)
     
 if mthd=="KLD-DV":
-    divergence_CNN = KLD_DV(discriminator, disc_optimizer, epochs, m, discriminator_penalty, cnn=True)
+    divergence_CNN = KLD_DV(discriminator, disc_optimizer, epochs, m, discriminator_penalty)
 
 if mthd=="squared-Hel-LT":
-    divergence_CNN = squared_Hellinger_LT(discriminator, disc_optimizer, epochs, m, discriminator_penalty, cnn=True)
+    divergence_CNN = squared_Hellinger_LT(discriminator, disc_optimizer, epochs, m, discriminator_penalty)
 
 if mthd=="chi-squared-LT":
-    divergence_CNN = Pearson_chi_squared_LT(discriminator, disc_optimizer, epochs, m, discriminator_penalty, cnn=True)
+    divergence_CNN = Pearson_chi_squared_LT(discriminator, disc_optimizer, epochs, m, discriminator_penalty)
 
 if mthd=="chi-squared-HCR":
-    divergence_CNN = Pearson_chi_squared_HCR(discriminator, disc_optimizer, epochs, m, discriminator_penalty, cnn=True)
+    divergence_CNN = Pearson_chi_squared_HCR(discriminator, disc_optimizer, epochs, m, discriminator_penalty)
 
 if mthd=="JS-LT":
-    divergence_CNN = Jensen_Shannon_LT(discriminator, disc_optimizer, epochs, m, discriminator_penalty, cnn=True)    
+    divergence_CNN = Jensen_Shannon_LT(discriminator, disc_optimizer, epochs, m, discriminator_penalty)    
 
 if mthd=="alpha-LT":
-    divergence_CNN = alpha_Divergence_LT(discriminator, disc_optimizer, alpha, epochs, m, discriminator_penalty, cnn=True)
+    divergence_CNN = alpha_Divergence_LT(discriminator, disc_optimizer, alpha, epochs, m, discriminator_penalty)
 
 if mthd=="Renyi-DV":
-    divergence_CNN = Renyi_Divergence_DV(discriminator, disc_optimizer, alpha, epochs, m, discriminator_penalty, cnn=True)
+    divergence_CNN = Renyi_Divergence_DV(discriminator, disc_optimizer, alpha, epochs, m, discriminator_penalty)
     
 if mthd=="Renyi-CC":
-    divergence_CNN = Renyi_Divergence_CC(discriminator, disc_optimizer, alpha, epochs, m, fl_act_func_CC, discriminator_penalty, cnn=True)
+    divergence_CNN = Renyi_Divergence_CC(discriminator, disc_optimizer, alpha, epochs, m, fl_act_func_CC, discriminator_penalty)
 
 if mthd=="rescaled-Renyi-CC":
-    divergence_CNN = Renyi_Divergence_CC_rescaled(discriminator, disc_optimizer, alpha, epochs, m, fl_act_func_CC, discriminator_penalty, cnn=True)
+    divergence_CNN = Renyi_Divergence_CC_rescaled(discriminator, disc_optimizer, alpha, epochs, m, fl_act_func_CC, discriminator_penalty)
 
 if mthd=="Renyi-WCR":
-    divergence_CNN = Renyi_Divergence_WCR(discriminator, disc_optimizer, epochs, m, fl_act_func_CC, discriminator_penalty, cnn=True)
+    divergence_CNN = Renyi_Divergence_WCR(discriminator, disc_optimizer, epochs, m, fl_act_func_CC, discriminator_penalty)
 
 
-opt_state = disc_optimizer.init(params)
-divergence_estimates, params, opt_state = divergence_CNN.train(data_P, data_Q, params, opt_state)
+opt_state = train_state.TrainState.create(apply_fn=discriminator.apply, params=vars['params'], tx=disc_optimizer)
+divergence_estimates, losses = divergence_CNN.train(data_P, data_Q, opt_state, vars)
 
     # Save the model
     # print('Saving Model...')
@@ -206,7 +206,7 @@ test_name = f'MNIST_{mthd}_divergence_demo'
 if not os.path.exists(test_name):
 	os.makedirs(test_name)
 	
-estimate = divergence_CNN.estimate(data_P, data_Q, params)
+estimate = divergence_CNN.estimate(data_P, data_Q, vars['params'], vars)
 print(f'{mthd} estimate between digits {P_digit} and {Q_digit}: {estimate}')
 
 

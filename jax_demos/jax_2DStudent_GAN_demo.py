@@ -8,7 +8,7 @@ from optax import rmsprop, adam
 import time
 import torchvision.datasets as datasets
 import flax.linen as nn
-from flax.training import checkpoints
+from flax.training import checkpoints, train_state
 
 # Add parent directory to sys.path
 current_dir = os.path.dirname(os.path.realpath(__file__))
@@ -139,18 +139,18 @@ generator = Generator(X_dim=X_dim, Z_dim=Z_dim, spec_norm=spec_norm, layers_list
 def noise_source(N_samp):
     return np.random.normal(0., 1.0, size=[N_samp, Z_dim])
 
-x = jnp.ones((m, d))
+x = jnp.ones(data_P.shape)
 rng = jax.random.PRNGKey(0)
 
 # Initialize the discriminator's parameters with a dummy input
-disc_params = discriminator.init(rng, x)
-print(jax.tree_map(lambda x: x.shape, disc_params)) # Check the parameters
+disc_vars = discriminator.init(rng, x)
+print(jax.tree_map(lambda x: x.shape, disc_vars['params'])) # Check the parameters
 test = nn.tabulate(discriminator, jax.random.key(0))
 print(test(x))
 
 # Initialize the generator's parameters with a dummy input
-gen_params = generator.init(rng, x)
-print(jax.tree_map(lambda x: x.shape, gen_params)) # Check the parameters
+gen_vars = generator.init(rng, x)
+print(jax.tree_map(lambda x: x.shape, gen_vars['params'])) # Check the parameters
 test = nn.tabulate(generator, jax.random.key(0))
 print(test(x))
 
@@ -163,8 +163,8 @@ if optimizer == 'RMS':
     disc_optimizer = rmsprop(lr)
     gen_optimizer = rmsprop(lr)
 
-disc_opt_state = disc_optimizer.init(disc_params)
-gen_opt_state = gen_optimizer.init(gen_params)
+disc_opt_state = train_state.TrainState.create(apply_fn=discriminator.apply, params=disc_vars['params'], tx=disc_optimizer)
+gen_opt_state = train_state.TrainState.create(apply_fn=generator.apply, params=gen_vars['params'], tx=gen_optimizer)
 
 # Construct gradient penalty
 if use_GP:
@@ -212,7 +212,7 @@ if mthd=="Renyi-WCR":
 
 # train GAN
 GAN_dense = GAN(div_dense, generator, gen_optimizer, noise_source, epochs, disc_steps_per_gen_step, m, reverse_order)
-generator_samples, loss_array, disc_params, gen_params, disc_opt_state, gen_opt_state = GAN_dense.train(data_P, disc_params, gen_params, disc_opt_state, gen_opt_state)
+generator_samples, loss_array, disc_params, gen_params, disc_opt_state, gen_opt_state = GAN_dense.train(data_P, disc_vars['params'], gen_vars['params'], disc_opt_state, gen_opt_state)
 
 #Save results    
 test_name='2Dstudent_submanifold_GAN_demo'

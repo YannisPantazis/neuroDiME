@@ -145,7 +145,7 @@ def main(mthd):
             x = jnp.ones((1, 28, 28, 1))
             rng = jax.random.PRNGKey(0)
 
-            params = discriminator.init(rng, x)['params']
+            variables = discriminator.init(rng, x)
 
             #construct optimizers
             if optimizer == 'Adam':
@@ -154,7 +154,7 @@ def main(mthd):
             if optimizer == 'RMS':
                 disc_optimizer = rmsprop(lr)
                 
-            training_state  = train_state.TrainState.create(apply_fn=discriminator.apply, params=params, tx=disc_optimizer)
+            training_state  = train_state.TrainState.create(apply_fn=discriminator.apply, params=variables['params'], tx=disc_optimizer)
 
             # construct divergence
             if mthd=="IPM":
@@ -203,14 +203,14 @@ def main(mthd):
             data_Q = Q_digits[Q_idx, :]
 
             print('Training digits', P_digit, 'and', Q_digit)
-            divergence_estimates, losses, state = divergence_CNN.train(data_P, data_Q, training_state)
+            divergence_estimates, losses = divergence_CNN.train(data_P, data_Q, training_state, variables)
 
             #Save results    
             test_name = f'MNIST_{mthd}_divergence_demo_jax'
             if not os.path.exists(test_name):
                 os.makedirs(test_name)
                 
-            estimate = divergence_CNN.estimate(data_P, data_Q, state.params)
+            estimate = divergence_CNN.estimate(data_P, data_Q, variables['params'], variables)
             print(f'{mthd} estimate between digits {P_digit} and {Q_digit}: {estimate}')
 
             with open(test_name+'/'+mthd+'_div_estimate_P_digit_' +str(P_digit)+'_Q_digit_' +str(Q_digit)+'_N_'+str(N)+'_m_'+str(m)+'_Lrate_{:.1e}'.format(lr)+'_epochs_'+str(epochs)+'_alpha_{:.1f}'.format(alpha)+'_L_{:.1f}'.format(L)+'_gp_weight_{:.1f}'.format(gp_weight)+'_GP_'+str(use_GP)+'_run_num_'+str(run_num)+'.csv', "w") as output:
