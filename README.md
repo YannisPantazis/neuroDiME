@@ -6,7 +6,7 @@ This repository contains implementations for neural-based estimation of divergen
 ## Class Hierarchy
 The structure of the divergence classes is as follows:
 
-![Alt text](images/class_hierarchy.jpg)
+![Alt text](images/class_hierarchy_2.png)
 
 
 ## Requirements
