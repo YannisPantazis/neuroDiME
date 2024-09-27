@@ -73,4 +73,4 @@ python Divergence_bio_hypothesis_test_demo.py --p 0.01 --method KLD-DV
 ```
 
 ## License
-Please refer to the LICENSE file for more information.
+This project is licensed under the terms of the MIT license.
