@@ -38,23 +38,21 @@ pip install -r requirements.txt
 Additionally, you can install packages individually:
 ```bash
 # Install necessary packages
-pip install tensorflow==2.8.0  # For Divergences.py (version 2.8.0 does not support CUDA)
-pip install tensorflow_addons==0.16.1  # For the 1d_Gaussian_demo.py
-pip install pandas==1.4.2
-pip install argparse==1.1
-pip install protobuf==3.20.3
-pip install matplotlib==3.7.1
-pip install scipy
-pip install torchsummary
+pip install tensorflow
+pip install tensorflow_addons
+pip install torch
+pip install torchvision
+pip install torchaudio
 pip install torchinfo
-
-# Install PyTorch with CUDA support if available
-pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121  # if CUDA is available
-pip3 install torch torchvision torchaudio  # if CUDA is not available
-
-# Install JAX with CUDA support (if needed)
-pip install --upgrade "jax[cuda12_pip]" -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html
+pip install torchmetrics
+pip install torch-fidelity
+pip install jax[cuda12]
 pip install flax
+pip install pandas
+pip install matplotlib
+pip install scipy
+pip install tqdm
+pip install seaborn
 ```
 
 ## Examples
@@ -88,6 +86,7 @@ python cifar10_gan.py --method KLD-DV --use_GP True --conditional True
 
 # Run an biological hypothesis test example
 python Divergence_bio_hypothesis_test_demo.py --p 0.01 --method KLD-DV
+```
 
 ## License
 Please refer to the LICENSE file for more information.
