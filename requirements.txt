@@ -13,3 +13,5 @@ matplotlib
 scipy
 tqdm
 seaborn
+sphinx
+sphinx-rtd-theme
