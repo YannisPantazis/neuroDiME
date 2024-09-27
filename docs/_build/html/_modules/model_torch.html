@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>model_torch &mdash; NEDIPM 0.0.1 documentation</title>
+  <title>model_torch &mdash; NeuroDiME: A Software Library on Neural-based Estimation of Divergences and Metrics 0.0.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
 
@@ -31,7 +31,7 @@
           
           
           <a href="../index.html" class="icon icon-home">
-            NEDIPM
+            NeuroDiME: A Software Library on Neural-based Estimation of Divergences and Metrics
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -52,7 +52,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../index.html">NEDIPM</a>
+          <a href="../index.html">NeuroDiME: A Software Library on Neural-based Estimation of Divergences and Metrics</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -89,24 +89,9 @@
 <span class="sd">        bounded_activation(x): Apply the bounded activation to the input tensor.</span>
 <span class="sd">        forward(input): Forward pass to apply bounded activation.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">M</span><span class="o">=</span><span class="mf">100.0</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-
-<div class="viewcode-block" id="BoundedActivation.bounded_activation">
-<a class="viewcode-back" href="../model_torch.html#model_torch.BoundedActivation.bounded_activation">[docs]</a>
-    <span class="k">def</span> <span class="nf">bounded_activation</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Apply a bounded activation using the tanh function, constraining the output within [-M, M].</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            x (torch.Tensor): Input tensor.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            torch.Tensor: Output after applying the bounded activation.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">M</span> <span class="o">=</span> <span class="mf">100.0</span>
-        <span class="k">return</span> <span class="n">M</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">tanh</span><span class="p">(</span><span class="n">x</span><span class="o">/</span><span class="n">M</span><span class="p">)</span></div>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">M</span> <span class="o">=</span> <span class="n">M</span>
 
 <div class="viewcode-block" id="BoundedActivation.forward">
 <a class="viewcode-back" href="../model_torch.html#model_torch.BoundedActivation.forward">[docs]</a>
@@ -120,7 +105,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            torch.Tensor: Output after applying bounded activation.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">bounded_activation</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">M</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">tanh</span><span class="p">(</span><span class="nb">input</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">M</span><span class="p">)</span></div>
 </div>
 
     
@@ -174,9 +159,9 @@
             <span class="n">model_dict</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;Bounded_Activation&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">BoundedActivation</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">discriminator</span> <span class="o">=</span> <span class="n">Sequential</span><span class="p">(</span><span class="n">model_dict</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">()</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Discriminator Summary:&#39;</span><span class="p">)</span>
-        <span class="n">summary</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">discriminator</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_dim</span><span class="p">))</span>
+        <span class="c1"># print()</span>
+        <span class="c1"># print(&#39;Discriminator Summary:&#39;)</span>
+        <span class="c1"># summary(self.discriminator, (self.batch_size, self.input_dim))</span>
 
 <div class="viewcode-block" id="Discriminator.forward">
 <a class="viewcode-back" href="../model_torch.html#model_torch.Discriminator.forward">[docs]</a>

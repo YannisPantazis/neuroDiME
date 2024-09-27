@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Divergences_jax module &mdash; NEDIPM 0.0.1 documentation</title>
+  <title>Divergences_jax module &mdash; NeuroDiME: A Software Library on Neural-based Estimation of Divergences and Metrics 0.0.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
 
@@ -34,7 +34,7 @@
           
           
           <a href="index.html" class="icon icon-home">
-            NEDIPM
+            NeuroDiME: A Software Library on Neural-based Estimation of Divergences and Metrics
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -103,6 +103,11 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#Divergences_jax.KLD_LT"><code class="docutils literal notranslate"><span class="pre">KLD_LT</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#Divergences_jax.KLD_LT.f_star"><code class="docutils literal notranslate"><span class="pre">KLD_LT.f_star()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#Divergences_jax.Pearson_chi_squared_HCR"><code class="docutils literal notranslate"><span class="pre">Pearson_chi_squared_HCR</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_jax.Pearson_chi_squared_HCR.eval_var_formula"><code class="docutils literal notranslate"><span class="pre">Pearson_chi_squared_HCR.eval_var_formula()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_jax.Pearson_chi_squared_HCR.eval_var_formula_gen"><code class="docutils literal notranslate"><span class="pre">Pearson_chi_squared_HCR.eval_var_formula_gen()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#Divergences_jax.Pearson_chi_squared_LT"><code class="docutils literal notranslate"><span class="pre">Pearson_chi_squared_LT</span></code></a><ul>
@@ -180,7 +185,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">NEDIPM</a>
+          <a href="index.html">NeuroDiME: A Software Library on Neural-based Estimation of Divergences and Metrics</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -762,6 +767,38 @@ KL(P||Q), x~P, y~Q.</p>
 <dd class="field-even"><p>Transformed value.</p>
 </dd>
 </dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="Divergences_jax.Pearson_chi_squared_HCR">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Divergences_jax.</span></span><span class="sig-name descname"><span class="pre">Pearson_chi_squared_HCR</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">discriminator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disc_optimizer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">discriminator_penalty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_jax.html#Pearson_chi_squared_HCR"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_jax.Pearson_chi_squared_HCR" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="index.html#Divergences_jax.Divergence" title="Divergences_jax.Divergence"><code class="xref py py-class docutils literal notranslate"><span class="pre">Divergence</span></code></a></p>
+<p>Pearson chi-squared divergence class based on the Hammersley-Chapman-Robbins bound.
+chi^2(P||Q), x~P, y~Q.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="Divergences_jax.Pearson_chi_squared_HCR.eval_var_formula">
+<span class="sig-name descname"><span class="pre">eval_var_formula</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dropout_rng</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_jax.html#Pearson_chi_squared_HCR.eval_var_formula"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_jax.Pearson_chi_squared_HCR.eval_var_formula" title="Link to this definition"></a></dt>
+<dd><p>Evaluates the variational formula for Pearson chi-squared divergence based on the Hammersley-Chapman-Robbins bound.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – Samples from distribution P.</p></li>
+<li><p><strong>y</strong> – Samples from distribution Q.</p></li>
+<li><p><strong>labels</strong> – Optional labels for the input data.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Pearson chi-squared divergence loss.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Divergences_jax.Pearson_chi_squared_HCR.eval_var_formula_gen">
+<span class="sig-name descname"><span class="pre">eval_var_formula_gen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dropout_rng</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_jax.html#Pearson_chi_squared_HCR.eval_var_formula_gen"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_jax.Pearson_chi_squared_HCR.eval_var_formula_gen" title="Link to this definition"></a></dt>
+<dd><p>Evaluates the generator’s objective based on Pearson chi-squared divergence.</p>
 </dd></dl>
 
 </dd></dl>

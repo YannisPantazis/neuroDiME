@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>model_torch module &mdash; NEDIPM 0.0.1 documentation</title>
+  <title>model_torch module &mdash; NeuroDiME: A Software Library on Neural-based Estimation of Divergences and Metrics 0.0.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
 
@@ -33,7 +33,7 @@
           
           
           <a href="index.html" class="icon icon-home">
-            NEDIPM
+            NeuroDiME: A Software Library on Neural-based Estimation of Divergences and Metrics
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -64,23 +64,22 @@
 <li class="toctree-l3"><a class="reference internal" href="#model_torch.BoundedActivation"><code class="docutils literal notranslate"><span class="pre">BoundedActivation</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#model_torch.BoundedActivation.bounded_activation"><code class="docutils literal notranslate"><span class="pre">BoundedActivation.bounded_activation()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#model_torch.BoundedActivation.forward"><code class="docutils literal notranslate"><span class="pre">BoundedActivation.forward()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id0"><code class="docutils literal notranslate"><span class="pre">BoundedActivation.bounded_activation()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id1"><code class="docutils literal notranslate"><span class="pre">BoundedActivation.forward()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id0"><code class="docutils literal notranslate"><span class="pre">BoundedActivation.forward()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#model_torch.Discriminator"><code class="docutils literal notranslate"><span class="pre">Discriminator</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#model_torch.Discriminator.forward"><code class="docutils literal notranslate"><span class="pre">Discriminator.forward()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id2"><code class="docutils literal notranslate"><span class="pre">Discriminator.forward()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id1"><code class="docutils literal notranslate"><span class="pre">Discriminator.forward()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#model_torch.Discriminator_MNIST"><code class="docutils literal notranslate"><span class="pre">Discriminator_MNIST</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#model_torch.Discriminator_MNIST.forward"><code class="docutils literal notranslate"><span class="pre">Discriminator_MNIST.forward()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id3"><code class="docutils literal notranslate"><span class="pre">Discriminator_MNIST.forward()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id2"><code class="docutils literal notranslate"><span class="pre">Discriminator_MNIST.forward()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#model_torch.Generator"><code class="docutils literal notranslate"><span class="pre">Generator</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#model_torch.Generator.forward"><code class="docutils literal notranslate"><span class="pre">Generator.forward()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id4"><code class="docutils literal notranslate"><span class="pre">Generator.forward()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id3"><code class="docutils literal notranslate"><span class="pre">Generator.forward()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -95,7 +94,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">NEDIPM</a>
+          <a href="index.html">NeuroDiME: A Software Library on Neural-based Estimation of Divergences and Metrics</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -118,12 +117,12 @@
 <span id="model-torch-module"></span><h1>model_torch module<a class="headerlink" href="#module-model_torch" title="Link to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="model_torch.BoundedActivation">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">model_torch.</span></span><span class="sig-name descname"><span class="pre">BoundedActivation</span></span><a class="reference internal" href="_modules/model_torch.html#BoundedActivation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#model_torch.BoundedActivation" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">model_torch.</span></span><span class="sig-name descname"><span class="pre">BoundedActivation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">M</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model_torch.html#BoundedActivation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#model_torch.BoundedActivation" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></p>
 <p>Bounded Activation Layer that applies a bounded activation function using tanh.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="model_torch.BoundedActivation.bounded_activation">
-<span class="sig-name descname"><span class="pre">bounded_activation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model_torch.html#BoundedActivation.bounded_activation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#model_torch.BoundedActivation.bounded_activation" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">bounded_activation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#model_torch.BoundedActivation.bounded_activation" title="Link to this definition"></a></dt>
 <dd><p>Apply the bounded activation to the input tensor.</p>
 </dd></dl>
 
@@ -135,24 +134,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id0">
-<span class="sig-name descname"><span class="pre">bounded_activation</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/model_torch.html#BoundedActivation.bounded_activation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id0" title="Link to this definition"></a></dt>
-<dd><p>Apply a bounded activation using the tanh function, constraining the output within [-M, M].</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>torch.Tensor</em>) – Input tensor.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Output after applying the bounded activation.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>torch.Tensor</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="id1">
-<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model_torch.html#BoundedActivation.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id1" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model_torch.html#BoundedActivation.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id0" title="Link to this definition"></a></dt>
 <dd><p>Forward pass through the bounded activation layer.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -201,8 +183,8 @@
 </dd>
 </dl>
 <dl class="py method">
-<dt class="sig sig-object py" id="id2">
-<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model_torch.html#Discriminator.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id2" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="id1">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model_torch.html#Discriminator.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id1" title="Link to this definition"></a></dt>
 <dd><p>Forward pass through the discriminator.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -239,8 +221,8 @@
 </dd>
 </dl>
 <dl class="py method">
-<dt class="sig sig-object py" id="id3">
-<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model_torch.html#Discriminator_MNIST.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id3" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="id2">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model_torch.html#Discriminator_MNIST.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id2" title="Link to this definition"></a></dt>
 <dd><p>Forward pass through the MNIST discriminator.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -289,8 +271,8 @@
 </dd>
 </dl>
 <dl class="py method">
-<dt class="sig sig-object py" id="id4">
-<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model_torch.html#Generator.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id4" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="id3">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model_torch.html#Generator.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id3" title="Link to this definition"></a></dt>
 <dd><p>Forward pass through the generator.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>

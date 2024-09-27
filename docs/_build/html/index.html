@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Welcome to NEDIPM’s documentation! &mdash; NEDIPM 0.0.1 documentation</title>
+  <title>Welcome to NeuroDiME’s documentation! &mdash; NeuroDiME: A Software Library on Neural-based Estimation of Divergences and Metrics 0.0.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
 
@@ -33,7 +33,7 @@
           
           
           <a href="#" class="icon icon-home">
-            NEDIPM
+            NeuroDiME: A Software Library on Neural-based Estimation of Divergences and Metrics
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -54,7 +54,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="#">NEDIPM</a>
+          <a href="#">NeuroDiME: A Software Library on Neural-based Estimation of Divergences and Metrics</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -62,7 +62,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Welcome to NEDIPM’s documentation!</li>
+      <li class="breadcrumb-item active">Welcome to NeuroDiME’s documentation!</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -72,8 +72,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="welcome-to-nedipm-s-documentation">
-<h1>Welcome to NEDIPM’s documentation!<a class="headerlink" href="#welcome-to-nedipm-s-documentation" title="Link to this heading"></a></h1>
+  <section id="welcome-to-neurodime-s-documentation">
+<h1>Welcome to NeuroDiME’s documentation!<a class="headerlink" href="#welcome-to-neurodime-s-documentation" title="Link to this heading"></a></h1>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
@@ -649,6 +649,37 @@ KL(P||Q), x~P, y~Q.</p>
 <dd class="field-even"><p>Transformed value.</p>
 </dd>
 </dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="Divergences_jax.Pearson_chi_squared_HCR">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Divergences_jax.</span></span><span class="sig-name descname"><span class="pre">Pearson_chi_squared_HCR</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">discriminator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disc_optimizer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">discriminator_penalty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_jax.html#Pearson_chi_squared_HCR"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_jax.Pearson_chi_squared_HCR" title="Link to this definition"></a></dt>
+<dd><p>Pearson chi-squared divergence class based on the Hammersley-Chapman-Robbins bound.
+chi^2(P||Q), x~P, y~Q.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="Divergences_jax.Pearson_chi_squared_HCR.eval_var_formula">
+<span class="sig-name descname"><span class="pre">eval_var_formula</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dropout_rng</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_jax.html#Pearson_chi_squared_HCR.eval_var_formula"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_jax.Pearson_chi_squared_HCR.eval_var_formula" title="Link to this definition"></a></dt>
+<dd><p>Evaluates the variational formula for Pearson chi-squared divergence based on the Hammersley-Chapman-Robbins bound.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – Samples from distribution P.</p></li>
+<li><p><strong>y</strong> – Samples from distribution Q.</p></li>
+<li><p><strong>labels</strong> – Optional labels for the input data.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Pearson chi-squared divergence loss.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Divergences_jax.Pearson_chi_squared_HCR.eval_var_formula_gen">
+<span class="sig-name descname"><span class="pre">eval_var_formula_gen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dropout_rng</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_jax.html#Pearson_chi_squared_HCR.eval_var_formula_gen"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_jax.Pearson_chi_squared_HCR.eval_var_formula_gen" title="Link to this definition"></a></dt>
+<dd><p>Evaluates the generator’s objective based on Pearson chi-squared divergence.</p>
 </dd></dl>
 
 </dd></dl>
@@ -2970,12 +3001,12 @@ Takes latent codes and labels to generate conditional images.</p>
 
 <dl class="py class" id="module-GAN_MNIST_jax">
 <dt class="sig sig-object py" id="GAN_MNIST_jax.Discriminator_MNIST_cond">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">GAN_MNIST_jax.</span></span><span class="sig-name descname"><span class="pre">Discriminator_MNIST_cond</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">parent:</span> <span class="pre">Union[Type[flax.linen.module.Module],</span> <span class="pre">flax.core.scope.Scope,</span> <span class="pre">Type[flax.linen.module._Sentinel],</span> <span class="pre">NoneType]</span> <span class="pre">=</span> <span class="pre">&lt;flax.linen.module._Sentinel</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x7e502eb458d0&gt;,</span> <span class="pre">name:</span> <span class="pre">Optional[str]</span> <span class="pre">=</span> <span class="pre">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GAN_MNIST_jax.html#Discriminator_MNIST_cond"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GAN_MNIST_jax.Discriminator_MNIST_cond" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">GAN_MNIST_jax.</span></span><span class="sig-name descname"><span class="pre">Discriminator_MNIST_cond</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">parent:</span> <span class="pre">Union[Type[flax.linen.module.Module],</span> <span class="pre">flax.core.scope.Scope,</span> <span class="pre">Type[flax.linen.module._Sentinel],</span> <span class="pre">NoneType]</span> <span class="pre">=</span> <span class="pre">&lt;flax.linen.module._Sentinel</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x7131f8d43fa0&gt;,</span> <span class="pre">name:</span> <span class="pre">Optional[str]</span> <span class="pre">=</span> <span class="pre">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GAN_MNIST_jax.html#Discriminator_MNIST_cond"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GAN_MNIST_jax.Discriminator_MNIST_cond" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="GAN_MNIST_jax.Generator_MNIST_cond">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">GAN_MNIST_jax.</span></span><span class="sig-name descname"><span class="pre">Generator_MNIST_cond</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">latent_dim:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">118,</span> <span class="pre">num_classes:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">10,</span> <span class="pre">parent:</span> <span class="pre">Union[Type[flax.linen.module.Module],</span> <span class="pre">flax.core.scope.Scope,</span> <span class="pre">Type[flax.linen.module._Sentinel],</span> <span class="pre">NoneType]</span> <span class="pre">=</span> <span class="pre">&lt;flax.linen.module._Sentinel</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x7e502eb458d0&gt;,</span> <span class="pre">name:</span> <span class="pre">Optional[str]</span> <span class="pre">=</span> <span class="pre">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GAN_MNIST_jax.html#Generator_MNIST_cond"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GAN_MNIST_jax.Generator_MNIST_cond" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">GAN_MNIST_jax.</span></span><span class="sig-name descname"><span class="pre">Generator_MNIST_cond</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">latent_dim:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">118,</span> <span class="pre">num_classes:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">10,</span> <span class="pre">parent:</span> <span class="pre">Union[Type[flax.linen.module.Module],</span> <span class="pre">flax.core.scope.Scope,</span> <span class="pre">Type[flax.linen.module._Sentinel],</span> <span class="pre">NoneType]</span> <span class="pre">=</span> <span class="pre">&lt;flax.linen.module._Sentinel</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x7131f8d43fa0&gt;,</span> <span class="pre">name:</span> <span class="pre">Optional[str]</span> <span class="pre">=</span> <span class="pre">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GAN_MNIST_jax.html#Generator_MNIST_cond"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GAN_MNIST_jax.Generator_MNIST_cond" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py function" id="module-GAN_MNIST_tf">
@@ -3490,11 +3521,11 @@ If reverse_order=True the GAN works to minimize min_theta D(g_theta(Z)||P) where
 
 <dl class="py class" id="module-model_torch">
 <dt class="sig sig-object py" id="model_torch.BoundedActivation">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">model_torch.</span></span><span class="sig-name descname"><span class="pre">BoundedActivation</span></span><a class="reference internal" href="_modules/model_torch.html#BoundedActivation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#model_torch.BoundedActivation" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">model_torch.</span></span><span class="sig-name descname"><span class="pre">BoundedActivation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">M</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model_torch.html#BoundedActivation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#model_torch.BoundedActivation" title="Link to this definition"></a></dt>
 <dd><p>Bounded Activation Layer that applies a bounded activation function using tanh.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="model_torch.BoundedActivation.bounded_activation">
-<span class="sig-name descname"><span class="pre">bounded_activation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model_torch.html#BoundedActivation.bounded_activation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#model_torch.BoundedActivation.bounded_activation" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">bounded_activation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#model_torch.BoundedActivation.bounded_activation" title="Link to this definition"></a></dt>
 <dd><p>Apply the bounded activation to the input tensor.</p>
 </dd></dl>
 
@@ -3506,24 +3537,7 @@ If reverse_order=True the GAN works to minimize min_theta D(g_theta(Z)||P) where
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id18">
-<span class="sig-name descname"><span class="pre">bounded_activation</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/model_torch.html#BoundedActivation.bounded_activation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id18" title="Link to this definition"></a></dt>
-<dd><p>Apply a bounded activation using the tanh function, constraining the output within [-M, M].</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>torch.Tensor</em>) – Input tensor.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Output after applying the bounded activation.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>torch.Tensor</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="id19">
-<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model_torch.html#BoundedActivation.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id19" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model_torch.html#BoundedActivation.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id18" title="Link to this definition"></a></dt>
 <dd><p>Forward pass through the bounded activation layer.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -3571,8 +3585,8 @@ If reverse_order=True the GAN works to minimize min_theta D(g_theta(Z)||P) where
 </dd>
 </dl>
 <dl class="py method">
-<dt class="sig sig-object py" id="id20">
-<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model_torch.html#Discriminator.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id20" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="id19">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model_torch.html#Discriminator.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id19" title="Link to this definition"></a></dt>
 <dd><p>Forward pass through the discriminator.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -3608,8 +3622,8 @@ If reverse_order=True the GAN works to minimize min_theta D(g_theta(Z)||P) where
 </dd>
 </dl>
 <dl class="py method">
-<dt class="sig sig-object py" id="id21">
-<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model_torch.html#Discriminator_MNIST.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id21" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="id20">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model_torch.html#Discriminator_MNIST.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id20" title="Link to this definition"></a></dt>
 <dd><p>Forward pass through the MNIST discriminator.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -3657,8 +3671,8 @@ If reverse_order=True the GAN works to minimize min_theta D(g_theta(Z)||P) where
 </dd>
 </dl>
 <dl class="py method">
-<dt class="sig sig-object py" id="id22">
-<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model_torch.html#Generator.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id22" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="id21">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model_torch.html#Generator.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id21" title="Link to this definition"></a></dt>
 <dd><p>Forward pass through the generator.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>

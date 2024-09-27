@@ -16,9 +16,9 @@ sys.path.insert(0, os.path.abspath('../models'))
 
 # -- Project information -----------------------------------------------------
 
-project = 'NEDIPM'
+project = 'NeuroDiME: A Software Library on Neural-based Estimation of Divergences and Metrics'
 copyright = '2024, Alexandros Angelakis'
-author = 'Alexandros Angelakis'
+author = 'Alexandros Angelakis, Yannis Pantazis, Jeremiah Birrell and Markos Katsoulakis'
 
 # The full version, including alpha/beta/rc tags
 release = '0.0.1'

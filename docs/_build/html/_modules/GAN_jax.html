@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GAN_jax &mdash; NEDIPM 0.0.1 documentation</title>
+  <title>GAN_jax &mdash; NeuroDiME: A Software Library on Neural-based Estimation of Divergences and Metrics 0.0.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
 
@@ -31,7 +31,7 @@
           
           
           <a href="../index.html" class="icon icon-home">
-            NEDIPM
+            NeuroDiME: A Software Library on Neural-based Estimation of Divergences and Metrics
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -52,7 +52,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../index.html">NEDIPM</a>
+          <a href="../index.html">NeuroDiME: A Software Library on Neural-based Estimation of Divergences and Metrics</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -165,11 +165,11 @@
         
         <span class="n">z</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">reverse_order</span><span class="p">:</span>
-            <span class="n">data1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generator</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">disc_params</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">train</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">rngs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;dropout&#39;</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">PRNGKey</span><span class="p">(</span><span class="mi">0</span><span class="p">)})</span>
+            <span class="n">data1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generator</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">disc_params</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">rngs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;dropout&#39;</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">PRNGKey</span><span class="p">(</span><span class="mi">0</span><span class="p">)})</span>
             <span class="n">data2</span> <span class="o">=</span> <span class="n">x</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">data1</span> <span class="o">=</span> <span class="n">x</span>
-            <span class="n">data2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generator</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">disc_params</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">train</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">rngs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;dropout&#39;</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">PRNGKey</span><span class="p">(</span><span class="mi">0</span><span class="p">)})</span>
+            <span class="n">data2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generator</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">disc_params</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">rngs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;dropout&#39;</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">PRNGKey</span><span class="p">(</span><span class="mi">0</span><span class="p">)})</span>
         
         <span class="n">disc_params</span><span class="p">,</span> <span class="n">disc_opt_state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">divergence</span><span class="o">.</span><span class="n">train_step</span><span class="p">(</span><span class="n">data1</span><span class="p">,</span> <span class="n">data2</span><span class="p">,</span> <span class="n">disc_params</span><span class="p">,</span> <span class="n">disc_opt_state</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">disc_opt_state</span><span class="p">,</span> <span class="n">disc_params</span></div>
