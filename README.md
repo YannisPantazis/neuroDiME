@@ -5,25 +5,9 @@ This repository contains implementations for neural-based estimation of divergen
 
 ## Class Hierarchy
 The structure of the divergence classes is as follows:
-```
-Divergence
-    ├── KLD_DV
-    ├── IPM
-    │   ├── Wasserstein_GP
-    │   └── Wasserstein_GP2
-    ├── f_Divergence (LT-based)
-    │   ├── KLD_LT
-    │   ├── Pearson_chi_squared_LT
-    │   ├── squared_Hellinger_LT
-    │   ├── Jensen_Shannon_LT
-    │   └── alpha_Divergence_LT
-    ├── Pearson_chi_squared_HCR
-    └── Renyi_Divergence
-        ├── Renyi_Divergence_DV
-        ├── Renyi_Divergence_CC
-            ├── Renyi_Divergence_CC_rescaled
-            └── Renyi_Divergence_CC_WCR
-```
+
+![Alt text](images/class_hierarchy.jpg)
+
 
 ## Requirements
 Everything was tested on cuda 12.5, cudnn 8.9.2 and ubuntu 22.04
@@ -61,10 +45,11 @@ The following are some example use cases available in this repository:
 3. **Subpopulation detection**: Both synthetic (GMM) and real datasets
 4. **Equivariant dataset**: To test on structured data
 5. **Image-based tasks**: Divergence estimation with possible CNN-based models
-6. **Generation/GANS**: Generating MNIST and CIFAR-10 images
+6. **Generation/GAN**: Generating MNIST and CIFAR-10 images
 
-Key parameters to test include sample size, batch size, Lipschitz constant, alpha, and Gamma function space, among others.
 All the examples were tested on one GPU, a 4070 Super with 16GB.
+You can find our pretrained models for the Generation/GANs examples in every demos folder.
+
 ## Python Files
 - `Divergences_tf.py`, `Divergences_torch`, `Divergences_jax`: Contain implementations of all the basic divergence families (the test function/discriminator is an input argument). Can be found in the folder `models`.
 - One file for each demonstration example (e.g., `1D Gaussian`, `Mixture of Gaussians`, `Subpopulation detection`, etc.). Can be foudn in the folders tf_demos, torch_demos and jax_demos.

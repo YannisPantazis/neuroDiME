@@ -485,7 +485,7 @@ def main(mthd, run):
     
     
 if __name__ == '__main__':
-    methods = ['chi-squared-HCR']
+    # methods = ['Renyi-CC-WCR']
     # methods = ['Renyi-CC', 'rescaled-Renyi-CC', 'Renyi-CC-WCR']
     runs = 3
 
@@ -493,5 +493,5 @@ if __name__ == '__main__':
     #     for run in range(1, runs+1):
     #         fid_scores = main(method, run)
     #         print(f'Completed training for {method}')
-    fid_scores = main('chi-squared-HCR', 3)
-    print(f'COmpleted training for chi-squared-HCR')
+    fid_scores = main('Renyi-CC-WCR', 3)
+    print(f'COmpleted training for Renyi-CC-WCR')
