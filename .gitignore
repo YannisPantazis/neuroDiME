@@ -5,3 +5,7 @@
 *-ubyte
 *.pth
 *.png
+*.json
+*.eps
+*.pkl
+*.pt

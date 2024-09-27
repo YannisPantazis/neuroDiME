@@ -1,18 +1,14 @@
 import numpy as np
-import pandas as pd
-
 import csv
 import os
 import sys
 import argparse
 #import json
-import matplotlib.pyplot as plt
-from scipy.stats import norm
-from bisect import bisect_left, bisect_right
 import torchvision.datasets as datasets
-from torch.nn import Sequential, Conv2d, LeakyReLU, Linear, Flatten, Dropout
-from torchsummary import summary
+from torchinfo import summary
 import time
+from torch.autograd import Variable
+import torch.autograd as autograd
 
 current_dir = os.path.dirname(os.path.realpath(__file__))
 parent_dir = os.path.dirname(current_dir)
@@ -20,7 +16,6 @@ sys.path.append(parent_dir)
 
 from models.torch_model import *
 from models.Divergences_torch import *
-from models.GAN_torch import *
 
 start_time = time.perf_counter()
 # read input arguments
@@ -31,7 +26,7 @@ parser.add_argument('--method', default='KLD-DV', type=str, metavar='method',
                     help='values: IPM, KLD-DV, KLD-LT, squared-Hel-LT, chi-squared-LT, JS-LT, alpha-LT, Renyi-DV, Renyi-CC, rescaled-Renyi-CC, Renyi-CC-WCR')
                         
 parser.add_argument('--sample_size', default=10000, type=int, metavar='N')
-parser.add_argument('--batch_size', default=100, type=int, metavar='m')
+parser.add_argument('--batch_size', default=124, type=int, metavar='m')
 parser.add_argument('--lr', default=0.001, type=float)
 parser.add_argument('--epochs', default=100, type=int,
                     help='number of total epochs to run')
@@ -66,11 +61,33 @@ use_GP = opt_dict['use_GP']=='True'
 
 run_num = opt_dict['run_number']
 
-
 print("Use Gradient Penalty: "+str(use_GP))
 
 optimizer = "Adam" #Adam, RMS
 fl_act_func_CC = 'poly-softplus' # abs, softplus, poly-softplus
+
+class Gradient_Penalty(Discriminator_Penalty):
+    def __init__(self, weight, L):
+        Discriminator_Penalty.__init__(self, weight)
+        self.L = L
+    
+    def get_Lip_const(self):
+        return self.L
+
+    def set_Lip_const(self, L):
+        self.L = L
+        
+    def evaluate(self, c, images, samples, labels=None):
+        assert images.size() == samples.size()
+        jump = torch.rand(images.shape[0], 1).cuda()
+        jump_ = jump.expand(images.shape[0], images.nelement()//images.shape[0]).contiguous().view(images.shape[0],1,28,28)
+        interpolated = Variable(images*jump_ + (1-jump_)*samples, requires_grad = True)
+        if labels is not None:
+            c_ = c(interpolated, labels)
+        else:
+            c_ = c(interpolated)
+        gradients = autograd.grad(c_, interpolated, grad_outputs=(torch.ones(c_.size()).cuda()),create_graph = True, retain_graph = True)[0]
+        return self.get_penalty_weight()*((self.L-gradients.norm(2,dim=1))**2).mean()
 
 
 mnist_trainset = datasets.MNIST(root='./data', train=True, download=True, transform=None)
@@ -118,22 +135,11 @@ print(data_Q.shape)
 #     discriminator = torch.load(model_file)
 # else:
     # construct the discriminator neural network
-discriminator = nn.Sequential(
-                    nn.Conv2d(in_channels=1, out_channels=64, kernel_size=(3,3), stride=(2, 2), padding=1),
-                    nn.LeakyReLU(negative_slope=0.2),
-                    nn.Dropout(p=0.4),
-                    nn.Conv2d(in_channels=64, out_channels=64, kernel_size=(3,3), stride=(2, 2), padding=1),
-                    nn.LeakyReLU(negative_slope=0.2),
-                    nn.Dropout(p=0.4),
-                    nn.Flatten(),
-                    nn.Linear(in_features=3136, out_features=1)
-                    )
+discriminator = Discriminator_MNIST().to(device)
 
 print()
 print('Discriminator Summary:')
-summary(discriminator, (1, 28, 28), device="cpu")
-
-discriminator.to(device)
+summary(discriminator)
 
 #construct optimizers
 if optimizer == 'Adam':
@@ -142,13 +148,17 @@ if optimizer == 'Adam':
 if optimizer == 'RMS':
     disc_optimizer = torch.optim.RMSprop(discriminator.parameters(), lr=lr)
 
-
 # construct gradient penalty
 if use_GP:
-    discriminator_penalty=Gradient_Penalty_1Sided(gp_weight, L)
+    discriminator_penalty=Gradient_Penalty(gp_weight, L)
+    test_name=f'MNIST_{mthd}_GP_divergence_demo_torch'
+    title = f'Colormap of {mthd} estimates between all pair of digits using Torch with Gradient Penalty'
+    save_path = f"colormap_torch_{mthd}_GP.png"
 else:
     discriminator_penalty=None
-
+    test_name=f'MNIST_{mthd}_divergence_demo_torch'
+    title = f'Colormap of {mthd} estimates between all pair of digits using Torch'
+    save_path = f"colormap_torch_{mthd}.png"
 
 # construct divergence
 if mthd=="IPM":
@@ -184,17 +194,15 @@ if mthd=="Renyi-CC":
 if mthd=="rescaled-Renyi-CC":
     divergence_CNN = Renyi_Divergence_CC_rescaled(discriminator, disc_optimizer, alpha, epochs, m, fl_act_func_CC, discriminator_penalty)
 
-if mthd=="Renyi-WCR":
-    divergence_CNN = Renyi_Divergence_WCR(discriminator, disc_optimizer, epochs, m, fl_act_func_CC, discriminator_penalty)
-
+if mthd=="Renyi-CC-WCR":
+    divergence_CNN = Renyi_Divergence_WCR(discriminator, disc_optimizer, alpha, epochs, m, fl_act_func_CC, discriminator_penalty)
 
 #train Discriminator
 print('Training the model...')
 print(device)
-divergence_estimates=divergence_CNN.train(data_P, data_Q, device)
+divergence_estimates=divergence_CNN.train(data_P, data_Q)
 print()
 print("Training Complete")
-
 
 #Save results    
 test_name = f'MNIST_{mthd}_divergence_demo'
@@ -204,10 +212,8 @@ if not os.path.exists(test_name):
 estimate = divergence_CNN.estimate(data_P, data_Q).cpu().detach().numpy()
 print(f'{mthd} estimate between digits {P_digit} and {Q_digit}: {estimate}')
 
-
 with open(test_name+'/'+mthd+'_div_estimate_P_digit_' +str(P_digit)+'_Q_digit_' +str(Q_digit)+'_N_'+str(N)+'_m_'+str(m)+'_Lrate_{:.1e}'.format(lr)+'_epochs_'+str(epochs)+'_alpha_{:.1f}'.format(alpha)+'_L_{:.1f}'.format(L)+'_gp_weight_{:.1f}'.format(gp_weight)+'_GP_'+str(use_GP)+'_run_num_'+str(run_num)+'.csv', "w") as output:
     writer = csv.writer(output, lineterminator='\n')
     writer.writerow([estimate])
-
 
 print(f'--- {time.perf_counter() - start_time} seconds ---')

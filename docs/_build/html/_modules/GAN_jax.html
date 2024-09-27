@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GAN_jax &mdash; NEDIPM 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=d45e8c67"></script>
+        <script src="../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            NEDIPM
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">models</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">NEDIPM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Module code</a></li>
+      <li class="breadcrumb-item active">GAN_jax</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for GAN_jax</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">jax</span>
+<span class="kn">import</span> <span class="nn">jax.numpy</span> <span class="k">as</span> <span class="nn">jnp</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">from</span> <span class="nn">optax</span> <span class="kn">import</span> <span class="n">apply_updates</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
+<span class="kn">from</span> <span class="nn">jax</span> <span class="kn">import</span> <span class="n">jit</span>
+<span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
+
+<div class="viewcode-block" id="GAN">
+<a class="viewcode-back" href="../index.html#GAN_jax.GAN">[docs]</a>
+<span class="k">class</span> <span class="nc">GAN</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Class for training a GAN using one of the provided divergences</span>
+<span class="sd">    If reverse_order=False the GAN works to minimize min_theta D(P||g_theta(Z)) where P is the distribution to be leared, Z is the noise source and g_theta is the generator (with parameters theta).</span>
+<span class="sd">    If reverse_order=True the GAN works to minimize min_theta D(g_theta(Z)||P) where P is the distribution to be leared, Z is the noise source and g_theta is the generator (with parameters theta).</span>
+<span class="sd">    &#39;&#39;&#39;</span>   
+    <span class="c1"># initialize</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">divergence</span><span class="p">,</span> <span class="n">generator</span><span class="p">,</span> <span class="n">gen_optimizer</span><span class="p">,</span> <span class="n">noise_source</span><span class="p">,</span> <span class="n">epochs</span><span class="p">,</span> <span class="n">disc_steps_per_gen_step</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">reverse_order</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">include_penalty_in_gen_loss</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">cnn</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">divergence</span> <span class="o">=</span> <span class="n">divergence</span> <span class="c1"># Variational divergence</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">generator</span> <span class="o">=</span> <span class="n">generator</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">epochs</span> <span class="o">=</span> <span class="n">epochs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">disc_steps_per_gen_step</span> <span class="o">=</span> <span class="n">disc_steps_per_gen_step</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gen_optimizer</span> <span class="o">=</span> <span class="n">gen_optimizer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reverse_order</span> <span class="o">=</span> <span class="n">reverse_order</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">include_penalty_in_gen_loss</span> <span class="o">=</span> <span class="n">include_penalty_in_gen_loss</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">noise_source</span> <span class="o">=</span> <span class="n">noise_source</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cnn</span> <span class="o">=</span> <span class="n">cnn</span>
+        
+        <span class="k">if</span> <span class="n">batch_size</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">divergence</span><span class="o">.</span><span class="n">batch_size</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span> <span class="o">=</span> <span class="n">batch_size</span>
+            
+<div class="viewcode-block" id="GAN.estimate_loss">
+<a class="viewcode-back" href="../index.html#GAN_jax.GAN.estimate_loss">[docs]</a>
+    <span class="k">def</span> <span class="nf">estimate_loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">gen_params</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39; Estimating the loss &#39;&#39;&#39;</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cnn</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">reverse_order</span><span class="p">:</span>
+                <span class="n">data1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generator</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">gen_params</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">train</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">rngs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;dropout&#39;</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">PRNGKey</span><span class="p">(</span><span class="mi">0</span><span class="p">)})</span>
+                <span class="n">data2</span> <span class="o">=</span> <span class="n">x</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">data1</span> <span class="o">=</span> <span class="n">x</span>
+                <span class="n">data2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generator</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">gen_params</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">train</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">rngs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;dropout&#39;</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">PRNGKey</span><span class="p">(</span><span class="mi">0</span><span class="p">)})</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">reverse_order</span><span class="p">:</span>
+                <span class="n">data1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generator</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">gen_params</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
+                <span class="n">data2</span> <span class="o">=</span> <span class="n">x</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">data1</span> <span class="o">=</span> <span class="n">x</span>
+                <span class="n">data2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generator</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">gen_params</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
+            
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">divergence</span><span class="o">.</span><span class="n">estimate</span><span class="p">(</span><span class="n">data1</span><span class="p">,</span> <span class="n">data2</span><span class="p">)</span></div>
+
+    
+<div class="viewcode-block" id="GAN.gen_train_step">
+<a class="viewcode-back" href="../index.html#GAN_jax.GAN.gen_train_step">[docs]</a>
+    <span class="nd">@partial</span><span class="p">(</span><span class="n">jax</span><span class="o">.</span><span class="n">jit</span><span class="p">,</span> <span class="n">static_argnums</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,))</span>
+    <span class="k">def</span> <span class="nf">gen_train_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">gen_params</span><span class="p">,</span> <span class="n">gen_opt_state</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39; generator&#39;s parameters update &#39;&#39;&#39;</span>
+        
+        <span class="n">z</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">reverse_order</span><span class="p">:</span>
+            <span class="n">data1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generator</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">gen_params</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">train</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">rngs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;dropout&#39;</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">PRNGKey</span><span class="p">(</span><span class="mi">0</span><span class="p">)})</span>
+            <span class="n">data2</span> <span class="o">=</span> <span class="n">x</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">data1</span> <span class="o">=</span> <span class="n">x</span>
+            <span class="n">data2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generator</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">gen_params</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">train</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">rngs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;dropout&#39;</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">PRNGKey</span><span class="p">(</span><span class="mi">0</span><span class="p">)})</span>
+        
+        <span class="k">def</span> <span class="nf">loss_fn</span><span class="p">(</span><span class="n">gen_params</span><span class="p">,</span> <span class="n">data1</span><span class="p">,</span> <span class="n">data2</span><span class="p">):</span>
+            <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">divergence</span><span class="o">.</span><span class="n">discriminator_loss</span><span class="p">(</span><span class="n">data1</span><span class="p">,</span> <span class="n">data2</span><span class="p">,</span> <span class="n">gen_params</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">discriminator_penalty</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">loss</span> <span class="o">-=</span> <span class="bp">self</span><span class="o">.</span><span class="n">discriminator_penalty</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">discriminator</span><span class="p">,</span> <span class="n">data1</span><span class="p">,</span> <span class="n">data2</span><span class="p">,</span> <span class="n">gen_params</span><span class="p">)</span>
+                
+            <span class="k">return</span> <span class="n">loss</span>        
+        
+        <span class="n">grads</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">grad</span><span class="p">(</span><span class="n">loss_fn</span><span class="p">,</span> <span class="n">allow_int</span><span class="o">=</span><span class="kc">True</span><span class="p">)(</span><span class="n">gen_params</span><span class="p">,</span> <span class="n">data1</span><span class="p">,</span> <span class="n">data2</span><span class="p">)</span>
+        <span class="n">updates</span><span class="p">,</span> <span class="n">gen_opt_state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gen_optimizer</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">grads</span><span class="p">,</span> <span class="n">gen_opt_state</span><span class="p">)</span>
+        <span class="n">gen_params</span> <span class="o">=</span> <span class="n">apply_updates</span><span class="p">(</span><span class="n">gen_params</span><span class="p">,</span> <span class="n">updates</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">gen_opt_state</span><span class="p">,</span> <span class="n">gen_params</span></div>
+
+    
+<div class="viewcode-block" id="GAN.disc_train_step">
+<a class="viewcode-back" href="../index.html#GAN_jax.GAN.disc_train_step">[docs]</a>
+    <span class="nd">@partial</span><span class="p">(</span><span class="n">jax</span><span class="o">.</span><span class="n">jit</span><span class="p">,</span> <span class="n">static_argnums</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,))</span>
+    <span class="k">def</span> <span class="nf">disc_train_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">disc_params</span><span class="p">,</span> <span class="n">disc_opt_state</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39; discriminator&#39;s parameters update &#39;&#39;&#39;</span>
+        
+        <span class="n">z</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">reverse_order</span><span class="p">:</span>
+            <span class="n">data1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generator</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">disc_params</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">train</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">rngs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;dropout&#39;</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">PRNGKey</span><span class="p">(</span><span class="mi">0</span><span class="p">)})</span>
+            <span class="n">data2</span> <span class="o">=</span> <span class="n">x</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">data1</span> <span class="o">=</span> <span class="n">x</span>
+            <span class="n">data2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generator</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">disc_params</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">train</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">rngs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;dropout&#39;</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">PRNGKey</span><span class="p">(</span><span class="mi">0</span><span class="p">)})</span>
+        
+        <span class="n">disc_params</span><span class="p">,</span> <span class="n">disc_opt_state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">divergence</span><span class="o">.</span><span class="n">train_step</span><span class="p">(</span><span class="n">data1</span><span class="p">,</span> <span class="n">data2</span><span class="p">,</span> <span class="n">disc_params</span><span class="p">,</span> <span class="n">disc_opt_state</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">disc_opt_state</span><span class="p">,</span> <span class="n">disc_params</span></div>
+
+        
+<div class="viewcode-block" id="GAN.train">
+<a class="viewcode-back" href="../index.html#GAN_jax.GAN.train">[docs]</a>
+    <span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_P</span><span class="p">,</span> <span class="n">disc_params</span><span class="p">,</span> <span class="n">gen_params</span><span class="p">,</span> <span class="n">disc_opt_state</span><span class="p">,</span> <span class="n">gen_opt_state</span><span class="p">,</span> <span class="n">save_frequency</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>  <span class="n">num_gen_samples_to_save</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">save_loss_estimates</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39; training function of our GAN &#39;&#39;&#39;</span>
+        <span class="c1"># dataset slicing into minibatches</span>
+        <span class="n">P_dataset</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">data_P</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        
+        <span class="n">generator_samples</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">loss_estimates</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">epochs</span><span class="p">),</span> <span class="n">desc</span><span class="o">=</span><span class="s1">&#39;Epochs&#39;</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">P_batch</span> <span class="ow">in</span> <span class="n">P_dataset</span><span class="p">:</span>
+                <span class="n">Z_batch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">noise_source</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">)</span>
+                
+                <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">disc_steps_per_gen_step</span><span class="p">):</span>
+                    <span class="n">disc_opt_state</span><span class="p">,</span> <span class="n">disc_params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">disc_train_step</span><span class="p">(</span><span class="n">P_batch</span><span class="p">,</span> <span class="n">Z_batch</span><span class="p">,</span> <span class="n">disc_params</span><span class="p">,</span> <span class="n">disc_opt_state</span><span class="p">)</span>
+                    
+                <span class="n">gen_opt_state</span><span class="p">,</span> <span class="n">gen_params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gen_train_step</span><span class="p">(</span><span class="n">P_batch</span><span class="p">,</span> <span class="n">Z_batch</span><span class="p">,</span> <span class="n">gen_params</span><span class="p">,</span> <span class="n">gen_opt_state</span><span class="p">)</span>
+                
+                <span class="k">if</span> <span class="n">save_frequency</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="p">(</span><span class="n">epoch</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">save_frequency</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">save_loss_estimates</span><span class="p">:</span>
+                        <span class="n">loss_estimates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">estimate_loss</span><span class="p">(</span><span class="n">P_batch</span><span class="p">,</span> <span class="n">Z_batch</span><span class="p">),</span> <span class="n">gen_params</span><span class="p">))</span>
+                    
+                    <span class="k">if</span> <span class="n">num_gen_samples_to_save</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="n">generator_samples</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">generate_samples</span><span class="p">(</span><span class="n">num_gen_samples_to_save</span><span class="p">),</span> <span class="n">gen_params</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">generator_samples</span><span class="p">,</span> <span class="n">loss_estimates</span><span class="p">,</span> <span class="n">disc_params</span><span class="p">,</span> <span class="n">gen_params</span><span class="p">,</span> <span class="n">disc_opt_state</span><span class="p">,</span> <span class="n">gen_opt_state</span></div>
+
+
+<div class="viewcode-block" id="GAN.generate_samples">
+<a class="viewcode-back" href="../GAN_jax.html#GAN_jax.GAN.generate_samples">[docs]</a>
+    <span class="k">def</span> <span class="nf">generate_samples</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_samples</span><span class="p">,</span> <span class="n">gen_params</span><span class="p">):</span>
+        <span class="n">generator_samples</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generator</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">gen_params</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">noise_source</span><span class="p">(</span><span class="n">num_samples</span><span class="p">)))</span>
+        <span class="k">return</span> <span class="n">generator_samples</span></div>
+</div>
+
+    
+
+<div class="viewcode-block" id="DataLoader">
+<a class="viewcode-back" href="../GAN_jax.html#GAN_jax.DataLoader">[docs]</a>
+<span class="k">class</span> <span class="nc">DataLoader</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span> <span class="o">=</span> <span class="n">batch_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">shuffle</span> <span class="o">=</span> <span class="n">shuffle</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_samples</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_samples</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">shuffle</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">permutation</span><span class="p">(</span><span class="n">jax</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">PRNGKey</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_idx</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="k">def</span> <span class="fm">__next__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_idx</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_samples</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">StopIteration</span>
+        <span class="n">batch_idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">current_idx</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">current_idx</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">]</span>
+        <span class="n">batch</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">batch_idx</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_idx</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span>
+        <span class="k">return</span> <span class="n">batch</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Alexandros Angelakis.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

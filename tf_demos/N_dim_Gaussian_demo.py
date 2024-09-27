@@ -1,27 +1,24 @@
 import numpy as np
-import pandas as pd
 import csv
 import os
 import sys
 import argparse
 #import json
-import matplotlib.pyplot as plt
-from scipy.stats import norm
-from bisect import bisect_left, bisect_right
 
 current_dir = os.path.dirname(os.path.realpath(__file__))
 parent_dir = os.path.dirname(current_dir)
 sys.path.append(parent_dir)
 
-from models.tf_model import *
-from models.Divergences import *
+from models.model_tf import *
+from models.Divergences_tf import *
 
+start = time.perf_counter()
 
 # read input arguments
 parser = argparse.ArgumentParser(description='Neural-based Estimation of Divergences between Gaussians')
 parser.add_argument('--dimension', default=1, type=int, metavar='d')
 parser.add_argument('--method', default='KLD-DV', type=str, metavar='method',
-                    help='values: KLD-DV, KLD-DV-GP, KLD-LT, squared-Hel-LT, chi-squared-LT, JS-LT, alpha-LT, Renyi-DV, Renyi-CC, rescaled-Renyi-CC, Renyi-CC-WCR')
+                    help='values: KLD-DV, KLD-LT, squared-Hel-LT, chi-squared-LT, JS-LT, alpha-LT, Renyi-DV, Renyi-CC, rescaled-Renyi-CC, Renyi-CC-WCR')
 parser.add_argument('--sample_size', default=10000, type=int, metavar='N')
 parser.add_argument('--batch_size', default=1000, type=int, metavar='m')
 parser.add_argument('--lr', default=0.001, type=float)
@@ -31,7 +28,6 @@ parser.add_argument('--alpha', default=2.0, type=float, metavar='alpha')
 parser.add_argument('--Lip_constant', default=1.0, type=float, metavar='Lipschitz constant')
 parser.add_argument('--gp_weight', default=1.0, type=float, metavar='GP weight')
 parser.add_argument('--use_GP', choices=('True', 'False'), default='False')
-
 
 parser.add_argument('--delta_mu', default=1.0, type=float)
 
@@ -72,11 +68,8 @@ mu_p=np.zeros((d,1))
 mu_q=np.zeros((d,1))
 mu_q[0]=delta_mu
 
-
-
 Sigma_p=np.identity(d)
 Sigma_q=np.identity(d)
-
 
 Sigma_alpha=alpha*Sigma_q+(1.0-alpha)*Sigma_p       
 
@@ -84,15 +77,11 @@ Sigma_alpha=alpha*Sigma_q+(1.0-alpha)*Sigma_p
 Mp=np.linalg.cholesky(Sigma_p)
 Mq=np.linalg.cholesky(Sigma_q)
 
-
 def sample_P(N_samp):
     return np.transpose((mu_p+np.matmul(Mp,np.random.normal(0., 1.0, size=[d, N_samp]))))
 
 def sample_Q(N_samp):
     return np.transpose((mu_q+np.matmul(Mq,np.random.normal(0., 1.0, size=[d, N_samp]))))
-
-
-    
 
 data_P = sample_P(N)
 data_P = data_P.astype('f')
@@ -115,6 +104,9 @@ if optimizer == 'Adam':
 if optimizer == 'RMS':
     disc_optimizer = tf.keras.optimizers.RMSprop(lr)
 
+discriminator.build(input_shape=(d, N))
+discriminator.compile(optimizer=disc_optimizer)
+
 # construct gradient penalty
 if use_GP:
     discriminator_penalty=Gradient_Penalty_1Sided(gp_weight, L)
@@ -124,14 +116,12 @@ else:
 # construct divergence, train optimizer and estimate the divergence
 if mthd=="KLD-DV":
     div_dense = KLD_DV(discriminator, disc_optimizer, epochs, m, discriminator_penalty)
-    divergence_estimates = div_dense.train(data_P, data_Q)
-    
+    divergence_estimates = div_dense.train(data_P, data_Q)  
     
     div_value_true=float(1.0/2.0*(np.log(np.abs(np.linalg.det(Sigma_q)/np.linalg.det(Sigma_p)))+np.matmul(np.transpose(mu_q-mu_p),np.matmul(np.linalg.inv(Sigma_q),mu_q-mu_p))-d+np.trace(np.matmul(Sigma_p,np.linalg.inv(Sigma_q)))))
    
     print('KLD (true):\t\t {:.4}'.format(div_value_true))
     print('KLD-DV (estimated):\t {:.4}'.format(divergence_estimates[-1]))
-
 
     print()
 
@@ -162,8 +152,7 @@ if mthd=="chi-squared-LT":
 
     Renyi=float(1.0/2.0*np.matmul(np.transpose(mu_q-mu_p),np.matmul(np.linalg.inv(Sigma_alpha),mu_q-mu_p))-1.0/(2.0*alpha*(alpha-1.0))*np.math.log(np.linalg.det(Sigma_alpha)/(np.math.pow(np.linalg.det(Sigma_p),1.0-alpha)*np.math.pow(np.linalg.det(Sigma_q),alpha))))
     div_value_true=2.*(np.math.exp(alpha*(alpha-1)*Renyi)-1.)/(alpha*(alpha-1.))
-
-    
+ 
     print('chi-squared-LT (true):\t\t {:.4}'.format(div_value_true))
     print('chi-squared-LT (estimated):\t\t {:.4}'.format(divergence_estimates[-1]))
     print()
@@ -172,10 +161,8 @@ if mthd=="chi-squared-HCR":
     div_dense = Pearson_chi_squared_HCR(discriminator, disc_optimizer, epochs, m, discriminator_penalty)
     divergence_estimates=div_dense.train(data_P, data_Q)
 
-
     Renyi=float(1.0/2.0*np.matmul(np.transpose(mu_q-mu_p),np.matmul(np.linalg.inv(Sigma_alpha),mu_q-mu_p))-1.0/(2.0*alpha*(alpha-1.0))*np.math.log(np.linalg.det(Sigma_alpha)/(np.math.pow(np.linalg.det(Sigma_p),1.0-alpha)*np.math.pow(np.linalg.det(Sigma_q),alpha))))
     div_value_true=2.*(np.math.exp(alpha*(alpha-1)*Renyi)-1.)/(alpha*(alpha-1.))
-
     
     print('chi-squared-HCR (true):\t\t {:.4}'.format(div_value_true))
     print('chi-squared-HCR (estimated):\t\t {:.4}'.format(divergence_estimates[-1]))
@@ -186,7 +173,6 @@ if mthd=="alpha-LT":
     div_dense = alpha_Divergence_LT(discriminator, disc_optimizer, alpha, epochs, m, discriminator_penalty)
     divergence_estimates=div_dense.train(data_P, data_Q)
 
-    
     Renyi=float(1.0/2.0*np.matmul(np.transpose(mu_q-mu_p),np.matmul(np.linalg.inv(Sigma_alpha),mu_q-mu_p))-1.0/(2.0*alpha*(alpha-1.0))*np.math.log(np.linalg.det(Sigma_alpha)/(np.math.pow(np.linalg.det(Sigma_p),1.0-alpha)*np.math.pow(np.linalg.det(Sigma_q),alpha))))
     div_value_true=(np.math.exp(alpha*(alpha-1)*Renyi)-1.)/(alpha*(alpha-1.))
 
@@ -198,9 +184,7 @@ if mthd=="Renyi-DV":
     div_dense = Renyi_Divergence_DV(discriminator, disc_optimizer, alpha, epochs, m, discriminator_penalty)
     divergence_estimates=div_dense.train(data_P, data_Q)
 
-    
     div_value_true=float(1.0/2.0*np.matmul(np.transpose(mu_q-mu_p),np.matmul(np.linalg.inv(Sigma_alpha),mu_q-mu_p))-1.0/(2.0*alpha*(alpha-1.0))*np.math.log(np.linalg.det(Sigma_alpha)/(np.math.pow(np.linalg.det(Sigma_p),1.0-alpha)*np.math.pow(np.linalg.det(Sigma_q),alpha))))
-
 
     print('Renyi-divergence (true):\t\t {:.4}'.format(div_value_true))
     print('Renyi-divergence-DV (estimated):\t\t {:.4}'.format(divergence_estimates[-1]))
@@ -210,7 +194,6 @@ if mthd=="Renyi-CC":
     div_dense = Renyi_Divergence_CC(discriminator, disc_optimizer, alpha, epochs, m, fl_act_func_CC, discriminator_penalty)
     divergence_estimates=div_dense.train(data_P, data_Q)
 
-   
     div_value_true=float(1.0/2.0*np.matmul(np.transpose(mu_q-mu_p),np.matmul(np.linalg.inv(Sigma_alpha),mu_q-mu_p))-1.0/(2.0*alpha*(alpha-1.0))*np.math.log(np.linalg.det(Sigma_alpha)/(np.math.pow(np.linalg.det(Sigma_p),1.0-alpha)*np.math.pow(np.linalg.det(Sigma_q),alpha))))
     
     print('Renyi-divergence (true):\t\t {:.4}'.format(div_value_true))
@@ -221,7 +204,6 @@ if mthd=="rescaled-Renyi-CC":
     div_dense = Renyi_Divergence_CC_rescaled(discriminator, disc_optimizer, alpha, epochs, m, fl_act_func_CC, discriminator_penalty)
     divergence_estimates=div_dense.train(data_P, data_Q)
 
-   
     div_value_true=float(alpha*(1.0/2.0*np.matmul(np.transpose(mu_q-mu_p),np.matmul(np.linalg.inv(Sigma_alpha),mu_q-mu_p))-1.0/(2.0*alpha*(alpha-1.0))*np.math.log(np.linalg.det(Sigma_alpha)/(np.math.pow(np.linalg.det(Sigma_p),1.0-alpha)*np.math.pow(np.linalg.det(Sigma_q),alpha)))))
     
     print('rescaled-Renyi-divergence (true):\t\t {:.4}'.format(div_value_true))
@@ -229,11 +211,9 @@ if mthd=="rescaled-Renyi-CC":
     print()
 
 
-    
 test_name="N_dim_Gaussian_demo"
 if not os.path.exists(test_name):
 	os.makedirs(test_name)
-	
 	 
 with open(test_name+'/estimated_'+mthd+'_dim_'+str(d)+'_delta_mu_{:.2f}'.format(delta_mu)+'_N_'+str(N)+'_m_'+str(m)+'_Lrate_{:.1e}'.format(lr)+'_epochs_'+str(epochs)+'_alpha_{:.1f}'.format(alpha)+'_L_{:.1f}'.format(L)+'_gp_weight_{:.1f}'.format(gp_weight)+'_spec_norm_'+str(spec_norm)+'_bounded_'+str(bounded)+'_run_num_'+str(run_num)+'.csv', "w") as output:
     writer = csv.writer(output, lineterminator='\n')
@@ -244,5 +224,7 @@ with open(test_name+'/true_'+mthd+'_dim_'+str(d)+'_delta_mu_{:.2f}'.format(delta
     writer = csv.writer(output, lineterminator='\n')
     writer.writerow([div_value_true])  
 
+end = time.perf_counter()
 
+print(f"Time elapsed: {end - start:.2f} seconds")
 

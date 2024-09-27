@@ -1,24 +1,28 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Divergences_torch module &mdash; nedipm library 0.0.1 documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <title>Divergences_torch module &mdash; NEDIPM 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=d45e8c67"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="GAN module" href="GAN.html" />
-    <link rel="prev" title="Divergences module" href="Divergences.html" /> 
+    <link rel="next" title="GAN_CIFAR10_jax module" href="GAN_CIFAR10_jax.html" />
+    <link rel="prev" title="Divergences_tf module" href="Divergences_tf.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -30,7 +34,7 @@
           
           
           <a href="index.html" class="icon icon-home">
-            nedipm library
+            NEDIPM
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -40,121 +44,135 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Intro:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">models</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="Divergences.html">Divergences module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Divergences_jax.html">Divergences_jax module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Divergences_tf.html">Divergences_tf module</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Divergences_torch module</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#models.Divergences_torch.Discriminator_Penalty"><code class="docutils literal notranslate"><span class="pre">Discriminator_Penalty</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#models.Divergences_torch.Discriminator_Penalty.evaluate"><code class="docutils literal notranslate"><span class="pre">Discriminator_Penalty.evaluate()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#models.Divergences_torch.Discriminator_Penalty.get_penalty_weight"><code class="docutils literal notranslate"><span class="pre">Discriminator_Penalty.get_penalty_weight()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#models.Divergences_torch.Discriminator_Penalty.set_penalty_weight"><code class="docutils literal notranslate"><span class="pre">Discriminator_Penalty.set_penalty_weight()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Divergences_torch.Discriminator_Penalty"><code class="docutils literal notranslate"><span class="pre">Discriminator_Penalty</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_torch.Discriminator_Penalty.evaluate"><code class="docutils literal notranslate"><span class="pre">Discriminator_Penalty.evaluate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_torch.Discriminator_Penalty.get_penalty_weight"><code class="docutils literal notranslate"><span class="pre">Discriminator_Penalty.get_penalty_weight()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_torch.Discriminator_Penalty.set_penalty_weight"><code class="docutils literal notranslate"><span class="pre">Discriminator_Penalty.set_penalty_weight()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#models.Divergences_torch.Divergence"><code class="docutils literal notranslate"><span class="pre">Divergence</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#models.Divergences_torch.Divergence.discriminate"><code class="docutils literal notranslate"><span class="pre">Divergence.discriminate()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#models.Divergences_torch.Divergence.discriminator_loss"><code class="docutils literal notranslate"><span class="pre">Divergence.discriminator_loss()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#models.Divergences_torch.Divergence.estimate"><code class="docutils literal notranslate"><span class="pre">Divergence.estimate()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#models.Divergences_torch.Divergence.eval_var_formula"><code class="docutils literal notranslate"><span class="pre">Divergence.eval_var_formula()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#models.Divergences_torch.Divergence.get_batch_size"><code class="docutils literal notranslate"><span class="pre">Divergence.get_batch_size()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#models.Divergences_torch.Divergence.get_discriminator"><code class="docutils literal notranslate"><span class="pre">Divergence.get_discriminator()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#models.Divergences_torch.Divergence.get_learning_rate"><code class="docutils literal notranslate"><span class="pre">Divergence.get_learning_rate()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#models.Divergences_torch.Divergence.get_no_epochs"><code class="docutils literal notranslate"><span class="pre">Divergence.get_no_epochs()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#models.Divergences_torch.Divergence.set_batch_size"><code class="docutils literal notranslate"><span class="pre">Divergence.set_batch_size()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#models.Divergences_torch.Divergence.set_discriminator"><code class="docutils literal notranslate"><span class="pre">Divergence.set_discriminator()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#models.Divergences_torch.Divergence.set_learning_rate"><code class="docutils literal notranslate"><span class="pre">Divergence.set_learning_rate()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#models.Divergences_torch.Divergence.set_no_epochs"><code class="docutils literal notranslate"><span class="pre">Divergence.set_no_epochs()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#models.Divergences_torch.Divergence.train"><code class="docutils literal notranslate"><span class="pre">Divergence.train()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#models.Divergences_torch.Divergence.train_step"><code class="docutils literal notranslate"><span class="pre">Divergence.train_step()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Divergences_torch.Divergence"><code class="docutils literal notranslate"><span class="pre">Divergence</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_torch.Divergence.discriminate"><code class="docutils literal notranslate"><span class="pre">Divergence.discriminate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_torch.Divergence.discriminator_loss"><code class="docutils literal notranslate"><span class="pre">Divergence.discriminator_loss()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_torch.Divergence.estimate"><code class="docutils literal notranslate"><span class="pre">Divergence.estimate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_torch.Divergence.eval_var_formula"><code class="docutils literal notranslate"><span class="pre">Divergence.eval_var_formula()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_torch.Divergence.generator_loss"><code class="docutils literal notranslate"><span class="pre">Divergence.generator_loss()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_torch.Divergence.get_batch_size"><code class="docutils literal notranslate"><span class="pre">Divergence.get_batch_size()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_torch.Divergence.get_discriminator"><code class="docutils literal notranslate"><span class="pre">Divergence.get_discriminator()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_torch.Divergence.get_learning_rate"><code class="docutils literal notranslate"><span class="pre">Divergence.get_learning_rate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_torch.Divergence.get_no_epochs"><code class="docutils literal notranslate"><span class="pre">Divergence.get_no_epochs()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_torch.Divergence.set_batch_size"><code class="docutils literal notranslate"><span class="pre">Divergence.set_batch_size()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_torch.Divergence.set_discriminator"><code class="docutils literal notranslate"><span class="pre">Divergence.set_discriminator()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_torch.Divergence.set_learning_rate"><code class="docutils literal notranslate"><span class="pre">Divergence.set_learning_rate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_torch.Divergence.set_no_epochs"><code class="docutils literal notranslate"><span class="pre">Divergence.set_no_epochs()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_torch.Divergence.train"><code class="docutils literal notranslate"><span class="pre">Divergence.train()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_torch.Divergence.train_step"><code class="docutils literal notranslate"><span class="pre">Divergence.train_step()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#models.Divergences_torch.Gradient_Penalty_1Sided"><code class="docutils literal notranslate"><span class="pre">Gradient_Penalty_1Sided</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#models.Divergences_torch.Gradient_Penalty_1Sided.evaluate"><code class="docutils literal notranslate"><span class="pre">Gradient_Penalty_1Sided.evaluate()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#models.Divergences_torch.Gradient_Penalty_1Sided.get_Lip_constant"><code class="docutils literal notranslate"><span class="pre">Gradient_Penalty_1Sided.get_Lip_constant()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#models.Divergences_torch.Gradient_Penalty_1Sided.set_Lip_constant"><code class="docutils literal notranslate"><span class="pre">Gradient_Penalty_1Sided.set_Lip_constant()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Divergences_torch.Gradient_Penalty_1Sided"><code class="docutils literal notranslate"><span class="pre">Gradient_Penalty_1Sided</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_torch.Gradient_Penalty_1Sided.evaluate"><code class="docutils literal notranslate"><span class="pre">Gradient_Penalty_1Sided.evaluate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_torch.Gradient_Penalty_1Sided.get_Lip_constant"><code class="docutils literal notranslate"><span class="pre">Gradient_Penalty_1Sided.get_Lip_constant()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_torch.Gradient_Penalty_1Sided.set_Lip_constant"><code class="docutils literal notranslate"><span class="pre">Gradient_Penalty_1Sided.set_Lip_constant()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#models.Divergences_torch.Gradient_Penalty_2Sided"><code class="docutils literal notranslate"><span class="pre">Gradient_Penalty_2Sided</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#models.Divergences_torch.Gradient_Penalty_2Sided.evaluate"><code class="docutils literal notranslate"><span class="pre">Gradient_Penalty_2Sided.evaluate()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#models.Divergences_torch.Gradient_Penalty_2Sided.get_Lip_constant"><code class="docutils literal notranslate"><span class="pre">Gradient_Penalty_2Sided.get_Lip_constant()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#models.Divergences_torch.Gradient_Penalty_2Sided.set_Lip_constant"><code class="docutils literal notranslate"><span class="pre">Gradient_Penalty_2Sided.set_Lip_constant()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Divergences_torch.Gradient_Penalty_2Sided"><code class="docutils literal notranslate"><span class="pre">Gradient_Penalty_2Sided</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_torch.Gradient_Penalty_2Sided.evaluate"><code class="docutils literal notranslate"><span class="pre">Gradient_Penalty_2Sided.evaluate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_torch.Gradient_Penalty_2Sided.get_Lip_constant"><code class="docutils literal notranslate"><span class="pre">Gradient_Penalty_2Sided.get_Lip_constant()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_torch.Gradient_Penalty_2Sided.set_Lip_constant"><code class="docutils literal notranslate"><span class="pre">Gradient_Penalty_2Sided.set_Lip_constant()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#models.Divergences_torch.IPM"><code class="docutils literal notranslate"><span class="pre">IPM</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#models.Divergences_torch.IPM.eval_var_formula"><code class="docutils literal notranslate"><span class="pre">IPM.eval_var_formula()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Divergences_torch.IPM"><code class="docutils literal notranslate"><span class="pre">IPM</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_torch.IPM.eval_var_formula"><code class="docutils literal notranslate"><span class="pre">IPM.eval_var_formula()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_torch.IPM.eval_var_formula_gen"><code class="docutils literal notranslate"><span class="pre">IPM.eval_var_formula_gen()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#models.Divergences_torch.Jensen_Shannon_LT"><code class="docutils literal notranslate"><span class="pre">Jensen_Shannon_LT</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#models.Divergences_torch.Jensen_Shannon_LT.f_star"><code class="docutils literal notranslate"><span class="pre">Jensen_Shannon_LT.f_star()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#models.Divergences_torch.Jensen_Shannon_LT.final_layer_activation"><code class="docutils literal notranslate"><span class="pre">Jensen_Shannon_LT.final_layer_activation()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Divergences_torch.Jensen_Shannon_LT"><code class="docutils literal notranslate"><span class="pre">Jensen_Shannon_LT</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_torch.Jensen_Shannon_LT.f_star"><code class="docutils literal notranslate"><span class="pre">Jensen_Shannon_LT.f_star()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_torch.Jensen_Shannon_LT.final_layer_activation"><code class="docutils literal notranslate"><span class="pre">Jensen_Shannon_LT.final_layer_activation()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#models.Divergences_torch.KLD_DV"><code class="docutils literal notranslate"><span class="pre">KLD_DV</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#models.Divergences_torch.KLD_DV.eval_var_formula"><code class="docutils literal notranslate"><span class="pre">KLD_DV.eval_var_formula()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Divergences_torch.KLD_DV"><code class="docutils literal notranslate"><span class="pre">KLD_DV</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_torch.KLD_DV.eval_var_formula"><code class="docutils literal notranslate"><span class="pre">KLD_DV.eval_var_formula()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_torch.KLD_DV.eval_var_formula_gen"><code class="docutils literal notranslate"><span class="pre">KLD_DV.eval_var_formula_gen()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#models.Divergences_torch.KLD_LT"><code class="docutils literal notranslate"><span class="pre">KLD_LT</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#models.Divergences_torch.KLD_LT.f_star"><code class="docutils literal notranslate"><span class="pre">KLD_LT.f_star()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Divergences_torch.KLD_LT"><code class="docutils literal notranslate"><span class="pre">KLD_LT</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_torch.KLD_LT.f_star"><code class="docutils literal notranslate"><span class="pre">KLD_LT.f_star()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#models.Divergences_torch.Pearson_chi_squared_HCR"><code class="docutils literal notranslate"><span class="pre">Pearson_chi_squared_HCR</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#models.Divergences_torch.Pearson_chi_squared_HCR.eval_var_formula"><code class="docutils literal notranslate"><span class="pre">Pearson_chi_squared_HCR.eval_var_formula()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Divergences_torch.Pearson_chi_squared_HCR"><code class="docutils literal notranslate"><span class="pre">Pearson_chi_squared_HCR</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_torch.Pearson_chi_squared_HCR.eval_var_formula"><code class="docutils literal notranslate"><span class="pre">Pearson_chi_squared_HCR.eval_var_formula()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_torch.Pearson_chi_squared_HCR.eval_var_formula_gen"><code class="docutils literal notranslate"><span class="pre">Pearson_chi_squared_HCR.eval_var_formula_gen()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#models.Divergences_torch.Pearson_chi_squared_LT"><code class="docutils literal notranslate"><span class="pre">Pearson_chi_squared_LT</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#models.Divergences_torch.Pearson_chi_squared_LT.f_star"><code class="docutils literal notranslate"><span class="pre">Pearson_chi_squared_LT.f_star()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Divergences_torch.Pearson_chi_squared_LT"><code class="docutils literal notranslate"><span class="pre">Pearson_chi_squared_LT</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_torch.Pearson_chi_squared_LT.f_star"><code class="docutils literal notranslate"><span class="pre">Pearson_chi_squared_LT.f_star()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#models.Divergences_torch.Renyi_Divergence"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#models.Divergences_torch.Renyi_Divergence.get_order"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence.get_order()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#models.Divergences_torch.Renyi_Divergence.set_order"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence.set_order()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Divergences_torch.Renyi_Divergence"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_torch.Renyi_Divergence.get_order"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence.get_order()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_torch.Renyi_Divergence.set_order"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence.set_order()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#models.Divergences_torch.Renyi_Divergence_CC"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_CC</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#models.Divergences_torch.Renyi_Divergence_CC.eval_var_formula"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_CC.eval_var_formula()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#models.Divergences_torch.Renyi_Divergence_CC.final_layer_activation"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_CC.final_layer_activation()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Divergences_torch.Renyi_Divergence_CC"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_CC</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_torch.Renyi_Divergence_CC.eval_var_formula"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_CC.eval_var_formula()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_torch.Renyi_Divergence_CC.eval_var_formula_gen"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_CC.eval_var_formula_gen()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_torch.Renyi_Divergence_CC.final_layer_activation"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_CC.final_layer_activation()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#models.Divergences_torch.Renyi_Divergence_CC_rescaled"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_CC_rescaled</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#models.Divergences_torch.Renyi_Divergence_CC_rescaled.eval_var_formula"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_CC_rescaled.eval_var_formula()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#models.Divergences_torch.Renyi_Divergence_CC_rescaled.final_layer_activation"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_CC_rescaled.final_layer_activation()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Divergences_torch.Renyi_Divergence_CC_rescaled"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_CC_rescaled</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_torch.Renyi_Divergence_CC_rescaled.eval_var_formula"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_CC_rescaled.eval_var_formula()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_torch.Renyi_Divergence_CC_rescaled.eval_var_formula_gen"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_CC_rescaled.eval_var_formula_gen()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_torch.Renyi_Divergence_CC_rescaled.final_layer_activation"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_CC_rescaled.final_layer_activation()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#models.Divergences_torch.Renyi_Divergence_DV"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_DV</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#models.Divergences_torch.Renyi_Divergence_DV.eval_var_formula"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_DV.eval_var_formula()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Divergences_torch.Renyi_Divergence_DV"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_DV</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_torch.Renyi_Divergence_DV.eval_var_formula"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_DV.eval_var_formula()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_torch.Renyi_Divergence_DV.eval_var_formula_gen"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_DV.eval_var_formula_gen()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#models.Divergences_torch.Renyi_Divergence_WCR"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_WCR</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#models.Divergences_torch.Renyi_Divergence_WCR.eval_var_formula"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_WCR.eval_var_formula()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Divergences_torch.Renyi_Divergence_WCR"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_WCR</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_torch.Renyi_Divergence_WCR.eval_var_formula"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_WCR.eval_var_formula()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_torch.Renyi_Divergence_WCR.eval_var_formula_gen"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_WCR.eval_var_formula_gen()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#models.Divergences_torch.alpha_Divergence_LT"><code class="docutils literal notranslate"><span class="pre">alpha_Divergence_LT</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#models.Divergences_torch.alpha_Divergence_LT.f_star"><code class="docutils literal notranslate"><span class="pre">alpha_Divergence_LT.f_star()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#models.Divergences_torch.alpha_Divergence_LT.get_order"><code class="docutils literal notranslate"><span class="pre">alpha_Divergence_LT.get_order()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#models.Divergences_torch.alpha_Divergence_LT.set_order"><code class="docutils literal notranslate"><span class="pre">alpha_Divergence_LT.set_order()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Divergences_torch.alpha_Divergence_LT"><code class="docutils literal notranslate"><span class="pre">alpha_Divergence_LT</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_torch.alpha_Divergence_LT.f_star"><code class="docutils literal notranslate"><span class="pre">alpha_Divergence_LT.f_star()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_torch.alpha_Divergence_LT.get_order"><code class="docutils literal notranslate"><span class="pre">alpha_Divergence_LT.get_order()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_torch.alpha_Divergence_LT.set_order"><code class="docutils literal notranslate"><span class="pre">alpha_Divergence_LT.set_order()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#models.Divergences_torch.f_Divergence"><code class="docutils literal notranslate"><span class="pre">f_Divergence</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#models.Divergences_torch.f_Divergence.eval_var_formula"><code class="docutils literal notranslate"><span class="pre">f_Divergence.eval_var_formula()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#models.Divergences_torch.f_Divergence.f_star"><code class="docutils literal notranslate"><span class="pre">f_Divergence.f_star()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#models.Divergences_torch.f_Divergence.final_layer_activation"><code class="docutils literal notranslate"><span class="pre">f_Divergence.final_layer_activation()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Divergences_torch.f_Divergence"><code class="docutils literal notranslate"><span class="pre">f_Divergence</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_torch.f_Divergence.eval_var_formula"><code class="docutils literal notranslate"><span class="pre">f_Divergence.eval_var_formula()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_torch.f_Divergence.eval_var_formula_gen"><code class="docutils literal notranslate"><span class="pre">f_Divergence.eval_var_formula_gen()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_torch.f_Divergence.f_star"><code class="docutils literal notranslate"><span class="pre">f_Divergence.f_star()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_torch.f_Divergence.final_layer_activation"><code class="docutils literal notranslate"><span class="pre">f_Divergence.final_layer_activation()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#models.Divergences_torch.squared_Hellinger_LT"><code class="docutils literal notranslate"><span class="pre">squared_Hellinger_LT</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#models.Divergences_torch.squared_Hellinger_LT.f_star"><code class="docutils literal notranslate"><span class="pre">squared_Hellinger_LT.f_star()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#models.Divergences_torch.squared_Hellinger_LT.final_layer_activation"><code class="docutils literal notranslate"><span class="pre">squared_Hellinger_LT.final_layer_activation()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Divergences_torch.squared_Hellinger_LT"><code class="docutils literal notranslate"><span class="pre">squared_Hellinger_LT</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_torch.squared_Hellinger_LT.f_star"><code class="docutils literal notranslate"><span class="pre">squared_Hellinger_LT.f_star()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_torch.squared_Hellinger_LT.final_layer_activation"><code class="docutils literal notranslate"><span class="pre">squared_Hellinger_LT.final_layer_activation()</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="GAN.html">GAN module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GAN_CIFAR10_jax.html">GAN_CIFAR10_jax module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GAN_CIFAR10_tf.html">GAN_CIFAR10_tf module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GAN_CIFAR10_torch.html">GAN_CIFAR10_torch module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GAN_MNIST_jax.html">GAN_MNIST_jax module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GAN_MNIST_tf.html">GAN_MNIST_tf module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GAN_MNIST_torch.html">GAN_MNIST_torch module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GAN_jax.html">GAN_jax module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GAN_tf.html">GAN_tf module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="GAN_torch.html">GAN_torch module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tf_model.html">tf_model module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="torch_model.html">torch_model module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model_jax.html">model_jax module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model_tf.html">model_tf module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model_torch.html">model_torch module</a></li>
 </ul>
 </li>
 </ul>
@@ -165,7 +183,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">nedipm library</a>
+          <a href="index.html">NEDIPM</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -184,404 +202,715 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="divergences-torch-module">
-<h1>Divergences_torch module<a class="headerlink" href="#divergences-torch-module" title="Permalink to this heading"></a></h1>
-<p>The Divergences module that contains all of our divergences written in PyTorch</p>
-<span class="target" id="module-models.Divergences_torch"></span><dl class="py class">
-<dt class="sig sig-object py" id="models.Divergences_torch.Discriminator_Penalty">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">models.Divergences_torch.</span></span><span class="sig-name descname"><span class="pre">Discriminator_Penalty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">penalty_weight</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/Divergences_torch.html#Discriminator_Penalty"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.Divergences_torch.Discriminator_Penalty" title="Permalink to this definition"></a></dt>
+  <section id="module-Divergences_torch">
+<span id="divergences-torch-module"></span><h1>Divergences_torch module<a class="headerlink" href="#module-Divergences_torch" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="Divergences_torch.Discriminator_Penalty">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Divergences_torch.</span></span><span class="sig-name descname"><span class="pre">Discriminator_Penalty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">penalty_weight</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_torch.html#Discriminator_Penalty"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_torch.Discriminator_Penalty" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Discriminator penalty class penalizes the divergence objective functional during training.
 Allows for the (approximate) implementation of discriminator constraints.</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="models.Divergences_torch.Discriminator_Penalty.evaluate">
-<span class="sig-name descname"><span class="pre">evaluate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">discriminator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/Divergences_torch.html#Discriminator_Penalty.evaluate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.Divergences_torch.Discriminator_Penalty.evaluate" title="Permalink to this definition"></a></dt>
-<dd><p>depends on the choice of penalty</p>
+<dt class="sig sig-object py" id="Divergences_torch.Discriminator_Penalty.evaluate">
+<span class="sig-name descname"><span class="pre">evaluate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">discriminator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_torch.html#Discriminator_Penalty.evaluate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_torch.Discriminator_Penalty.evaluate" title="Link to this definition"></a></dt>
+<dd><p>Evaluates the penalty term. Should be overridden by subclasses.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>discriminator</strong> – Discriminator model.</p></li>
+<li><p><strong>x</strong> – Samples from distribution P.</p></li>
+<li><p><strong>y</strong> – Samples from distribution Q.</p></li>
+<li><p><strong>labels</strong> – Optional labels for the input data.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None. (Subclasses should implement penalty evaluation.)</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="models.Divergences_torch.Discriminator_Penalty.get_penalty_weight">
-<span class="sig-name descname"><span class="pre">get_penalty_weight</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/Divergences_torch.html#Discriminator_Penalty.get_penalty_weight"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.Divergences_torch.Discriminator_Penalty.get_penalty_weight" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dt class="sig sig-object py" id="Divergences_torch.Discriminator_Penalty.get_penalty_weight">
+<span class="sig-name descname"><span class="pre">get_penalty_weight</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_torch.html#Discriminator_Penalty.get_penalty_weight"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_torch.Discriminator_Penalty.get_penalty_weight" title="Link to this definition"></a></dt>
+<dd><p>Returns the weight of the penalty term.</p>
+</dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="models.Divergences_torch.Discriminator_Penalty.set_penalty_weight">
-<span class="sig-name descname"><span class="pre">set_penalty_weight</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">weight</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/Divergences_torch.html#Discriminator_Penalty.set_penalty_weight"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.Divergences_torch.Discriminator_Penalty.set_penalty_weight" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dt class="sig sig-object py" id="Divergences_torch.Discriminator_Penalty.set_penalty_weight">
+<span class="sig-name descname"><span class="pre">set_penalty_weight</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">weight</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_torch.html#Discriminator_Penalty.set_penalty_weight"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_torch.Discriminator_Penalty.set_penalty_weight" title="Link to this definition"></a></dt>
+<dd><p>Sets the weight of the penalty term.</p>
+</dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="models.Divergences_torch.Divergence">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">models.Divergences_torch.</span></span><span class="sig-name descname"><span class="pre">Divergence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">discriminator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disc_optimizer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">discriminator_penalty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/Divergences_torch.html#Divergence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.Divergences_torch.Divergence" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="Divergences_torch.Divergence">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Divergences_torch.</span></span><span class="sig-name descname"><span class="pre">Divergence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">discriminator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disc_optimizer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">discriminator_penalty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_torch.html#Divergence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_torch.Divergence" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></p>
 <p>Divergence D(P||Q) between random variables x~P, y~Q.
-Parent class where the common parameters and the common functions are defined.</p>
+Parent class where common parameters and functions are defined.</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="models.Divergences_torch.Divergence.discriminate">
-<span class="sig-name descname"><span class="pre">discriminate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/Divergences_torch.html#Divergence.discriminate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.Divergences_torch.Divergence.discriminate" title="Permalink to this definition"></a></dt>
-<dd><p>g(x)</p>
+<dt class="sig sig-object py" id="Divergences_torch.Divergence.discriminate">
+<span class="sig-name descname"><span class="pre">discriminate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_torch.html#Divergence.discriminate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_torch.Divergence.discriminate" title="Link to this definition"></a></dt>
+<dd><p>Discriminates between samples from distributions P and Q.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – Input data to discriminate.</p></li>
+<li><p><strong>labels</strong> – Optional labels for the input data.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Discriminator output.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="models.Divergences_torch.Divergence.discriminator_loss">
-<span class="sig-name descname"><span class="pre">discriminator_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/Divergences_torch.html#Divergence.discriminator_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.Divergences_torch.Divergence.discriminator_loss" title="Permalink to this definition"></a></dt>
-<dd><p>same as self.estimate() (in principle)</p>
+<dt class="sig sig-object py" id="Divergences_torch.Divergence.discriminator_loss">
+<span class="sig-name descname"><span class="pre">discriminator_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_torch.html#Divergence.discriminator_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_torch.Divergence.discriminator_loss" title="Link to this definition"></a></dt>
+<dd><p>Computes the discriminator loss.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – Samples from distribution P.</p></li>
+<li><p><strong>y</strong> – Samples from distribution Q.</p></li>
+<li><p><strong>labels</strong> – Optional labels for the input data.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Discriminator loss.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="models.Divergences_torch.Divergence.estimate">
-<span class="sig-name descname"><span class="pre">estimate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/Divergences_torch.html#Divergence.estimate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.Divergences_torch.Divergence.estimate" title="Permalink to this definition"></a></dt>
-<dd><p>same as self.eval_val_formula()</p>
+<dt class="sig sig-object py" id="Divergences_torch.Divergence.estimate">
+<span class="sig-name descname"><span class="pre">estimate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_torch.html#Divergence.estimate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_torch.Divergence.estimate" title="Link to this definition"></a></dt>
+<dd><p>Estimates the divergence measure.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – Samples from distribution P.</p></li>
+<li><p><strong>y</strong> – Samples from distribution Q.</p></li>
+<li><p><strong>labels</strong> – Optional labels for the input data.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Estimated divergence loss.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="models.Divergences_torch.Divergence.eval_var_formula">
-<span class="sig-name descname"><span class="pre">eval_var_formula</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/Divergences_torch.html#Divergence.eval_var_formula"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.Divergences_torch.Divergence.eval_var_formula" title="Permalink to this definition"></a></dt>
-<dd><p>evaluation of variational formula (depends on the variational formula to be used)</p>
+<dt class="sig sig-object py" id="Divergences_torch.Divergence.eval_var_formula">
+<span class="sig-name descname"><span class="pre">eval_var_formula</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_torch.html#Divergence.eval_var_formula"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_torch.Divergence.eval_var_formula" title="Link to this definition"></a></dt>
+<dd><p>Evaluates the variational formula for the divergence measure.
+Should be implemented by subclasses.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – Samples from distribution P.</p></li>
+<li><p><strong>y</strong> – Samples from distribution Q.</p></li>
+<li><p><strong>labels</strong> – Optional labels for the input data.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None (to be overridden by subclasses).</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="models.Divergences_torch.Divergence.get_batch_size">
-<span class="sig-name descname"><span class="pre">get_batch_size</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/Divergences_torch.html#Divergence.get_batch_size"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.Divergences_torch.Divergence.get_batch_size" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="models.Divergences_torch.Divergence.get_discriminator">
-<span class="sig-name descname"><span class="pre">get_discriminator</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/Divergences_torch.html#Divergence.get_discriminator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.Divergences_torch.Divergence.get_discriminator" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="models.Divergences_torch.Divergence.get_learning_rate">
-<span class="sig-name descname"><span class="pre">get_learning_rate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/Divergences_torch.html#Divergence.get_learning_rate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.Divergences_torch.Divergence.get_learning_rate" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="models.Divergences_torch.Divergence.get_no_epochs">
-<span class="sig-name descname"><span class="pre">get_no_epochs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/Divergences_torch.html#Divergence.get_no_epochs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.Divergences_torch.Divergence.get_no_epochs" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="models.Divergences_torch.Divergence.set_batch_size">
-<span class="sig-name descname"><span class="pre">set_batch_size</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">BATCH_SIZE</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/Divergences_torch.html#Divergence.set_batch_size"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.Divergences_torch.Divergence.set_batch_size" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="models.Divergences_torch.Divergence.set_discriminator">
-<span class="sig-name descname"><span class="pre">set_discriminator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">discriminator</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/Divergences_torch.html#Divergence.set_discriminator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.Divergences_torch.Divergence.set_discriminator" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="models.Divergences_torch.Divergence.set_learning_rate">
-<span class="sig-name descname"><span class="pre">set_learning_rate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lr</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/Divergences_torch.html#Divergence.set_learning_rate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.Divergences_torch.Divergence.set_learning_rate" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="models.Divergences_torch.Divergence.set_no_epochs">
-<span class="sig-name descname"><span class="pre">set_no_epochs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">epochs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/Divergences_torch.html#Divergence.set_no_epochs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.Divergences_torch.Divergence.set_no_epochs" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="models.Divergences_torch.Divergence.train">
-<span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_P</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_Q</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_estimates</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/Divergences_torch.html#Divergence.train"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.Divergences_torch.Divergence.train" title="Permalink to this definition"></a></dt>
-<dd><p>training function of our discriminator</p>
+<dt class="sig sig-object py" id="Divergences_torch.Divergence.generator_loss">
+<span class="sig-name descname"><span class="pre">generator_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_torch.html#Divergence.generator_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_torch.Divergence.generator_loss" title="Link to this definition"></a></dt>
+<dd><p>Computes the generator loss.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – Generated samples.</p></li>
+<li><p><strong>labels</strong> – Optional labels for the input data.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Generator loss.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="models.Divergences_torch.Divergence.train_step">
-<span class="sig-name descname"><span class="pre">train_step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/Divergences_torch.html#Divergence.train_step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.Divergences_torch.Divergence.train_step" title="Permalink to this definition"></a></dt>
-<dd><p>discriminator’s parameters update</p>
+<dt class="sig sig-object py" id="Divergences_torch.Divergence.get_batch_size">
+<span class="sig-name descname"><span class="pre">get_batch_size</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_torch.html#Divergence.get_batch_size"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_torch.Divergence.get_batch_size" title="Link to this definition"></a></dt>
+<dd><p>Returns the batch size.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Divergences_torch.Divergence.get_discriminator">
+<span class="sig-name descname"><span class="pre">get_discriminator</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_torch.html#Divergence.get_discriminator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_torch.Divergence.get_discriminator" title="Link to this definition"></a></dt>
+<dd><p>Returns the discriminator model.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Divergences_torch.Divergence.get_learning_rate">
+<span class="sig-name descname"><span class="pre">get_learning_rate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_torch.html#Divergence.get_learning_rate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_torch.Divergence.get_learning_rate" title="Link to this definition"></a></dt>
+<dd><p>Returns the learning rate.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Divergences_torch.Divergence.get_no_epochs">
+<span class="sig-name descname"><span class="pre">get_no_epochs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_torch.html#Divergence.get_no_epochs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_torch.Divergence.get_no_epochs" title="Link to this definition"></a></dt>
+<dd><p>Returns the number of training epochs.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Divergences_torch.Divergence.set_batch_size">
+<span class="sig-name descname"><span class="pre">set_batch_size</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">BATCH_SIZE</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_torch.html#Divergence.set_batch_size"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_torch.Divergence.set_batch_size" title="Link to this definition"></a></dt>
+<dd><p>Sets the batch size.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Divergences_torch.Divergence.set_discriminator">
+<span class="sig-name descname"><span class="pre">set_discriminator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">discriminator</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_torch.html#Divergence.set_discriminator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_torch.Divergence.set_discriminator" title="Link to this definition"></a></dt>
+<dd><p>Sets a new discriminator model.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Divergences_torch.Divergence.set_learning_rate">
+<span class="sig-name descname"><span class="pre">set_learning_rate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lr</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_torch.html#Divergence.set_learning_rate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_torch.Divergence.set_learning_rate" title="Link to this definition"></a></dt>
+<dd><p>Sets the learning rate.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Divergences_torch.Divergence.set_no_epochs">
+<span class="sig-name descname"><span class="pre">set_no_epochs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">epochs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_torch.html#Divergence.set_no_epochs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_torch.Divergence.set_no_epochs" title="Link to this definition"></a></dt>
+<dd><p>Sets the number of training epochs.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Divergences_torch.Divergence.train">
+<span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_P</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_Q</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_estimates</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_torch.html#Divergence.train"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_torch.Divergence.train" title="Link to this definition"></a></dt>
+<dd><p>Trains the model for a number of epochs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data_P</strong> – Data samples from distribution P.</p></li>
+<li><p><strong>data_Q</strong> – Data samples from distribution Q.</p></li>
+<li><p><strong>labels</strong> – Optional labels for the input data.</p></li>
+<li><p><strong>save_estimates</strong> – Whether to save divergence estimates.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of divergence estimates for each epoch.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Divergences_torch.Divergence.train_step">
+<span class="sig-name descname"><span class="pre">train_step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_torch.html#Divergence.train_step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_torch.Divergence.train_step" title="Link to this definition"></a></dt>
+<dd><p>Performs a training step for the discriminator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – Samples from distribution P.</p></li>
+<li><p><strong>y</strong> – Samples from distribution Q.</p></li>
+<li><p><strong>labels</strong> – Optional labels for the input data.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Loss value for the current step.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="models.Divergences_torch.Gradient_Penalty_1Sided">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">models.Divergences_torch.</span></span><span class="sig-name descname"><span class="pre">Gradient_Penalty_1Sided</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">penalty_weight</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Lip_const</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/Divergences_torch.html#Gradient_Penalty_1Sided"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.Divergences_torch.Gradient_Penalty_1Sided" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#models.Divergences_torch.Discriminator_Penalty" title="models.Divergences_torch.Discriminator_Penalty"><code class="xref py py-class docutils literal notranslate"><span class="pre">Discriminator_Penalty</span></code></a></p>
-<p>One-sided gradient penalty (constraint: Lipschitz constant  &lt;= Lip_const)</p>
+<dt class="sig sig-object py" id="Divergences_torch.Gradient_Penalty_1Sided">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Divergences_torch.</span></span><span class="sig-name descname"><span class="pre">Gradient_Penalty_1Sided</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">penalty_weight</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Lip_const</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_torch.html#Gradient_Penalty_1Sided"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_torch.Gradient_Penalty_1Sided" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="index.html#Divergences_torch.Discriminator_Penalty" title="Divergences_torch.Discriminator_Penalty"><code class="xref py py-class docutils literal notranslate"><span class="pre">Discriminator_Penalty</span></code></a></p>
+<p>One-sided gradient penalty class to enforce the Lipschitz constant &lt;= Lip_const.</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="models.Divergences_torch.Gradient_Penalty_1Sided.evaluate">
-<span class="sig-name descname"><span class="pre">evaluate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">discriminator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/Divergences_torch.html#Gradient_Penalty_1Sided.evaluate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.Divergences_torch.Gradient_Penalty_1Sided.evaluate" title="Permalink to this definition"></a></dt>
-<dd><p>computed the one-sided gradient penalty</p>
+<dt class="sig sig-object py" id="Divergences_torch.Gradient_Penalty_1Sided.evaluate">
+<span class="sig-name descname"><span class="pre">evaluate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">discriminator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_torch.html#Gradient_Penalty_1Sided.evaluate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_torch.Gradient_Penalty_1Sided.evaluate" title="Link to this definition"></a></dt>
+<dd><p>Computes the one-sided gradient penalty to enforce the Lipschitz constant &lt;= Lip_const.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>discriminator</strong> – Discriminator model.</p></li>
+<li><p><strong>x</strong> – Samples from distribution P.</p></li>
+<li><p><strong>y</strong> – Samples from distribution Q.</p></li>
+<li><p><strong>labels</strong> – Optional labels for the input data.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>One-sided gradient penalty value.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="models.Divergences_torch.Gradient_Penalty_1Sided.get_Lip_constant">
-<span class="sig-name descname"><span class="pre">get_Lip_constant</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/Divergences_torch.html#Gradient_Penalty_1Sided.get_Lip_constant"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.Divergences_torch.Gradient_Penalty_1Sided.get_Lip_constant" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="models.Divergences_torch.Gradient_Penalty_1Sided.set_Lip_constant">
-<span class="sig-name descname"><span class="pre">set_Lip_constant</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">L</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/Divergences_torch.html#Gradient_Penalty_1Sided.set_Lip_constant"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.Divergences_torch.Gradient_Penalty_1Sided.set_Lip_constant" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="models.Divergences_torch.Gradient_Penalty_2Sided">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">models.Divergences_torch.</span></span><span class="sig-name descname"><span class="pre">Gradient_Penalty_2Sided</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">penalty_weight</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Lip_const</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/Divergences_torch.html#Gradient_Penalty_2Sided"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.Divergences_torch.Gradient_Penalty_2Sided" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#models.Divergences_torch.Discriminator_Penalty" title="models.Divergences_torch.Discriminator_Penalty"><code class="xref py py-class docutils literal notranslate"><span class="pre">Discriminator_Penalty</span></code></a></p>
-<p>Two-sided gradient penalty (constraint: Lipschitz constant = Lip_const)</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="models.Divergences_torch.Gradient_Penalty_2Sided.evaluate">
-<span class="sig-name descname"><span class="pre">evaluate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">discriminator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/Divergences_torch.html#Gradient_Penalty_2Sided.evaluate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.Divergences_torch.Gradient_Penalty_2Sided.evaluate" title="Permalink to this definition"></a></dt>
-<dd><p>computed the two-sided gradient penalty</p>
+<dt class="sig sig-object py" id="Divergences_torch.Gradient_Penalty_1Sided.get_Lip_constant">
+<span class="sig-name descname"><span class="pre">get_Lip_constant</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_torch.html#Gradient_Penalty_1Sided.get_Lip_constant"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_torch.Gradient_Penalty_1Sided.get_Lip_constant" title="Link to this definition"></a></dt>
+<dd><p>Returns the target Lipschitz constant.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="models.Divergences_torch.Gradient_Penalty_2Sided.get_Lip_constant">
-<span class="sig-name descname"><span class="pre">get_Lip_constant</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/Divergences_torch.html#Gradient_Penalty_2Sided.get_Lip_constant"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.Divergences_torch.Gradient_Penalty_2Sided.get_Lip_constant" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="models.Divergences_torch.Gradient_Penalty_2Sided.set_Lip_constant">
-<span class="sig-name descname"><span class="pre">set_Lip_constant</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">L</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/Divergences_torch.html#Gradient_Penalty_2Sided.set_Lip_constant"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.Divergences_torch.Gradient_Penalty_2Sided.set_Lip_constant" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="models.Divergences_torch.IPM">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">models.Divergences_torch.</span></span><span class="sig-name descname"><span class="pre">IPM</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">discriminator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disc_optimizer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">discriminator_penalty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/Divergences_torch.html#IPM"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.Divergences_torch.IPM" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#models.Divergences_torch.Divergence" title="models.Divergences_torch.Divergence"><code class="xref py py-class docutils literal notranslate"><span class="pre">Divergence</span></code></a></p>
-<p>IPM class</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="models.Divergences_torch.IPM.eval_var_formula">
-<span class="sig-name descname"><span class="pre">eval_var_formula</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/Divergences_torch.html#IPM.eval_var_formula"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.Divergences_torch.IPM.eval_var_formula" title="Permalink to this definition"></a></dt>
-<dd><p>Evaluation of variational formula of IPM</p>
+<dt class="sig sig-object py" id="Divergences_torch.Gradient_Penalty_1Sided.set_Lip_constant">
+<span class="sig-name descname"><span class="pre">set_Lip_constant</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">L</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_torch.html#Gradient_Penalty_1Sided.set_Lip_constant"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_torch.Gradient_Penalty_1Sided.set_Lip_constant" title="Link to this definition"></a></dt>
+<dd><p>Sets the target Lipschitz constant.</p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="models.Divergences_torch.Jensen_Shannon_LT">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">models.Divergences_torch.</span></span><span class="sig-name descname"><span class="pre">Jensen_Shannon_LT</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">discriminator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disc_optimizer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">discriminator_penalty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/Divergences_torch.html#Jensen_Shannon_LT"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.Divergences_torch.Jensen_Shannon_LT" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#models.Divergences_torch.f_Divergence" title="models.Divergences_torch.f_Divergence"><code class="xref py py-class docutils literal notranslate"><span class="pre">f_Divergence</span></code></a></p>
-<p>Jensen-Shannon divergence class (based on Legendre transform)
+<dt class="sig sig-object py" id="Divergences_torch.Gradient_Penalty_2Sided">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Divergences_torch.</span></span><span class="sig-name descname"><span class="pre">Gradient_Penalty_2Sided</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">penalty_weight</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Lip_const</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_torch.html#Gradient_Penalty_2Sided"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_torch.Gradient_Penalty_2Sided" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="index.html#Divergences_torch.Discriminator_Penalty" title="Divergences_torch.Discriminator_Penalty"><code class="xref py py-class docutils literal notranslate"><span class="pre">Discriminator_Penalty</span></code></a></p>
+<p>Two-sided gradient penalty class to enforce the Lipschitz constant = Lip_const.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="Divergences_torch.Gradient_Penalty_2Sided.evaluate">
+<span class="sig-name descname"><span class="pre">evaluate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">discriminator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_torch.html#Gradient_Penalty_2Sided.evaluate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_torch.Gradient_Penalty_2Sided.evaluate" title="Link to this definition"></a></dt>
+<dd><p>Computes the two-sided gradient penalty to enforce the Lipschitz constant = Lip_const.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>discriminator</strong> – Discriminator model.</p></li>
+<li><p><strong>x</strong> – Samples from distribution P.</p></li>
+<li><p><strong>y</strong> – Samples from distribution Q.</p></li>
+<li><p><strong>labels</strong> – Optional labels for the input data.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Two-sided gradient penalty value.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Divergences_torch.Gradient_Penalty_2Sided.get_Lip_constant">
+<span class="sig-name descname"><span class="pre">get_Lip_constant</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_torch.html#Gradient_Penalty_2Sided.get_Lip_constant"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_torch.Gradient_Penalty_2Sided.get_Lip_constant" title="Link to this definition"></a></dt>
+<dd><p>Returns the target Lipschitz constant.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Divergences_torch.Gradient_Penalty_2Sided.set_Lip_constant">
+<span class="sig-name descname"><span class="pre">set_Lip_constant</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">L</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_torch.html#Gradient_Penalty_2Sided.set_Lip_constant"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_torch.Gradient_Penalty_2Sided.set_Lip_constant" title="Link to this definition"></a></dt>
+<dd><p>Sets the target Lipschitz constant.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="Divergences_torch.IPM">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Divergences_torch.</span></span><span class="sig-name descname"><span class="pre">IPM</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">discriminator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disc_optimizer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">discriminator_penalty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_torch.html#IPM"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_torch.IPM" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="index.html#Divergences_torch.Divergence" title="Divergences_torch.Divergence"><code class="xref py py-class docutils literal notranslate"><span class="pre">Divergence</span></code></a></p>
+<p>IPM class for evaluating Integral Probability Metrics (IPM).</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="Divergences_torch.IPM.eval_var_formula">
+<span class="sig-name descname"><span class="pre">eval_var_formula</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_torch.html#IPM.eval_var_formula"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_torch.IPM.eval_var_formula" title="Link to this definition"></a></dt>
+<dd><p>Evaluates the variational formula for IPM.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – Samples from distribution P.</p></li>
+<li><p><strong>y</strong> – Samples from distribution Q.</p></li>
+<li><p><strong>labels</strong> – Optional labels for the input data.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>IPM loss.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Divergences_torch.IPM.eval_var_formula_gen">
+<span class="sig-name descname"><span class="pre">eval_var_formula_gen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_torch.html#IPM.eval_var_formula_gen"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_torch.IPM.eval_var_formula_gen" title="Link to this definition"></a></dt>
+<dd><p>Evaluates the variational formula for IPM applied to the generator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – Generated samples.</p></li>
+<li><p><strong>labels</strong> – Optional labels for the input data.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Generator loss based on IPM.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="Divergences_torch.Jensen_Shannon_LT">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Divergences_torch.</span></span><span class="sig-name descname"><span class="pre">Jensen_Shannon_LT</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">discriminator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disc_optimizer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">discriminator_penalty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_torch.html#Jensen_Shannon_LT"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_torch.Jensen_Shannon_LT" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="index.html#Divergences_torch.f_Divergence" title="Divergences_torch.f_Divergence"><code class="xref py py-class docutils literal notranslate"><span class="pre">f_Divergence</span></code></a></p>
+<p>Jensen-Shannon divergence class based on the Legendre transform.
 JS(P||Q), x~P, y~Q.</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="models.Divergences_torch.Jensen_Shannon_LT.f_star">
-<span class="sig-name descname"><span class="pre">f_star</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/Divergences_torch.html#Jensen_Shannon_LT.f_star"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.Divergences_torch.Jensen_Shannon_LT.f_star" title="Permalink to this definition"></a></dt>
-<dd><p>Legendre transform of f(y)=y*log(y)-(y+1)*log((y+1)/2)</p>
+<dt class="sig sig-object py" id="Divergences_torch.Jensen_Shannon_LT.f_star">
+<span class="sig-name descname"><span class="pre">f_star</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_torch.html#Jensen_Shannon_LT.f_star"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_torch.Jensen_Shannon_LT.f_star" title="Link to this definition"></a></dt>
+<dd><p>Legendre transform of f(y) = y * log(y) - (y + 1) * log((y + 1) / 2).</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="models.Divergences_torch.Jensen_Shannon_LT.final_layer_activation">
-<span class="sig-name descname"><span class="pre">final_layer_activation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/Divergences_torch.html#Jensen_Shannon_LT.final_layer_activation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.Divergences_torch.Jensen_Shannon_LT.final_layer_activation" title="Permalink to this definition"></a></dt>
-<dd><p>Final layer activation</p>
+<dt class="sig sig-object py" id="Divergences_torch.Jensen_Shannon_LT.final_layer_activation">
+<span class="sig-name descname"><span class="pre">final_layer_activation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_torch.html#Jensen_Shannon_LT.final_layer_activation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_torch.Jensen_Shannon_LT.final_layer_activation" title="Link to this definition"></a></dt>
+<dd><p>Applies the final layer activation for Jensen-Shannon divergence.</p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="models.Divergences_torch.KLD_DV">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">models.Divergences_torch.</span></span><span class="sig-name descname"><span class="pre">KLD_DV</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">discriminator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disc_optimizer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">discriminator_penalty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/Divergences_torch.html#KLD_DV"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.Divergences_torch.KLD_DV" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#models.Divergences_torch.Divergence" title="models.Divergences_torch.Divergence"><code class="xref py py-class docutils literal notranslate"><span class="pre">Divergence</span></code></a></p>
-<p>KL divergence class (based on the Donsker-Varahdan variational formula)
+<dt class="sig sig-object py" id="Divergences_torch.KLD_DV">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Divergences_torch.</span></span><span class="sig-name descname"><span class="pre">KLD_DV</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">discriminator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disc_optimizer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">discriminator_penalty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_torch.html#KLD_DV"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_torch.KLD_DV" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="index.html#Divergences_torch.Divergence" title="Divergences_torch.Divergence"><code class="xref py py-class docutils literal notranslate"><span class="pre">Divergence</span></code></a></p>
+<p>KL divergence class based on the Donsker-Varadhan variational formula.
 KL(P||Q), x~P, y~Q.</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="models.Divergences_torch.KLD_DV.eval_var_formula">
-<span class="sig-name descname"><span class="pre">eval_var_formula</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/Divergences_torch.html#KLD_DV.eval_var_formula"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.Divergences_torch.KLD_DV.eval_var_formula" title="Permalink to this definition"></a></dt>
-<dd><p>Evaluation of variational formula of KL divergence (based on the Donsker-Varahdan variational formula), KL(P||Q), x~P, y~Q</p>
+<dt class="sig sig-object py" id="Divergences_torch.KLD_DV.eval_var_formula">
+<span class="sig-name descname"><span class="pre">eval_var_formula</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_torch.html#KLD_DV.eval_var_formula"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_torch.KLD_DV.eval_var_formula" title="Link to this definition"></a></dt>
+<dd><p>Evaluates the variational formula for KL divergence.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – Samples from distribution P.</p></li>
+<li><p><strong>y</strong> – Samples from distribution Q.</p></li>
+<li><p><strong>labels</strong> – Optional labels for the input data.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>KL divergence loss.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Divergences_torch.KLD_DV.eval_var_formula_gen">
+<span class="sig-name descname"><span class="pre">eval_var_formula_gen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_torch.html#KLD_DV.eval_var_formula_gen"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_torch.KLD_DV.eval_var_formula_gen" title="Link to this definition"></a></dt>
+<dd><p>Evaluates the generator’s objective based on KL divergence.</p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="models.Divergences_torch.KLD_LT">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">models.Divergences_torch.</span></span><span class="sig-name descname"><span class="pre">KLD_LT</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">discriminator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disc_optimizer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">discriminator_penalty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/Divergences_torch.html#KLD_LT"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.Divergences_torch.KLD_LT" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#models.Divergences_torch.f_Divergence" title="models.Divergences_torch.f_Divergence"><code class="xref py py-class docutils literal notranslate"><span class="pre">f_Divergence</span></code></a></p>
-<p>Kullback-Leibler (KL) divergence class (based on Legendre transform)
+<dt class="sig sig-object py" id="Divergences_torch.KLD_LT">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Divergences_torch.</span></span><span class="sig-name descname"><span class="pre">KLD_LT</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">discriminator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disc_optimizer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">discriminator_penalty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_torch.html#KLD_LT"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_torch.KLD_LT" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="index.html#Divergences_torch.f_Divergence" title="Divergences_torch.f_Divergence"><code class="xref py py-class docutils literal notranslate"><span class="pre">f_Divergence</span></code></a></p>
+<p>Kullback-Leibler (KL) divergence class based on the Legendre transform.
 KL(P||Q), x~P, y~Q.</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="models.Divergences_torch.KLD_LT.f_star">
-<span class="sig-name descname"><span class="pre">f_star</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/Divergences_torch.html#KLD_LT.f_star"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.Divergences_torch.KLD_LT.f_star" title="Permalink to this definition"></a></dt>
-<dd><p>Legendre transform of f(y)=y*log(y)</p>
+<dt class="sig sig-object py" id="Divergences_torch.KLD_LT.f_star">
+<span class="sig-name descname"><span class="pre">f_star</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_torch.html#KLD_LT.f_star"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_torch.KLD_LT.f_star" title="Link to this definition"></a></dt>
+<dd><p>Legendre transform of f(y) = y * log(y).</p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="models.Divergences_torch.Pearson_chi_squared_HCR">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">models.Divergences_torch.</span></span><span class="sig-name descname"><span class="pre">Pearson_chi_squared_HCR</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">discriminator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disc_optimizer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">discriminator_penalty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/Divergences_torch.html#Pearson_chi_squared_HCR"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.Divergences_torch.Pearson_chi_squared_HCR" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#models.Divergences_torch.Divergence" title="models.Divergences_torch.Divergence"><code class="xref py py-class docutils literal notranslate"><span class="pre">Divergence</span></code></a></p>
-<p>Pearson chi^2-divergence class (based on Hammersley-Chapman-Robbins bound)
+<dt class="sig sig-object py" id="Divergences_torch.Pearson_chi_squared_HCR">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Divergences_torch.</span></span><span class="sig-name descname"><span class="pre">Pearson_chi_squared_HCR</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">discriminator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disc_optimizer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">discriminator_penalty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_torch.html#Pearson_chi_squared_HCR"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_torch.Pearson_chi_squared_HCR" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="index.html#Divergences_torch.Divergence" title="Divergences_torch.Divergence"><code class="xref py py-class docutils literal notranslate"><span class="pre">Divergence</span></code></a></p>
+<p>Pearson chi-squared divergence class based on the Hammersley-Chapman-Robbins bound.
 chi^2(P||Q), x~P, y~Q.</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="models.Divergences_torch.Pearson_chi_squared_HCR.eval_var_formula">
-<span class="sig-name descname"><span class="pre">eval_var_formula</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/Divergences_torch.html#Pearson_chi_squared_HCR.eval_var_formula"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.Divergences_torch.Pearson_chi_squared_HCR.eval_var_formula" title="Permalink to this definition"></a></dt>
-<dd><p>Evaluation of variational formula Pearson chi^2-divergence (based on Hammersley-Chapman-Robbins bound), chi^2(P||Q), x~P, y~Q</p>
+<dt class="sig sig-object py" id="Divergences_torch.Pearson_chi_squared_HCR.eval_var_formula">
+<span class="sig-name descname"><span class="pre">eval_var_formula</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_torch.html#Pearson_chi_squared_HCR.eval_var_formula"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_torch.Pearson_chi_squared_HCR.eval_var_formula" title="Link to this definition"></a></dt>
+<dd><p>Evaluates the variational formula for Pearson chi-squared divergence based on the Hammersley-Chapman-Robbins bound.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – Samples from distribution P.</p></li>
+<li><p><strong>y</strong> – Samples from distribution Q.</p></li>
+<li><p><strong>labels</strong> – Optional labels for the input data.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Pearson chi-squared divergence loss.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Divergences_torch.Pearson_chi_squared_HCR.eval_var_formula_gen">
+<span class="sig-name descname"><span class="pre">eval_var_formula_gen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_torch.html#Pearson_chi_squared_HCR.eval_var_formula_gen"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_torch.Pearson_chi_squared_HCR.eval_var_formula_gen" title="Link to this definition"></a></dt>
+<dd><p>Evaluates the generator’s objective based on Pearson chi-squared divergence.</p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="models.Divergences_torch.Pearson_chi_squared_LT">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">models.Divergences_torch.</span></span><span class="sig-name descname"><span class="pre">Pearson_chi_squared_LT</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">discriminator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disc_optimizer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">discriminator_penalty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/Divergences_torch.html#Pearson_chi_squared_LT"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.Divergences_torch.Pearson_chi_squared_LT" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#models.Divergences_torch.f_Divergence" title="models.Divergences_torch.f_Divergence"><code class="xref py py-class docutils literal notranslate"><span class="pre">f_Divergence</span></code></a></p>
-<p>Pearson chi^2-divergence class (based on Legendre transform)
+<dt class="sig sig-object py" id="Divergences_torch.Pearson_chi_squared_LT">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Divergences_torch.</span></span><span class="sig-name descname"><span class="pre">Pearson_chi_squared_LT</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">discriminator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disc_optimizer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">discriminator_penalty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_torch.html#Pearson_chi_squared_LT"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_torch.Pearson_chi_squared_LT" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="index.html#Divergences_torch.f_Divergence" title="Divergences_torch.f_Divergence"><code class="xref py py-class docutils literal notranslate"><span class="pre">f_Divergence</span></code></a></p>
+<p>Pearson chi-squared divergence class based on the Legendre transform.
 chi^2(P||Q), x~P, y~Q.</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="models.Divergences_torch.Pearson_chi_squared_LT.f_star">
-<span class="sig-name descname"><span class="pre">f_star</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/Divergences_torch.html#Pearson_chi_squared_LT.f_star"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.Divergences_torch.Pearson_chi_squared_LT.f_star" title="Permalink to this definition"></a></dt>
-<dd><p>Legendre transform of f(y)=(y-1)^2</p>
+<dt class="sig sig-object py" id="Divergences_torch.Pearson_chi_squared_LT.f_star">
+<span class="sig-name descname"><span class="pre">f_star</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_torch.html#Pearson_chi_squared_LT.f_star"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_torch.Pearson_chi_squared_LT.f_star" title="Link to this definition"></a></dt>
+<dd><p>Legendre transform of f(y) = (y - 1)^2.</p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="models.Divergences_torch.Renyi_Divergence">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">models.Divergences_torch.</span></span><span class="sig-name descname"><span class="pre">Renyi_Divergence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">discriminator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">learning_rate</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">discriminator_penalty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/Divergences_torch.html#Renyi_Divergence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.Divergences_torch.Renyi_Divergence" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#models.Divergences_torch.Divergence" title="models.Divergences_torch.Divergence"><code class="xref py py-class docutils literal notranslate"><span class="pre">Divergence</span></code></a></p>
-<p>Renyi divergence class
+<dt class="sig sig-object py" id="Divergences_torch.Renyi_Divergence">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Divergences_torch.</span></span><span class="sig-name descname"><span class="pre">Renyi_Divergence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">discriminator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disc_optimizer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">discriminator_penalty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_torch.html#Renyi_Divergence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_torch.Renyi_Divergence" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="index.html#Divergences_torch.Divergence" title="Divergences_torch.Divergence"><code class="xref py py-class docutils literal notranslate"><span class="pre">Divergence</span></code></a></p>
+<p>Renyi divergence class for computing Renyi divergence R_alpha(P||Q), x~P, y~Q.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="Divergences_torch.Renyi_Divergence.get_order">
+<span class="sig-name descname"><span class="pre">get_order</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_torch.html#Renyi_Divergence.get_order"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_torch.Renyi_Divergence.get_order" title="Link to this definition"></a></dt>
+<dd><p>Returns the order of the Renyi divergence.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Divergences_torch.Renyi_Divergence.set_order">
+<span class="sig-name descname"><span class="pre">set_order</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_torch.html#Renyi_Divergence.set_order"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_torch.Renyi_Divergence.set_order" title="Link to this definition"></a></dt>
+<dd><p>Sets the order of the Renyi divergence.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="Divergences_torch.Renyi_Divergence_CC">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Divergences_torch.</span></span><span class="sig-name descname"><span class="pre">Renyi_Divergence_CC</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">discriminator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disc_optimizer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fl_act_func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">discriminator_penalty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_torch.html#Renyi_Divergence_CC"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_torch.Renyi_Divergence_CC" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="index.html#Divergences_torch.Renyi_Divergence" title="Divergences_torch.Renyi_Divergence"><code class="xref py py-class docutils literal notranslate"><span class="pre">Renyi_Divergence</span></code></a></p>
+<p>Renyi divergence class based on the convex-conjugate variational formula.
 R_alpha(P||Q), x~P, y~Q.</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="models.Divergences_torch.Renyi_Divergence.get_order">
-<span class="sig-name descname"><span class="pre">get_order</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/Divergences_torch.html#Renyi_Divergence.get_order"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.Divergences_torch.Renyi_Divergence.get_order" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dt class="sig sig-object py" id="Divergences_torch.Renyi_Divergence_CC.eval_var_formula">
+<span class="sig-name descname"><span class="pre">eval_var_formula</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_torch.html#Renyi_Divergence_CC.eval_var_formula"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_torch.Renyi_Divergence_CC.eval_var_formula" title="Link to this definition"></a></dt>
+<dd><p>Evaluates the variational formula for Renyi divergence based on the convex-conjugate formula.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – Samples from distribution P.</p></li>
+<li><p><strong>y</strong> – Samples from distribution Q.</p></li>
+<li><p><strong>labels</strong> – Optional labels for the input data.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Renyi divergence loss.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="models.Divergences_torch.Renyi_Divergence.set_order">
-<span class="sig-name descname"><span class="pre">set_order</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/Divergences_torch.html#Renyi_Divergence.set_order"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.Divergences_torch.Renyi_Divergence.set_order" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dt class="sig sig-object py" id="Divergences_torch.Renyi_Divergence_CC.eval_var_formula_gen">
+<span class="sig-name descname"><span class="pre">eval_var_formula_gen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_torch.html#Renyi_Divergence_CC.eval_var_formula_gen"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_torch.Renyi_Divergence_CC.eval_var_formula_gen" title="Link to this definition"></a></dt>
+<dd><p>Evaluates the generator’s objective based on Renyi divergence using the convex-conjugate formula.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Divergences_torch.Renyi_Divergence_CC.final_layer_activation">
+<span class="sig-name descname"><span class="pre">final_layer_activation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_torch.html#Renyi_Divergence_CC.final_layer_activation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_torch.Renyi_Divergence_CC.final_layer_activation" title="Link to this definition"></a></dt>
+<dd><p>Applies the final layer activation to enforce positive values.</p>
+</dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="models.Divergences_torch.Renyi_Divergence_CC">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">models.Divergences_torch.</span></span><span class="sig-name descname"><span class="pre">Renyi_Divergence_CC</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">discriminator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">learning_rate</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fl_act_func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">discriminator_penalty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/Divergences_torch.html#Renyi_Divergence_CC"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.Divergences_torch.Renyi_Divergence_CC" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#models.Divergences_torch.Renyi_Divergence" title="models.Divergences_torch.Renyi_Divergence"><code class="xref py py-class docutils literal notranslate"><span class="pre">Renyi_Divergence</span></code></a></p>
-<p>Renyi divergence class (based on the convex-conjugate variational formula)
+<dt class="sig sig-object py" id="Divergences_torch.Renyi_Divergence_CC_rescaled">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Divergences_torch.</span></span><span class="sig-name descname"><span class="pre">Renyi_Divergence_CC_rescaled</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">discriminator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disc_optimizer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fl_act_func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">discriminator_penalty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_torch.html#Renyi_Divergence_CC_rescaled"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_torch.Renyi_Divergence_CC_rescaled" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="index.html#Divergences_torch.Renyi_Divergence_CC" title="Divergences_torch.Renyi_Divergence_CC"><code class="xref py py-class docutils literal notranslate"><span class="pre">Renyi_Divergence_CC</span></code></a></p>
+<p>Rescaled Renyi divergence class based on the rescaled convex-conjugate variational formula.
+alpha * R_alpha(P||Q), x~P, y~Q.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="Divergences_torch.Renyi_Divergence_CC_rescaled.eval_var_formula">
+<span class="sig-name descname"><span class="pre">eval_var_formula</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_torch.html#Renyi_Divergence_CC_rescaled.eval_var_formula"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_torch.Renyi_Divergence_CC_rescaled.eval_var_formula" title="Link to this definition"></a></dt>
+<dd><p>Evaluates the variational formula for the rescaled Renyi divergence.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – Samples from distribution P.</p></li>
+<li><p><strong>y</strong> – Samples from distribution Q.</p></li>
+<li><p><strong>labels</strong> – Optional labels for the input data.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Rescaled Renyi divergence loss.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Divergences_torch.Renyi_Divergence_CC_rescaled.eval_var_formula_gen">
+<span class="sig-name descname"><span class="pre">eval_var_formula_gen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_torch.html#Renyi_Divergence_CC_rescaled.eval_var_formula_gen"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_torch.Renyi_Divergence_CC_rescaled.eval_var_formula_gen" title="Link to this definition"></a></dt>
+<dd><p>Evaluates the generator’s objective based on rescaled Renyi divergence.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Divergences_torch.Renyi_Divergence_CC_rescaled.final_layer_activation">
+<span class="sig-name descname"><span class="pre">final_layer_activation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_torch.html#Renyi_Divergence_CC_rescaled.final_layer_activation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_torch.Renyi_Divergence_CC_rescaled.final_layer_activation" title="Link to this definition"></a></dt>
+<dd><p>Applies the final layer activation and scales it by alpha.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="Divergences_torch.Renyi_Divergence_DV">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Divergences_torch.</span></span><span class="sig-name descname"><span class="pre">Renyi_Divergence_DV</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">discriminator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disc_optimizer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">discriminator_penalty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_torch.html#Renyi_Divergence_DV"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_torch.Renyi_Divergence_DV" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="index.html#Divergences_torch.Renyi_Divergence" title="Divergences_torch.Renyi_Divergence"><code class="xref py py-class docutils literal notranslate"><span class="pre">Renyi_Divergence</span></code></a></p>
+<p>Renyi divergence class based on the Renyi-Donsker-Varadhan variational formula.
 R_alpha(P||Q), x~P, y~Q.</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="models.Divergences_torch.Renyi_Divergence_CC.eval_var_formula">
-<span class="sig-name descname"><span class="pre">eval_var_formula</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/Divergences_torch.html#Renyi_Divergence_CC.eval_var_formula"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.Divergences_torch.Renyi_Divergence_CC.eval_var_formula" title="Permalink to this definition"></a></dt>
-<dd><p>Evaluation of variational formula of Renyi divergence (based on the convex-conjugate variational formula), R_alpha(P||Q), x~P, y~Q</p>
+<dt class="sig sig-object py" id="Divergences_torch.Renyi_Divergence_DV.eval_var_formula">
+<span class="sig-name descname"><span class="pre">eval_var_formula</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_torch.html#Renyi_Divergence_DV.eval_var_formula"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_torch.Renyi_Divergence_DV.eval_var_formula" title="Link to this definition"></a></dt>
+<dd><p>Evaluates the variational formula for Renyi divergence based on the Renyi-Donsker-Varadhan formula.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – Samples from distribution P.</p></li>
+<li><p><strong>y</strong> – Samples from distribution Q.</p></li>
+<li><p><strong>labels</strong> – Optional labels for the input data.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Renyi divergence loss.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="models.Divergences_torch.Renyi_Divergence_CC.final_layer_activation">
-<span class="sig-name descname"><span class="pre">final_layer_activation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/Divergences_torch.html#Renyi_Divergence_CC.final_layer_activation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.Divergences_torch.Renyi_Divergence_CC.final_layer_activation" title="Permalink to this definition"></a></dt>
-<dd><p>final layer activation, enforces positive values</p>
+<dt class="sig sig-object py" id="Divergences_torch.Renyi_Divergence_DV.eval_var_formula_gen">
+<span class="sig-name descname"><span class="pre">eval_var_formula_gen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_torch.html#Renyi_Divergence_DV.eval_var_formula_gen"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_torch.Renyi_Divergence_DV.eval_var_formula_gen" title="Link to this definition"></a></dt>
+<dd><p>Evaluates the generator’s objective based on Renyi divergence.</p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="models.Divergences_torch.Renyi_Divergence_CC_rescaled">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">models.Divergences_torch.</span></span><span class="sig-name descname"><span class="pre">Renyi_Divergence_CC_rescaled</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">discriminator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">learning_rate</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fl_act_func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">discriminator_penalty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/Divergences_torch.html#Renyi_Divergence_CC_rescaled"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.Divergences_torch.Renyi_Divergence_CC_rescaled" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#models.Divergences_torch.Renyi_Divergence_CC" title="models.Divergences_torch.Renyi_Divergence_CC"><code class="xref py py-class docutils literal notranslate"><span class="pre">Renyi_Divergence_CC</span></code></a></p>
-<p>Rescaled Renyi divergence class (based on the rescaled convex-conjugate variational formula)
-alpha*R_alpha(P||Q), x~P, y~Q.</p>
+<dt class="sig sig-object py" id="Divergences_torch.Renyi_Divergence_WCR">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Divergences_torch.</span></span><span class="sig-name descname"><span class="pre">Renyi_Divergence_WCR</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">discriminator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disc_optimizer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fl_act_func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">discriminator_penalty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_torch.html#Renyi_Divergence_WCR"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_torch.Renyi_Divergence_WCR" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="index.html#Divergences_torch.Renyi_Divergence_CC" title="Divergences_torch.Renyi_Divergence_CC"><code class="xref py py-class docutils literal notranslate"><span class="pre">Renyi_Divergence_CC</span></code></a></p>
+<p>Renyi divergence class as alpha approaches infinity (worst-case regret divergence).
+Dinfty(P||Q), x~P, y~Q.</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="models.Divergences_torch.Renyi_Divergence_CC_rescaled.eval_var_formula">
-<span class="sig-name descname"><span class="pre">eval_var_formula</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/Divergences_torch.html#Renyi_Divergence_CC_rescaled.eval_var_formula"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.Divergences_torch.Renyi_Divergence_CC_rescaled.eval_var_formula" title="Permalink to this definition"></a></dt>
-<dd><p>Evaluation of variational formula of Rescaled Renyi (based on the rescaled convex-conjugate variational formula), alpha*R_alpha(P||Q), x~P, y~Q</p>
+<dt class="sig sig-object py" id="Divergences_torch.Renyi_Divergence_WCR.eval_var_formula">
+<span class="sig-name descname"><span class="pre">eval_var_formula</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_torch.html#Renyi_Divergence_WCR.eval_var_formula"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_torch.Renyi_Divergence_WCR.eval_var_formula" title="Link to this definition"></a></dt>
+<dd><p>Evaluates the variational formula for worst-case regret divergence as alpha approaches infinity.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – Samples from distribution P.</p></li>
+<li><p><strong>y</strong> – Samples from distribution Q.</p></li>
+<li><p><strong>labels</strong> – Optional labels for the input data.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Worst-case regret divergence loss.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="models.Divergences_torch.Renyi_Divergence_CC_rescaled.final_layer_activation">
-<span class="sig-name descname"><span class="pre">final_layer_activation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/Divergences_torch.html#Renyi_Divergence_CC_rescaled.final_layer_activation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.Divergences_torch.Renyi_Divergence_CC_rescaled.final_layer_activation" title="Permalink to this definition"></a></dt>
-<dd><p>final layer activation, enforces positive values</p>
+<dt class="sig sig-object py" id="Divergences_torch.Renyi_Divergence_WCR.eval_var_formula_gen">
+<span class="sig-name descname"><span class="pre">eval_var_formula_gen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_torch.html#Renyi_Divergence_WCR.eval_var_formula_gen"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_torch.Renyi_Divergence_WCR.eval_var_formula_gen" title="Link to this definition"></a></dt>
+<dd><p>Evaluates the generator’s objective based on worst-case regret divergence.</p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="models.Divergences_torch.Renyi_Divergence_DV">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">models.Divergences_torch.</span></span><span class="sig-name descname"><span class="pre">Renyi_Divergence_DV</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">discriminator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">learning_rate</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">discriminator_penalty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/Divergences_torch.html#Renyi_Divergence_DV"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.Divergences_torch.Renyi_Divergence_DV" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#models.Divergences_torch.Renyi_Divergence" title="models.Divergences_torch.Renyi_Divergence"><code class="xref py py-class docutils literal notranslate"><span class="pre">Renyi_Divergence</span></code></a></p>
-<p>Renyi divergence class (based on the Renyi-Donsker-Varahdan variational formula)
-R_alpha(P||Q), x~P, y~Q.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="models.Divergences_torch.Renyi_Divergence_DV.eval_var_formula">
-<span class="sig-name descname"><span class="pre">eval_var_formula</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/Divergences_torch.html#Renyi_Divergence_DV.eval_var_formula"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.Divergences_torch.Renyi_Divergence_DV.eval_var_formula" title="Permalink to this definition"></a></dt>
-<dd><p>Evaluation of variational formula of Renyi divergence (based on the Renyi-Donsker-Varahdan variational formula), R_alpha(P||Q), x~P, y~Q</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="models.Divergences_torch.Renyi_Divergence_WCR">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">models.Divergences_torch.</span></span><span class="sig-name descname"><span class="pre">Renyi_Divergence_WCR</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">discriminator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">learning_rate</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fl_act_func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">discriminator_penalty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/Divergences_torch.html#Renyi_Divergence_WCR"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.Divergences_torch.Renyi_Divergence_WCR" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#models.Divergences_torch.Renyi_Divergence_CC" title="models.Divergences_torch.Renyi_Divergence_CC"><code class="xref py py-class docutils literal notranslate"><span class="pre">Renyi_Divergence_CC</span></code></a></p>
-<p>Rescaled Renyi divergence class as alpha –&gt; infinity (aka worst-case regret divergence)
-<a href="#id1"><span class="problematic" id="id2">D_</span></a>infty(P||Q), x~P, y~Q.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="models.Divergences_torch.Renyi_Divergence_WCR.eval_var_formula">
-<span class="sig-name descname"><span class="pre">eval_var_formula</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/Divergences_torch.html#Renyi_Divergence_WCR.eval_var_formula"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.Divergences_torch.Renyi_Divergence_WCR.eval_var_formula" title="Permalink to this definition"></a></dt>
-<dd><p>Evaluation of variational formula of Rescaled Renyi divergence as alpha –&gt; infinity (aka worst-case regret divergence), <a href="#id3"><span class="problematic" id="id4">D_</span></a>infty(P||Q), x~P, y~Q</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="models.Divergences_torch.alpha_Divergence_LT">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">models.Divergences_torch.</span></span><span class="sig-name descname"><span class="pre">alpha_Divergence_LT</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">discriminator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">learning_rate</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">discriminator_penalty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/Divergences_torch.html#alpha_Divergence_LT"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.Divergences_torch.alpha_Divergence_LT" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#models.Divergences_torch.f_Divergence" title="models.Divergences_torch.f_Divergence"><code class="xref py py-class docutils literal notranslate"><span class="pre">f_Divergence</span></code></a></p>
-<p>alpha-divergence class (based on Legendre transform)
+<dt class="sig sig-object py" id="Divergences_torch.alpha_Divergence_LT">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Divergences_torch.</span></span><span class="sig-name descname"><span class="pre">alpha_Divergence_LT</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">discriminator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disc_optimizer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">discriminator_penalty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_torch.html#alpha_Divergence_LT"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_torch.alpha_Divergence_LT" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="index.html#Divergences_torch.f_Divergence" title="Divergences_torch.f_Divergence"><code class="xref py py-class docutils literal notranslate"><span class="pre">f_Divergence</span></code></a></p>
+<p>Alpha-divergence class based on the Legendre transform.
 D_{f_alpha}(P||Q), x~P, y~Q.</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="models.Divergences_torch.alpha_Divergence_LT.f_star">
-<span class="sig-name descname"><span class="pre">f_star</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/Divergences_torch.html#alpha_Divergence_LT.f_star"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.Divergences_torch.alpha_Divergence_LT.f_star" title="Permalink to this definition"></a></dt>
-<dd><p>Legendre transform of f_alpha</p>
+<dt class="sig sig-object py" id="Divergences_torch.alpha_Divergence_LT.f_star">
+<span class="sig-name descname"><span class="pre">f_star</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_torch.html#alpha_Divergence_LT.f_star"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_torch.alpha_Divergence_LT.f_star" title="Link to this definition"></a></dt>
+<dd><p>Legendre transform of f_alpha based on the alpha value.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="models.Divergences_torch.alpha_Divergence_LT.get_order">
-<span class="sig-name descname"><span class="pre">get_order</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/Divergences_torch.html#alpha_Divergence_LT.get_order"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.Divergences_torch.alpha_Divergence_LT.get_order" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="models.Divergences_torch.alpha_Divergence_LT.set_order">
-<span class="sig-name descname"><span class="pre">set_order</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/Divergences_torch.html#alpha_Divergence_LT.set_order"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.Divergences_torch.alpha_Divergence_LT.set_order" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="models.Divergences_torch.f_Divergence">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">models.Divergences_torch.</span></span><span class="sig-name descname"><span class="pre">f_Divergence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">discriminator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disc_optimizer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">discriminator_penalty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/Divergences_torch.html#f_Divergence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.Divergences_torch.f_Divergence" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#models.Divergences_torch.Divergence" title="models.Divergences_torch.Divergence"><code class="xref py py-class docutils literal notranslate"><span class="pre">Divergence</span></code></a></p>
-<p>f-divergence class (parent class)
-D_f(P||Q), x~P, y~Q.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="models.Divergences_torch.f_Divergence.eval_var_formula">
-<span class="sig-name descname"><span class="pre">eval_var_formula</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/Divergences_torch.html#f_Divergence.eval_var_formula"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.Divergences_torch.f_Divergence.eval_var_formula" title="Permalink to this definition"></a></dt>
-<dd><p>Evaluation of variational formula of f-divergence</p>
+<dt class="sig sig-object py" id="Divergences_torch.alpha_Divergence_LT.get_order">
+<span class="sig-name descname"><span class="pre">get_order</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_torch.html#alpha_Divergence_LT.get_order"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_torch.alpha_Divergence_LT.get_order" title="Link to this definition"></a></dt>
+<dd><p>Returns the order of the alpha-divergence.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="models.Divergences_torch.f_Divergence.f_star">
-<span class="sig-name descname"><span class="pre">f_star</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/Divergences_torch.html#f_Divergence.f_star"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.Divergences_torch.f_Divergence.f_star" title="Permalink to this definition"></a></dt>
-<dd><p>Legendre transform of f</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="models.Divergences_torch.f_Divergence.final_layer_activation">
-<span class="sig-name descname"><span class="pre">final_layer_activation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/Divergences_torch.html#f_Divergence.final_layer_activation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.Divergences_torch.f_Divergence.final_layer_activation" title="Permalink to this definition"></a></dt>
-<dd><p>Final layer activation</p>
+<dt class="sig sig-object py" id="Divergences_torch.alpha_Divergence_LT.set_order">
+<span class="sig-name descname"><span class="pre">set_order</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_torch.html#alpha_Divergence_LT.set_order"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_torch.alpha_Divergence_LT.set_order" title="Link to this definition"></a></dt>
+<dd><p>Sets the order of the alpha-divergence.</p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="models.Divergences_torch.squared_Hellinger_LT">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">models.Divergences_torch.</span></span><span class="sig-name descname"><span class="pre">squared_Hellinger_LT</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">discriminator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disc_optimizer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">discriminator_penalty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/Divergences_torch.html#squared_Hellinger_LT"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.Divergences_torch.squared_Hellinger_LT" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#models.Divergences_torch.f_Divergence" title="models.Divergences_torch.f_Divergence"><code class="xref py py-class docutils literal notranslate"><span class="pre">f_Divergence</span></code></a></p>
-<p>squared Hellinger distance class (based on Legendre transform)
+<dt class="sig sig-object py" id="Divergences_torch.f_Divergence">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Divergences_torch.</span></span><span class="sig-name descname"><span class="pre">f_Divergence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">discriminator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disc_optimizer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">discriminator_penalty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_torch.html#f_Divergence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_torch.f_Divergence" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="index.html#Divergences_torch.Divergence" title="Divergences_torch.Divergence"><code class="xref py py-class docutils literal notranslate"><span class="pre">Divergence</span></code></a></p>
+<p>f-divergence class, parent class for f-divergence-based measures D_f(P||Q).
+Subclasses must implement the Legendre transform f_star.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="Divergences_torch.f_Divergence.eval_var_formula">
+<span class="sig-name descname"><span class="pre">eval_var_formula</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_torch.html#f_Divergence.eval_var_formula"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_torch.f_Divergence.eval_var_formula" title="Link to this definition"></a></dt>
+<dd><p>Evaluates the variational formula for f-divergence.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – Samples from distribution P.</p></li>
+<li><p><strong>y</strong> – Samples from distribution Q.</p></li>
+<li><p><strong>labels</strong> – Optional labels for the input data.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>f-divergence loss.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Divergences_torch.f_Divergence.eval_var_formula_gen">
+<span class="sig-name descname"><span class="pre">eval_var_formula_gen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_torch.html#f_Divergence.eval_var_formula_gen"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_torch.f_Divergence.eval_var_formula_gen" title="Link to this definition"></a></dt>
+<dd><p>Evaluates the variational formula for f-divergence applied to the generator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – Generated samples.</p></li>
+<li><p><strong>labels</strong> – Optional labels for the input data.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Generator loss based on f-divergence.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Divergences_torch.f_Divergence.f_star">
+<span class="sig-name descname"><span class="pre">f_star</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_torch.html#f_Divergence.f_star"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_torch.f_Divergence.f_star" title="Link to this definition"></a></dt>
+<dd><p>Placeholder for the Legendre transform of f. Should be implemented by subclasses.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Divergences_torch.f_Divergence.final_layer_activation">
+<span class="sig-name descname"><span class="pre">final_layer_activation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_torch.html#f_Divergence.final_layer_activation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_torch.f_Divergence.final_layer_activation" title="Link to this definition"></a></dt>
+<dd><p>Applies the final layer activation.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="Divergences_torch.squared_Hellinger_LT">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Divergences_torch.</span></span><span class="sig-name descname"><span class="pre">squared_Hellinger_LT</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">discriminator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disc_optimizer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">discriminator_penalty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_torch.html#squared_Hellinger_LT"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_torch.squared_Hellinger_LT" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="index.html#Divergences_torch.f_Divergence" title="Divergences_torch.f_Divergence"><code class="xref py py-class docutils literal notranslate"><span class="pre">f_Divergence</span></code></a></p>
+<p>Squared Hellinger distance class based on the Legendre transform.
 H(P||Q), x~P, y~Q.</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="models.Divergences_torch.squared_Hellinger_LT.f_star">
-<span class="sig-name descname"><span class="pre">f_star</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/Divergences_torch.html#squared_Hellinger_LT.f_star"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.Divergences_torch.squared_Hellinger_LT.f_star" title="Permalink to this definition"></a></dt>
-<dd><p>Legendre transform of f(y)=(sqrt(y)-1)^2</p>
+<dt class="sig sig-object py" id="Divergences_torch.squared_Hellinger_LT.f_star">
+<span class="sig-name descname"><span class="pre">f_star</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_torch.html#squared_Hellinger_LT.f_star"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_torch.squared_Hellinger_LT.f_star" title="Link to this definition"></a></dt>
+<dd><p>Legendre transform of f(y) = (sqrt(y) - 1)^2.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="models.Divergences_torch.squared_Hellinger_LT.final_layer_activation">
-<span class="sig-name descname"><span class="pre">final_layer_activation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/Divergences_torch.html#squared_Hellinger_LT.final_layer_activation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.Divergences_torch.squared_Hellinger_LT.final_layer_activation" title="Permalink to this definition"></a></dt>
-<dd><p>final layer activation</p>
+<dt class="sig sig-object py" id="Divergences_torch.squared_Hellinger_LT.final_layer_activation">
+<span class="sig-name descname"><span class="pre">final_layer_activation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_torch.html#squared_Hellinger_LT.final_layer_activation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_torch.squared_Hellinger_LT.final_layer_activation" title="Link to this definition"></a></dt>
+<dd><p>Applies the final layer activation for squared Hellinger distance.</p>
 </dd></dl>
 
 </dd></dl>
@@ -592,14 +921,14 @@ H(P||Q), x~P, y~Q.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="Divergences.html" class="btn btn-neutral float-left" title="Divergences module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="GAN.html" class="btn btn-neutral float-right" title="GAN module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="Divergences_tf.html" class="btn btn-neutral float-left" title="Divergences_tf module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="GAN_CIFAR10_jax.html" class="btn btn-neutral float-right" title="GAN_CIFAR10_jax module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2023, Yannis Pantazis, Alexandros Angelakis, Jeremiah Birrell, Markos Katsoulakis.</p>
+    <p>&#169; Copyright 2024, Alexandros Angelakis.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

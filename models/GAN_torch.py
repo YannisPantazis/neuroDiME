@@ -2,6 +2,8 @@ import torch
 import torch.nn as nn
 from tqdm import tqdm
 
+device = 'cuda' if torch.cuda.is_available() else 'cpu'
+
 class GAN():
     '''
     Class for training a GAN using one of the provided divergences
@@ -74,7 +76,7 @@ class GAN():
         return loss.item()
 
 
-    def train(self, data_P, save_frequency=None, num_gen_samples_to_save=None, save_loss_estimates=False, device = 'cuda' if torch.cuda.is_available() else 'cpu'):
+    def train(self, data_P, save_frequency=None, num_gen_samples_to_save=None, save_loss_estimates=False):
         ''' training function of our GAN '''
         # dataset slicing into minibatches
         P_dataset = torch.utils.data.DataLoader(data_P, batch_size=self.batch_size, shuffle=True)

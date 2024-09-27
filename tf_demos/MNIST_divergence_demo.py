@@ -1,27 +1,19 @@
 import numpy as np
-import pandas as pd
 import tensorflow as tf
-import tensorflow_addons as tfa
-from keras import backend as K
-from keras.layers import Dense, Conv2D, Flatten, Dropout, LeakyReLU
 import csv
 import os
 import argparse
 import sys
 #import json
-import matplotlib.pyplot as plt
-from scipy.stats import norm
-from bisect import bisect_left, bisect_right
 from keras.datasets.mnist import load_data
-from keras.models import load_model
 
 current_dir = os.path.dirname(os.path.realpath(__file__))
 parent_dir = os.path.dirname(current_dir)
 sys.path.append(parent_dir)
 
-from models.tf_model import *
-from models.Divergences import *
-from models.GAN import *
+from models.model_tf import *
+from models.Divergences_tf import *
+# from models.GAN import *
 
 start = time.perf_counter()
 
@@ -34,7 +26,7 @@ parser.add_argument('--method', default='KLD-DV', type=str, metavar='method',
                     help='values: IPM, KLD-DV, KLD-LT, squared-Hel-LT, chi-squared-LT, JS-LT, alpha-LT, Renyi-DV, Renyi-CC, rescaled-Renyi-CC, Renyi-CC-WCR')
                         
 parser.add_argument('--sample_size', default=10000, type=int, metavar='N')
-parser.add_argument('--batch_size', default=100, type=int, metavar='m')
+parser.add_argument('--batch_size', default=124, type=int, metavar='m')
 parser.add_argument('--lr', default=0.001, type=float)
 parser.add_argument('--epochs', default=100, type=int,
                     help='number of total epochs to run')
@@ -75,6 +67,40 @@ print("Use Gradient Penalty: "+str(use_GP))
 optimizer = "Adam" #Adam, RMS
 fl_act_func_CC = 'poly-softplus' # abs, softplus, poly-softplus
 
+class Gradient_Penalty(Discriminator_Penalty):
+    def __init__(self, weight, L):
+        Discriminator_Penalty.__init__(self, weight)
+        self.L = L
+    
+    def get_Lip_const(self):
+        return self.L
+
+    def set_Lip_const(self, L):
+        self.L = L
+        
+    def call(self, c, images, samples, labels=None):
+        assert images.shape == samples.shape
+        
+        batch_size = tf.shape(images)[0]
+        shape = tf.shape(images)[1:]  # Assuming images have shape (batch_size, height, width, channels)
+        
+        jump = tf.random.uniform(shape=(batch_size, 1), dtype=images.dtype)
+        jump_ = tf.tile(jump, [1, tf.reduce_prod(shape)])
+        jump_ = tf.reshape(jump_, [batch_size] + list(shape))
+        interpolated = images * jump_ + (1 - jump_) * samples
+        
+        with tf.GradientTape() as tape:
+            tape.watch(interpolated)
+            if labels is not None:
+                c_ = c(interpolated, labels)
+            else:
+                c_ = c(interpolated)
+        
+        gradients = tape.gradient(c_, interpolated)
+        gradients = tf.norm(gradients, axis=1)
+        
+        penalty = self.get_penalty_weight() * tf.reduce_mean(tf.square(self.L - gradients))
+        return penalty
 
 #data distribution
 (trainX, trainy), (_, _) = load_data()
@@ -116,19 +142,7 @@ print(data_Q.shape)
 #     discriminator = load_model(model_file)
 # else:
 # construct the discriminator neural network
-discriminator = tf.keras.Sequential()
-discriminator.add(Conv2D(64, (3,3), strides=(2, 2), padding='same', input_shape=(28,28,1)))
-discriminator.add(LeakyReLU(alpha=0.2))
-discriminator.add(Dropout(0.4))
-discriminator.add(Conv2D(64, (3,3), strides=(2, 2), padding='same'))
-discriminator.add(LeakyReLU(alpha=0.2))
-discriminator.add(Dropout(0.4))
-discriminator.add(Flatten())
-discriminator.add(Dense(1, activation='linear'))
-
-print()
-print("Discriminator Summary:")
-discriminator.summary()
+discriminator = DiscriminatorMNIST()
 
 #construct optimizer
 if optimizer == 'Adam':
@@ -137,6 +151,15 @@ if optimizer == 'Adam':
 if optimizer == 'RMS':
     disc_optimizer = tf.keras.optimizers.RMSprop(lr)
 
+discriminator.compile(optimizer=disc_optimizer)
+print()
+print("Discriminator Summary:") 
+
+# Create a sample input with the appropriate shape
+sample_input = tf.random.normal([1, 784])
+# Pass the sample input through the model to build it
+_ = discriminator(sample_input)
+discriminator.summary()
 
 # construct gradient penalty
 if use_GP:
@@ -179,8 +202,8 @@ if mthd=="Renyi-CC":
 if mthd=="rescaled-Renyi-CC":
     divergence_CNN = Renyi_Divergence_CC_rescaled(discriminator, disc_optimizer, alpha, epochs, m, fl_act_func_CC, discriminator_penalty)
 
-if mthd=="Renyi-WCR":
-    divergence_CNN = Renyi_Divergence_WCR(discriminator, disc_optimizer, epochs, m, fl_act_func_CC, discriminator_penalty)
+if mthd=="Renyi-CC-WCR":
+    divergence_CNN = Renyi_Divergence_WCR(discriminator, disc_optimizer, alpha, epochs, m, fl_act_func_CC, discriminator_penalty)
 
 
 # if not os.path.exists(model_file):

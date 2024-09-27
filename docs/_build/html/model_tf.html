@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>model_tf module &mdash; NEDIPM 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=d45e8c67"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="model_torch module" href="model_torch.html" />
+    <link rel="prev" title="model_jax module" href="model_jax.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            NEDIPM
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">models</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="Divergences_jax.html">Divergences_jax module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Divergences_tf.html">Divergences_tf module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Divergences_torch.html">Divergences_torch module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GAN_CIFAR10_jax.html">GAN_CIFAR10_jax module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GAN_CIFAR10_tf.html">GAN_CIFAR10_tf module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GAN_CIFAR10_torch.html">GAN_CIFAR10_torch module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GAN_MNIST_jax.html">GAN_MNIST_jax module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GAN_MNIST_tf.html">GAN_MNIST_tf module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GAN_MNIST_torch.html">GAN_MNIST_torch module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GAN_jax.html">GAN_jax module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GAN_tf.html">GAN_tf module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GAN_torch.html">GAN_torch module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model_jax.html">model_jax module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">model_tf module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#model_tf.Discriminator"><code class="docutils literal notranslate"><span class="pre">Discriminator</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#model_tf.Discriminator.call"><code class="docutils literal notranslate"><span class="pre">Discriminator.call()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#model_tf.Discriminator.bounded_activation"><code class="docutils literal notranslate"><span class="pre">Discriminator.bounded_activation()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id0"><code class="docutils literal notranslate"><span class="pre">Discriminator.bounded_activation()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id1"><code class="docutils literal notranslate"><span class="pre">Discriminator.call()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#model_tf.DiscriminatorMNIST"><code class="docutils literal notranslate"><span class="pre">DiscriminatorMNIST</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#model_tf.DiscriminatorMNIST.call"><code class="docutils literal notranslate"><span class="pre">DiscriminatorMNIST.call()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id2"><code class="docutils literal notranslate"><span class="pre">DiscriminatorMNIST.call()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#model_tf.Generator"><code class="docutils literal notranslate"><span class="pre">Generator</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#model_tf.Generator.call"><code class="docutils literal notranslate"><span class="pre">Generator.call()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id3"><code class="docutils literal notranslate"><span class="pre">Generator.call()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="model_torch.html">model_torch module</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">NEDIPM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">models</a></li>
+      <li class="breadcrumb-item active">model_tf module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/model_tf.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-model_tf">
+<span id="model-tf-module"></span><h1>model_tf module<a class="headerlink" href="#module-model_tf" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="model_tf.Discriminator">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">model_tf.</span></span><span class="sig-name descname"><span class="pre">Discriminator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model_tf.html#Discriminator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#model_tf.Discriminator" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code></p>
+<p>Discriminator class responsible for initializing and processing the discriminator network.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_dim</strong> (<em>int</em>) – Dimension of the input features.</p></li>
+<li><p><strong>spec_norm</strong> (<em>bool</em>) – Whether to apply spectral normalization to the layers.</p></li>
+<li><p><strong>bounded</strong> (<em>bool</em>) – Whether to apply bounded activation on the final output.</p></li>
+<li><p><strong>layers_list</strong> (<em>list</em>) – List of integers specifying the number of units for each hidden layer.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="model_tf.Discriminator.call">
+<span class="sig-name descname"><span class="pre">call</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model_tf.html#Discriminator.call"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#model_tf.Discriminator.call" title="Link to this definition"></a></dt>
+<dd><p>Forward pass through the network.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="model_tf.Discriminator.bounded_activation">
+<span class="sig-name descname"><span class="pre">bounded_activation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model_tf.html#Discriminator.bounded_activation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#model_tf.Discriminator.bounded_activation" title="Link to this definition"></a></dt>
+<dd><p>Activation function to apply bounded output using tanh.</p>
+</dd></dl>
+
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Output after processing through the discriminator network.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>tf.Tensor</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="id0">
+<span class="sig-name descname"><span class="pre">bounded_activation</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/model_tf.html#Discriminator.bounded_activation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id0" title="Link to this definition"></a></dt>
+<dd><p>Apply a bounded activation using the tanh function, constraining the output within [-M, M].</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>tf.Tensor</em>) – Input data.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Output after applying bounded activation.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tf.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id1">
+<span class="sig-name descname"><span class="pre">call</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model_tf.html#Discriminator.call"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id1" title="Link to this definition"></a></dt>
+<dd><p>Forward pass through the discriminator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>inputs</strong> (<em>tf.Tensor</em>) – Input data to the network.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Discriminator’s prediction after processing the inputs.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tf.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="model_tf.DiscriminatorMNIST">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">model_tf.</span></span><span class="sig-name descname"><span class="pre">DiscriminatorMNIST</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model_tf.html#DiscriminatorMNIST"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#model_tf.DiscriminatorMNIST" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code></p>
+<p>Discriminator class for the MNIST dataset, responsible for classifying real vs fake images.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="model_tf.DiscriminatorMNIST.call">
+<span class="sig-name descname"><span class="pre">call</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model_tf.html#DiscriminatorMNIST.call"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#model_tf.DiscriminatorMNIST.call" title="Link to this definition"></a></dt>
+<dd><p>Forward pass through the network.</p>
+</dd></dl>
+
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Output after processing the input image through the discriminator network.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>tf.Tensor</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="id2">
+<span class="sig-name descname"><span class="pre">call</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model_tf.html#DiscriminatorMNIST.call"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id2" title="Link to this definition"></a></dt>
+<dd><p>Forward pass through the MNIST discriminator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>tf.Tensor</em>) – Input image data reshaped to (batch_size, 784).</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Output after processing through dense and normalization layers.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tf.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="model_tf.Generator">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">model_tf.</span></span><span class="sig-name descname"><span class="pre">Generator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model_tf.html#Generator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#model_tf.Generator" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code></p>
+<p>Generator class responsible for initializing and processing the generator network.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X_dim</strong> (<em>int</em>) – Dimension of the output generated by the generator.</p></li>
+<li><p><strong>Z_dim</strong> (<em>int</em>) – Dimension of the input latent space.</p></li>
+<li><p><strong>spec_norm</strong> (<em>bool</em>) – Whether to apply spectral normalization to the layers.</p></li>
+<li><p><strong>layers_list</strong> (<em>list</em>) – List of integers specifying the number of units for each hidden layer.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="model_tf.Generator.call">
+<span class="sig-name descname"><span class="pre">call</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model_tf.html#Generator.call"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#model_tf.Generator.call" title="Link to this definition"></a></dt>
+<dd><p>Forward pass through the network.</p>
+</dd></dl>
+
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Generated output after processing the latent input.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>tf.Tensor</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="id3">
+<span class="sig-name descname"><span class="pre">call</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model_tf.html#Generator.call"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id3" title="Link to this definition"></a></dt>
+<dd><p>Forward pass through the generator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>inputs</strong> (<em>tf.Tensor</em>) – Input latent vector.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Generated output.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tf.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="model_jax.html" class="btn btn-neutral float-left" title="model_jax module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="model_torch.html" class="btn btn-neutral float-right" title="model_torch module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Alexandros Angelakis.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

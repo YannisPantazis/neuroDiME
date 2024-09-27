@@ -7,7 +7,8 @@ import argparse
 from optax import rmsprop, adam
 import time
 import orbax
-from flax.training import orbax_utils
+from flax.training import orbax_utils, train_state
+from jax.lib import xla_bridge
 
 # Add parent directory to sys.path
 current_dir = os.path.dirname(os.path.realpath(__file__))
@@ -23,7 +24,7 @@ start = time.perf_counter()
 parser = argparse.ArgumentParser(description='Neural-based Estimation of Divergences between Gaussians')
 parser.add_argument('--dimension', default=1, type=int, metavar='d')
 parser.add_argument('--method', default='KLD-DV', type=str, metavar='method',
-                    help='values: KLD-DV, KLD-DV-GP, KLD-LT, squared-Hel-LT, chi-squared-LT, JS-LT, alpha-LT, Renyi-DV, Renyi-CC, rescaled-Renyi-CC, Renyi-CC-WCR')
+                    help='values: KLD-DV, KLD-LT, squared-Hel-LT, chi-squared-LT, JS-LT, alpha-LT, Renyi-DV, Renyi-CC, rescaled-Renyi-CC, Renyi-CC-WCR')
 parser.add_argument('--sample_size', default=10000, type=int, metavar='N')
 parser.add_argument('--batch_size', default=1000, type=int, metavar='m')
 parser.add_argument('--lr', default=0.001, type=float)
@@ -80,6 +81,8 @@ layers_list = [64]  # UNCECOMP's NN: [16, 16, 8]
 # layers_list = [16, 16, 8]
 act_func = 'relu'
 print(f'Predicting the {mthd} divergence using JaX\n')
+print(xla_bridge.get_backend().platform)
+
 discriminator = Discriminator(input_dim=d, spec_norm=False, bounded=False, layers_list=layers_list)
 
 x = jnp.ones((m, d))
@@ -88,8 +91,8 @@ print(test(x))
 
 # Initialize the model's parameters with a dummy input
 rng = jax.random.PRNGKey(0)
-params = discriminator.init(rng, x)
-print(jax.tree_map(lambda x: x.shape, params)) # Check the parameters
+vars = discriminator.init(rng, x)
+
 optimizer = "RMS"  # Adam, RMS
 
 # Construct optimizers
@@ -99,12 +102,7 @@ if optimizer == 'Adam':
 if optimizer == 'RMS':
     disc_optimizer = rmsprop(lr)
 
-
-opt_state = disc_optimizer.init(params)
-
-# opt_state = disc_optimizer.init(params)
-
-# disc_optimizer_state = disc_optimizer.init(params)
+training_state  = train_state.TrainState.create(apply_fn=discriminator.apply, params=vars['params'], tx=disc_optimizer)
 
 # Construct gradient penalty
 if use_GP:
@@ -117,27 +115,18 @@ model_name = f'jax_N_dim_model_{mthd}'
 orbax_checkpointer = orbax.checkpoint.PyTreeCheckpointer()
 path = f'/jax_checkpoints/{model_name}'
 
-    # Construct divergence, train optimizer and estimate the divergence
+# Construct divergence, train optimizer and estimate the divergence
 if mthd == "KLD-DV":
     div_dense = KLD_DV(discriminator, disc_optimizer, epochs, m, discriminator_penalty)
-    divergence_estimates, learned_params, opt_state= div_dense.train(data_P, data_Q, params, opt_state)
+    divergence_estimates, losses = div_dense.train(data_P, data_Q, training_state, vars)
     div_value_true = float(1.0 / 2.0 * (np.log(np.abs(np.linalg.det(Sigma_q) / np.linalg.det(Sigma_p))) + np.matmul(np.transpose(mu_q - mu_p), np.matmul(np.linalg.inv(Sigma_q), mu_q - mu_p)) - d + np.trace(np.matmul(Sigma_p, np.linalg.inv(Sigma_q)))))
     print('KLD (true):\t\t {:.4}'.format(div_value_true))
     print('KLD-DV (estimated):\t {:.4}'.format(divergence_estimates[-1]))
     print()
-    
-if mthd=="KLD-DV-GP":
-    div_dense = KLD_DV(discriminator, disc_optimizer, epochs, m, discriminator_penalty)
-    divergence_estimates, learned_params, opt_state = div_dense.train(data_P, data_Q, params, opt_state) 
-    div_value_true=float(1.0/2.0*(np.log(np.abs(np.linalg.det(Sigma_q)/np.linalg.det(Sigma_p)))+np.matmul(np.transpose(mu_q-mu_p),np.matmul(np.linalg.inv(Sigma_q),mu_q-mu_p))-d+np.trace(np.matmul(Sigma_p,np.linalg.inv(Sigma_q)))))
-        
-    print('KLD (true):\t\t {:.4}'.format(div_value_true))
-    print('KLD-DV-GP (estimated):\t {:.4}'.format(divergence_estimates[-1]))
-    print()
 
 if mthd=="KLD-LT":
     div_dense = KLD_LT(discriminator, disc_optimizer, epochs, m, discriminator_penalty)
-    divergence_estimates, learned_params, opt_state = div_dense.train(data_P, data_Q, params, opt_state)
+    divergence_estimates, losses = div_dense.train(data_P, data_Q, training_state, vars)
     div_value_true=float(1.0/2.0*(np.log(np.abs(np.linalg.det(Sigma_q)/np.linalg.det(Sigma_p)))+np.matmul(np.transpose(mu_q-mu_p),np.matmul(np.linalg.inv(Sigma_q),mu_q-mu_p))-d+np.trace(np.matmul(Sigma_p,np.linalg.inv(Sigma_q)))))
         
     print('KLD (true):\t\t {:.4}'.format(div_value_true))
@@ -146,7 +135,7 @@ if mthd=="KLD-LT":
 
 if mthd=="squared-Hel-LT":
     div_dense = squared_Hellinger_LT(discriminator, disc_optimizer, epochs, m, discriminator_penalty)
-    divergence_estimates, learned_params, opt_state = div_dense.train(data_P, data_Q, params, opt_state)
+    divergence_estimates, losses = div_dense.train(data_P, data_Q, training_state, vars)
     Renyi=float(1.0/2.0*np.matmul(np.transpose(mu_q-mu_p),np.matmul(np.linalg.inv(Sigma_alpha),mu_q-mu_p))-1.0/(2.0*alpha*(alpha-1.0))*np.math.log(np.linalg.det(Sigma_alpha)/(np.math.pow(np.linalg.det(Sigma_p),1.0-alpha)*np.math.pow(np.linalg.det(Sigma_q),alpha))))
     div_value_true=(np.math.exp(alpha*(alpha-1)*Renyi)-1.)/(alpha*(alpha-1.))/2.
 
@@ -156,7 +145,7 @@ if mthd=="squared-Hel-LT":
 
 if mthd=="chi-squared-LT":
     div_dense = Pearson_chi_squared_LT(discriminator, disc_optimizer, epochs, m, discriminator_penalty)
-    divergence_estimates, learned_params, opt_state = div_dense.train(data_P, data_Q, params, opt_state)
+    divergence_estimates, losses = div_dense.train(data_P, data_Q, training_state, vars)
     Renyi=float(1.0/2.0*np.matmul(np.transpose(mu_q-mu_p),np.matmul(np.linalg.inv(Sigma_alpha),mu_q-mu_p))-1.0/(2.0*alpha*(alpha-1.0))*np.math.log(np.linalg.det(Sigma_alpha)/(np.math.pow(np.linalg.det(Sigma_p),1.0-alpha)*np.math.pow(np.linalg.det(Sigma_q),alpha))))
     div_value_true=2.*(np.math.exp(alpha*(alpha-1)*Renyi)-1.)/(alpha*(alpha-1.))
 
@@ -166,7 +155,7 @@ if mthd=="chi-squared-LT":
 
 if mthd=="chi-squared-HCR":
     div_dense = Pearson_chi_squared_HCR(discriminator, disc_optimizer, epochs, m, discriminator_penalty)
-    divergence_estimates, learned_params, opt_state = div_dense.train(data_P, data_Q, params, opt_state)
+    divergence_estimates, losses = div_dense.train(data_P, data_Q, training_state, vars)
     Renyi=float(1.0/2.0*np.matmul(np.transpose(mu_q-mu_p),np.matmul(np.linalg.inv(Sigma_alpha),mu_q-mu_p))-1.0/(2.0*alpha*(alpha-1.0))*np.math.log(np.linalg.det(Sigma_alpha)/(np.math.pow(np.linalg.det(Sigma_p),1.0-alpha)*np.math.pow(np.linalg.det(Sigma_q),alpha))))
     div_value_true=2.*(np.math.exp(alpha*(alpha-1)*Renyi)-1.)/(alpha*(alpha-1.))
    
@@ -176,7 +165,7 @@ if mthd=="chi-squared-HCR":
 
 if mthd=="alpha-LT":
     div_dense = alpha_Divergence_LT(discriminator, disc_optimizer, alpha, epochs, m, discriminator_penalty)
-    divergence_estimates, learned_params, opt_state = div_dense.train(data_P, data_Q, params, opt_state)
+    divergence_estimates, losses = div_dense.train(data_P, data_Q, training_state, vars)
     Renyi=float(1.0/2.0*np.matmul(np.transpose(mu_q-mu_p),np.matmul(np.linalg.inv(Sigma_alpha),mu_q-mu_p))-1.0/(2.0*alpha*(alpha-1.0))*np.math.log(np.linalg.det(Sigma_alpha)/(np.math.pow(np.linalg.det(Sigma_p),1.0-alpha)*np.math.pow(np.linalg.det(Sigma_q),alpha))))
     div_value_true=(np.math.exp(alpha*(alpha-1)*Renyi)-1.)/(alpha*(alpha-1.))
     
@@ -186,7 +175,7 @@ if mthd=="alpha-LT":
 
 if mthd=="Renyi-DV":
     div_dense = Renyi_Divergence_DV(discriminator, disc_optimizer, alpha, epochs, m, discriminator_penalty)
-    divergence_estimates, learned_params, opt_state = div_dense.train(data_P, data_Q, params, opt_state)
+    divergence_estimates, losses = div_dense.train(data_P, data_Q, training_state, vars)
     div_value_true=float(1.0/2.0*np.matmul(np.transpose(mu_q-mu_p),np.matmul(np.linalg.inv(Sigma_alpha),mu_q-mu_p))-1.0/(2.0*alpha*(alpha-1.0))*np.math.log(np.linalg.det(Sigma_alpha)/(np.math.pow(np.linalg.det(Sigma_p),1.0-alpha)*np.math.pow(np.linalg.det(Sigma_q),alpha))))
 
     print('Renyi-divergence (true):\t\t {:.4}'.format(div_value_true))
@@ -195,7 +184,7 @@ if mthd=="Renyi-DV":
 
 if mthd=="Renyi-CC":
     div_dense = Renyi_Divergence_CC(discriminator, disc_optimizer, alpha, epochs, m, fl_act_func_CC, discriminator_penalty)
-    divergence_estimates, learned_params, opt_state = div_dense.train(data_P, data_Q, params, opt_state)
+    divergence_estimates, losses = div_dense.train(data_P, data_Q, training_state, vars)
     div_value_true=float(1.0/2.0*np.matmul(np.transpose(mu_q-mu_p),np.matmul(np.linalg.inv(Sigma_alpha),mu_q-mu_p))-1.0/(2.0*alpha*(alpha-1.0))*np.math.log(np.linalg.det(Sigma_alpha)/(np.math.pow(np.linalg.det(Sigma_p),1.0-alpha)*np.math.pow(np.linalg.det(Sigma_q),alpha))))
         
     print('Renyi-divergence (true):\t\t {:.4}'.format(div_value_true))
@@ -204,7 +193,7 @@ if mthd=="Renyi-CC":
 
 if mthd=="rescaled-Renyi-CC":
     div_dense = Renyi_Divergence_CC_rescaled(discriminator, disc_optimizer, alpha, epochs, m, fl_act_func_CC, discriminator_penalty)
-    divergence_estimates, learned_params, opt_state = div_dense.train(data_P, data_Q, params, opt_state)
+    divergence_estimates, losses = div_dense.train(data_P, data_Q, training_state, vars)
 
     div_value_true=float(alpha*(1.0/2.0*np.matmul(np.transpose(mu_q-mu_p),np.matmul(np.linalg.inv(Sigma_alpha),mu_q-mu_p))-1.0/(2.0*alpha*(alpha-1.0))*np.math.log(np.linalg.det(Sigma_alpha)/(np.math.pow(np.linalg.det(Sigma_p),1.0-alpha)*np.math.pow(np.linalg.det(Sigma_q),alpha)))))
         

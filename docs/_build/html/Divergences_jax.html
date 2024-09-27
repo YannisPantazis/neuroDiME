@@ -1,0 +1,1236 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Divergences_jax module &mdash; NEDIPM 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=d45e8c67"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Divergences_tf module" href="Divergences_tf.html" />
+    <link rel="prev" title="models" href="modules.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            NEDIPM
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">models</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Divergences_jax module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Divergences_jax.DataLoader"><code class="docutils literal notranslate"><span class="pre">DataLoader</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Divergences_jax.Discriminator_Penalty"><code class="docutils literal notranslate"><span class="pre">Discriminator_Penalty</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_jax.Discriminator_Penalty.evaluate"><code class="docutils literal notranslate"><span class="pre">Discriminator_Penalty.evaluate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_jax.Discriminator_Penalty.get_penalty_weight"><code class="docutils literal notranslate"><span class="pre">Discriminator_Penalty.get_penalty_weight()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_jax.Discriminator_Penalty.set_penalty_weight"><code class="docutils literal notranslate"><span class="pre">Discriminator_Penalty.set_penalty_weight()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#Divergences_jax.Divergence"><code class="docutils literal notranslate"><span class="pre">Divergence</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_jax.Divergence.discriminate"><code class="docutils literal notranslate"><span class="pre">Divergence.discriminate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_jax.Divergence.discriminator_loss"><code class="docutils literal notranslate"><span class="pre">Divergence.discriminator_loss()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_jax.Divergence.estimate"><code class="docutils literal notranslate"><span class="pre">Divergence.estimate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_jax.Divergence.eval_var_formula"><code class="docutils literal notranslate"><span class="pre">Divergence.eval_var_formula()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_jax.Divergence.gen_train_step"><code class="docutils literal notranslate"><span class="pre">Divergence.gen_train_step()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_jax.Divergence.generator_loss"><code class="docutils literal notranslate"><span class="pre">Divergence.generator_loss()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_jax.Divergence.get_batch_size"><code class="docutils literal notranslate"><span class="pre">Divergence.get_batch_size()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_jax.Divergence.get_discriminator"><code class="docutils literal notranslate"><span class="pre">Divergence.get_discriminator()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_jax.Divergence.get_learning_rate"><code class="docutils literal notranslate"><span class="pre">Divergence.get_learning_rate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_jax.Divergence.get_no_epochs"><code class="docutils literal notranslate"><span class="pre">Divergence.get_no_epochs()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_jax.Divergence.set_batch_size"><code class="docutils literal notranslate"><span class="pre">Divergence.set_batch_size()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_jax.Divergence.set_discriminator"><code class="docutils literal notranslate"><span class="pre">Divergence.set_discriminator()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_jax.Divergence.set_learning_rate"><code class="docutils literal notranslate"><span class="pre">Divergence.set_learning_rate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_jax.Divergence.set_no_epochs"><code class="docutils literal notranslate"><span class="pre">Divergence.set_no_epochs()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_jax.Divergence.train"><code class="docutils literal notranslate"><span class="pre">Divergence.train()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_jax.Divergence.train_step"><code class="docutils literal notranslate"><span class="pre">Divergence.train_step()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#Divergences_jax.Gradient_Penalty_1Sided"><code class="docutils literal notranslate"><span class="pre">Gradient_Penalty_1Sided</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_jax.Gradient_Penalty_1Sided.evaluate"><code class="docutils literal notranslate"><span class="pre">Gradient_Penalty_1Sided.evaluate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_jax.Gradient_Penalty_1Sided.get_Lip_constant"><code class="docutils literal notranslate"><span class="pre">Gradient_Penalty_1Sided.get_Lip_constant()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_jax.Gradient_Penalty_1Sided.set_Lip_constant"><code class="docutils literal notranslate"><span class="pre">Gradient_Penalty_1Sided.set_Lip_constant()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#Divergences_jax.Gradient_Penalty_2Sided"><code class="docutils literal notranslate"><span class="pre">Gradient_Penalty_2Sided</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_jax.Gradient_Penalty_2Sided.evaluate"><code class="docutils literal notranslate"><span class="pre">Gradient_Penalty_2Sided.evaluate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_jax.Gradient_Penalty_2Sided.get_Lip_constant"><code class="docutils literal notranslate"><span class="pre">Gradient_Penalty_2Sided.get_Lip_constant()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_jax.Gradient_Penalty_2Sided.set_Lip_constant"><code class="docutils literal notranslate"><span class="pre">Gradient_Penalty_2Sided.set_Lip_constant()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#Divergences_jax.IPM"><code class="docutils literal notranslate"><span class="pre">IPM</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_jax.IPM.eval_var_formula"><code class="docutils literal notranslate"><span class="pre">IPM.eval_var_formula()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_jax.IPM.eval_var_formula_gen"><code class="docutils literal notranslate"><span class="pre">IPM.eval_var_formula_gen()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#Divergences_jax.Jensen_Shannon_LT"><code class="docutils literal notranslate"><span class="pre">Jensen_Shannon_LT</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_jax.Jensen_Shannon_LT.f_star"><code class="docutils literal notranslate"><span class="pre">Jensen_Shannon_LT.f_star()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_jax.Jensen_Shannon_LT.final_layer_activation"><code class="docutils literal notranslate"><span class="pre">Jensen_Shannon_LT.final_layer_activation()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#Divergences_jax.KLD_DV"><code class="docutils literal notranslate"><span class="pre">KLD_DV</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_jax.KLD_DV.eval_var_formula"><code class="docutils literal notranslate"><span class="pre">KLD_DV.eval_var_formula()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_jax.KLD_DV.eval_var_formula_gen"><code class="docutils literal notranslate"><span class="pre">KLD_DV.eval_var_formula_gen()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#Divergences_jax.KLD_LT"><code class="docutils literal notranslate"><span class="pre">KLD_LT</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_jax.KLD_LT.f_star"><code class="docutils literal notranslate"><span class="pre">KLD_LT.f_star()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#Divergences_jax.Pearson_chi_squared_LT"><code class="docutils literal notranslate"><span class="pre">Pearson_chi_squared_LT</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_jax.Pearson_chi_squared_LT.f_star"><code class="docutils literal notranslate"><span class="pre">Pearson_chi_squared_LT.f_star()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#Divergences_jax.Renyi_Divergence"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_jax.Renyi_Divergence.get_order"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence.get_order()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_jax.Renyi_Divergence.set_order"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence.set_order()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#Divergences_jax.Renyi_Divergence_CC"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_CC</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_jax.Renyi_Divergence_CC.eval_var_formula"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_CC.eval_var_formula()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_jax.Renyi_Divergence_CC.eval_var_formula_gen"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_CC.eval_var_formula_gen()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_jax.Renyi_Divergence_CC.final_layer_activation"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_CC.final_layer_activation()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#Divergences_jax.Renyi_Divergence_CC_rescaled"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_CC_rescaled</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_jax.Renyi_Divergence_CC_rescaled.eval_var_formula"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_CC_rescaled.eval_var_formula()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_jax.Renyi_Divergence_CC_rescaled.eval_var_formula_gen"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_CC_rescaled.eval_var_formula_gen()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_jax.Renyi_Divergence_CC_rescaled.final_layer_activation"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_CC_rescaled.final_layer_activation()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#Divergences_jax.Renyi_Divergence_DV"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_DV</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_jax.Renyi_Divergence_DV.eval_var_formula"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_DV.eval_var_formula()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_jax.Renyi_Divergence_DV.eval_var_formula_gen"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_DV.eval_var_formula_gen()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#Divergences_jax.Renyi_Divergence_WCR"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_WCR</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_jax.Renyi_Divergence_WCR.eval_var_formula"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_WCR.eval_var_formula()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_jax.Renyi_Divergence_WCR.eval_var_formula_gen"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_WCR.eval_var_formula_gen()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#Divergences_jax.alpha_Divergence_LT"><code class="docutils literal notranslate"><span class="pre">alpha_Divergence_LT</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_jax.alpha_Divergence_LT.f_star"><code class="docutils literal notranslate"><span class="pre">alpha_Divergence_LT.f_star()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_jax.alpha_Divergence_LT.get_order"><code class="docutils literal notranslate"><span class="pre">alpha_Divergence_LT.get_order()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_jax.alpha_Divergence_LT.set_order"><code class="docutils literal notranslate"><span class="pre">alpha_Divergence_LT.set_order()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#Divergences_jax.f_Divergence"><code class="docutils literal notranslate"><span class="pre">f_Divergence</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_jax.f_Divergence.eval_var_formula"><code class="docutils literal notranslate"><span class="pre">f_Divergence.eval_var_formula()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_jax.f_Divergence.eval_var_formula_gen"><code class="docutils literal notranslate"><span class="pre">f_Divergence.eval_var_formula_gen()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_jax.f_Divergence.f_star"><code class="docutils literal notranslate"><span class="pre">f_Divergence.f_star()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_jax.f_Divergence.final_layer_activation"><code class="docutils literal notranslate"><span class="pre">f_Divergence.final_layer_activation()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#Divergences_jax.squared_Hellinger_LT"><code class="docutils literal notranslate"><span class="pre">squared_Hellinger_LT</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_jax.squared_Hellinger_LT.f_star"><code class="docutils literal notranslate"><span class="pre">squared_Hellinger_LT.f_star()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Divergences_jax.squared_Hellinger_LT.final_layer_activation"><code class="docutils literal notranslate"><span class="pre">squared_Hellinger_LT.final_layer_activation()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="Divergences_tf.html">Divergences_tf module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Divergences_torch.html">Divergences_torch module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GAN_CIFAR10_jax.html">GAN_CIFAR10_jax module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GAN_CIFAR10_tf.html">GAN_CIFAR10_tf module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GAN_CIFAR10_torch.html">GAN_CIFAR10_torch module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GAN_MNIST_jax.html">GAN_MNIST_jax module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GAN_MNIST_tf.html">GAN_MNIST_tf module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GAN_MNIST_torch.html">GAN_MNIST_torch module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GAN_jax.html">GAN_jax module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GAN_tf.html">GAN_tf module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GAN_torch.html">GAN_torch module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model_jax.html">model_jax module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model_tf.html">model_tf module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model_torch.html">model_torch module</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">NEDIPM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">models</a></li>
+      <li class="breadcrumb-item active">Divergences_jax module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/Divergences_jax.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-Divergences_jax">
+<span id="divergences-jax-module"></span><h1>Divergences_jax module<a class="headerlink" href="#module-Divergences_jax" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="Divergences_jax.DataLoader">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Divergences_jax.</span></span><span class="sig-name descname"><span class="pre">DataLoader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shuffle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_jax.html#DataLoader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_jax.DataLoader" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>DataLoader class for loading and batching data during training.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="Divergences_jax.Discriminator_Penalty">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Divergences_jax.</span></span><span class="sig-name descname"><span class="pre">Discriminator_Penalty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">penalty_weight</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_jax.html#Discriminator_Penalty"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_jax.Discriminator_Penalty" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Base class for implementing penalties on the discriminator during training.
+Enables the implementation of discriminator constraints to regularize the divergence objective.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="Divergences_jax.Discriminator_Penalty.evaluate">
+<span class="sig-name descname"><span class="pre">evaluate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">discriminator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_stats</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dropout_rng</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_jax.html#Discriminator_Penalty.evaluate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_jax.Discriminator_Penalty.evaluate" title="Link to this definition"></a></dt>
+<dd><p>Evaluates the penalty term. Should be overridden by subclasses.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>discriminator</strong> – Discriminator model.</p></li>
+<li><p><strong>x</strong> – Samples from distribution P.</p></li>
+<li><p><strong>y</strong> – Samples from distribution Q.</p></li>
+<li><p><strong>params</strong> – Discriminator parameters.</p></li>
+<li><p><strong>batch_stats</strong> – Additional statistics for the batch.</p></li>
+<li><p><strong>key</strong> – Random key for JAX RNG.</p></li>
+<li><p><strong>labels</strong> – Optional input labels.</p></li>
+<li><p><strong>dropout_rng</strong> – Optional dropout key for stochasticity.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None. (Subclasses should implement specific penalty evaluations.)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Divergences_jax.Discriminator_Penalty.get_penalty_weight">
+<span class="sig-name descname"><span class="pre">get_penalty_weight</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_jax.html#Discriminator_Penalty.get_penalty_weight"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_jax.Discriminator_Penalty.get_penalty_weight" title="Link to this definition"></a></dt>
+<dd><p>Returns the weight of the penalty.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Penalty weight.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Divergences_jax.Discriminator_Penalty.set_penalty_weight">
+<span class="sig-name descname"><span class="pre">set_penalty_weight</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">weight</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_jax.html#Discriminator_Penalty.set_penalty_weight"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_jax.Discriminator_Penalty.set_penalty_weight" title="Link to this definition"></a></dt>
+<dd><p>Sets the weight of the penalty.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>weight</strong> – New penalty weight.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="Divergences_jax.Divergence">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Divergences_jax.</span></span><span class="sig-name descname"><span class="pre">Divergence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">discriminator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disc_optimizer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">discriminator_penalty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_jax.html#Divergence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_jax.Divergence" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Base class for Divergence measures D(P||Q) between random variables x~P, y~Q.
+This parent class defines common parameters and functions for different divergence measures.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="Divergences_jax.Divergence.discriminate">
+<span class="sig-name descname"><span class="pre">discriminate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dropout_rng</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_jax.html#Divergence.discriminate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_jax.Divergence.discriminate" title="Link to this definition"></a></dt>
+<dd><p>Discriminates between samples from x~P and y~Q using the discriminator model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – Input data to be discriminated.</p></li>
+<li><p><strong>params</strong> – Parameters of the discriminator model.</p></li>
+<li><p><strong>vars</strong> – Additional variables such as batch statistics.</p></li>
+<li><p><strong>labels</strong> – Optional labels for the input data.</p></li>
+<li><p><strong>dropout_rng</strong> – Optional dropout key for stochasticity in dropout layers.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tuple of the discriminator output and optional updated batch statistics.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Divergences_jax.Divergence.discriminator_loss">
+<span class="sig-name descname"><span class="pre">discriminator_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dropout_rng</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_jax.html#Divergence.discriminator_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_jax.Divergence.discriminator_loss" title="Link to this definition"></a></dt>
+<dd><p>Computes the loss for the discriminator model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – Samples from P.</p></li>
+<li><p><strong>y</strong> – Samples from Q.</p></li>
+<li><p><strong>params</strong> – Discriminator parameters.</p></li>
+<li><p><strong>vars</strong> – Additional discriminator variables.</p></li>
+<li><p><strong>labels</strong> – Optional input labels.</p></li>
+<li><p><strong>dropout_rng</strong> – Optional dropout key for stochasticity.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tuple of discriminator loss and updated variables.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Divergences_jax.Divergence.estimate">
+<span class="sig-name descname"><span class="pre">estimate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dropout_rng</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_jax.html#Divergence.estimate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_jax.Divergence.estimate" title="Link to this definition"></a></dt>
+<dd><p>Estimates the divergence between P and Q.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – Samples from P.</p></li>
+<li><p><strong>y</strong> – Samples from Q.</p></li>
+<li><p><strong>params</strong> – Discriminator parameters.</p></li>
+<li><p><strong>vars</strong> – Additional discriminator variables.</p></li>
+<li><p><strong>labels</strong> – Optional input labels.</p></li>
+<li><p><strong>dropout_rng</strong> – Optional dropout key for stochasticity.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tuple of estimated divergence and updated variables.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Divergences_jax.Divergence.eval_var_formula">
+<span class="sig-name descname"><span class="pre">eval_var_formula</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dropout_rng</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_jax.html#Divergence.eval_var_formula"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_jax.Divergence.eval_var_formula" title="Link to this definition"></a></dt>
+<dd><p>Placeholder method for evaluating the variational formula of a specific divergence.
+Should be overridden by subclasses.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – Samples from P.</p></li>
+<li><p><strong>y</strong> – Samples from Q.</p></li>
+<li><p><strong>params</strong> – Discriminator parameters.</p></li>
+<li><p><strong>vars</strong> – Additional discriminator variables.</p></li>
+<li><p><strong>labels</strong> – Optional input labels.</p></li>
+<li><p><strong>dropout_rng</strong> – Optional dropout key for stochasticity.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Divergences_jax.Divergence.gen_train_step">
+<span class="sig-name descname"><span class="pre">gen_train_step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gen_state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disc_state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disc_vars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gen_vars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dropout_rng</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_jax.html#Divergence.gen_train_step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_jax.Divergence.gen_train_step" title="Link to this definition"></a></dt>
+<dd><p>Performs a single training step for the generator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>gen_state</strong> – Generator optimizer state.</p></li>
+<li><p><strong>disc_state</strong> – Discriminator optimizer state.</p></li>
+<li><p><strong>disc_vars</strong> – Discriminator variables.</p></li>
+<li><p><strong>gen_vars</strong> – Generator variables.</p></li>
+<li><p><strong>key</strong> – Random key for JAX RNG.</p></li>
+<li><p><strong>z</strong> – Latent input to the generator.</p></li>
+<li><p><strong>labels</strong> – Optional input labels.</p></li>
+<li><p><strong>dropout_rng</strong> – Optional dropout key for stochasticity.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Updated generator state and generator loss.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Divergences_jax.Divergence.generator_loss">
+<span class="sig-name descname"><span class="pre">generator_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dropout_rng</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_jax.html#Divergence.generator_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_jax.Divergence.generator_loss" title="Link to this definition"></a></dt>
+<dd><p>Computes the loss for the generator model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – Generated samples.</p></li>
+<li><p><strong>params</strong> – Discriminator parameters.</p></li>
+<li><p><strong>vars</strong> – Additional discriminator variables.</p></li>
+<li><p><strong>labels</strong> – Optional input labels.</p></li>
+<li><p><strong>dropout_rng</strong> – Optional dropout key for stochasticity.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tuple of generator loss and updated variables.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Divergences_jax.Divergence.get_batch_size">
+<span class="sig-name descname"><span class="pre">get_batch_size</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_jax.html#Divergence.get_batch_size"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_jax.Divergence.get_batch_size" title="Link to this definition"></a></dt>
+<dd><p>Returns the batch size.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Divergences_jax.Divergence.get_discriminator">
+<span class="sig-name descname"><span class="pre">get_discriminator</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_jax.html#Divergence.get_discriminator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_jax.Divergence.get_discriminator" title="Link to this definition"></a></dt>
+<dd><p>Returns the discriminator model.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Divergences_jax.Divergence.get_learning_rate">
+<span class="sig-name descname"><span class="pre">get_learning_rate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_jax.html#Divergence.get_learning_rate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_jax.Divergence.get_learning_rate" title="Link to this definition"></a></dt>
+<dd><p>Returns the learning rate.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Divergences_jax.Divergence.get_no_epochs">
+<span class="sig-name descname"><span class="pre">get_no_epochs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_jax.html#Divergence.get_no_epochs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_jax.Divergence.get_no_epochs" title="Link to this definition"></a></dt>
+<dd><p>Returns the number of training epochs.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Divergences_jax.Divergence.set_batch_size">
+<span class="sig-name descname"><span class="pre">set_batch_size</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch_size</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_jax.html#Divergence.set_batch_size"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_jax.Divergence.set_batch_size" title="Link to this definition"></a></dt>
+<dd><p>Sets the batch size.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>batch_size</strong> – New batch size.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Divergences_jax.Divergence.set_discriminator">
+<span class="sig-name descname"><span class="pre">set_discriminator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">discriminator</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_jax.html#Divergence.set_discriminator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_jax.Divergence.set_discriminator" title="Link to this definition"></a></dt>
+<dd><p>Sets a new discriminator model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>discriminator</strong> – New discriminator model.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Divergences_jax.Divergence.set_learning_rate">
+<span class="sig-name descname"><span class="pre">set_learning_rate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lr</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_jax.html#Divergence.set_learning_rate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_jax.Divergence.set_learning_rate" title="Link to this definition"></a></dt>
+<dd><p>Sets the learning rate.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>lr</strong> – New learning rate.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Divergences_jax.Divergence.set_no_epochs">
+<span class="sig-name descname"><span class="pre">set_no_epochs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">epochs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_jax.html#Divergence.set_no_epochs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_jax.Divergence.set_no_epochs" title="Link to this definition"></a></dt>
+<dd><p>Sets the number of training epochs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>epochs</strong> – New number of epochs.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Divergences_jax.Divergence.train">
+<span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_P</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_Q</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_estimates</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dropout_rng</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_jax.html#Divergence.train"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_jax.Divergence.train" title="Link to this definition"></a></dt>
+<dd><p>Trains the model for a given number of epochs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data_P</strong> – Data samples from distribution P.</p></li>
+<li><p><strong>data_Q</strong> – Data samples from distribution Q.</p></li>
+<li><p><strong>state</strong> – Discriminator optimizer state.</p></li>
+<li><p><strong>vars</strong> – Discriminator variables.</p></li>
+<li><p><strong>save_estimates</strong> – Whether to save divergence estimates.</p></li>
+<li><p><strong>labels</strong> – Optional input labels.</p></li>
+<li><p><strong>dropout_rng</strong> – Optional dropout key for stochasticity.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tuple of estimated divergences and losses for each epoch.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Divergences_jax.Divergence.train_step">
+<span class="sig-name descname"><span class="pre">train_step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dropout_rng</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_jax.html#Divergence.train_step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_jax.Divergence.train_step" title="Link to this definition"></a></dt>
+<dd><p>Performs a single training step for the discriminator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – Samples from P.</p></li>
+<li><p><strong>y</strong> – Samples from Q.</p></li>
+<li><p><strong>state</strong> – Optimizer state.</p></li>
+<li><p><strong>vars</strong> – Additional discriminator variables.</p></li>
+<li><p><strong>key</strong> – Random key for JAX RNG.</p></li>
+<li><p><strong>labels</strong> – Optional input labels.</p></li>
+<li><p><strong>dropout_rng</strong> – Optional dropout key for stochasticity.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Updated state and loss value for the current step.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="Divergences_jax.Gradient_Penalty_1Sided">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Divergences_jax.</span></span><span class="sig-name descname"><span class="pre">Gradient_Penalty_1Sided</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">penalty_weight</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Lip_const</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_jax.html#Gradient_Penalty_1Sided"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_jax.Gradient_Penalty_1Sided" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="index.html#Divergences_jax.Discriminator_Penalty" title="Divergences_jax.Discriminator_Penalty"><code class="xref py py-class docutils literal notranslate"><span class="pre">Discriminator_Penalty</span></code></a></p>
+<p>One-sided gradient penalty to enforce a constraint: Lipschitz constant &lt;= Lip_const.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="Divergences_jax.Gradient_Penalty_1Sided.evaluate">
+<span class="sig-name descname"><span class="pre">evaluate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">discriminator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_stats</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dropout_rng</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_jax.html#Gradient_Penalty_1Sided.evaluate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_jax.Gradient_Penalty_1Sided.evaluate" title="Link to this definition"></a></dt>
+<dd><p>Computes the one-sided gradient penalty to enforce the Lipschitz constant constraint.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>discriminator</strong> – Discriminator model.</p></li>
+<li><p><strong>x</strong> – Samples from distribution P.</p></li>
+<li><p><strong>y</strong> – Samples from distribution Q.</p></li>
+<li><p><strong>params</strong> – Discriminator parameters.</p></li>
+<li><p><strong>batch_stats</strong> – Additional statistics for the batch.</p></li>
+<li><p><strong>key</strong> – Random key for JAX RNG.</p></li>
+<li><p><strong>labels</strong> – Optional input labels.</p></li>
+<li><p><strong>dropout_rng</strong> – Optional dropout key for stochasticity.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>One-sided gradient penalty value.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Divergences_jax.Gradient_Penalty_1Sided.get_Lip_constant">
+<span class="sig-name descname"><span class="pre">get_Lip_constant</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_jax.html#Gradient_Penalty_1Sided.get_Lip_constant"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_jax.Gradient_Penalty_1Sided.get_Lip_constant" title="Link to this definition"></a></dt>
+<dd><p>Returns the target Lipschitz constant.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Lipschitz constant.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Divergences_jax.Gradient_Penalty_1Sided.set_Lip_constant">
+<span class="sig-name descname"><span class="pre">set_Lip_constant</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">L</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_jax.html#Gradient_Penalty_1Sided.set_Lip_constant"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_jax.Gradient_Penalty_1Sided.set_Lip_constant" title="Link to this definition"></a></dt>
+<dd><p>Sets the target Lipschitz constant.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>L</strong> – New Lipschitz constant.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="Divergences_jax.Gradient_Penalty_2Sided">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Divergences_jax.</span></span><span class="sig-name descname"><span class="pre">Gradient_Penalty_2Sided</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">penalty_weight</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Lip_const</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_jax.html#Gradient_Penalty_2Sided"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_jax.Gradient_Penalty_2Sided" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="index.html#Divergences_jax.Discriminator_Penalty" title="Divergences_jax.Discriminator_Penalty"><code class="xref py py-class docutils literal notranslate"><span class="pre">Discriminator_Penalty</span></code></a></p>
+<p>Two-sided gradient penalty to enforce a constraint: Lipschitz constant = Lip_const.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="Divergences_jax.Gradient_Penalty_2Sided.evaluate">
+<span class="sig-name descname"><span class="pre">evaluate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">discriminator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dropout_rng</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_jax.html#Gradient_Penalty_2Sided.evaluate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_jax.Gradient_Penalty_2Sided.evaluate" title="Link to this definition"></a></dt>
+<dd><p>Computes the two-sided gradient penalty to enforce the Lipschitz constant constraint.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>discriminator</strong> – Discriminator model.</p></li>
+<li><p><strong>x</strong> – Samples from distribution P.</p></li>
+<li><p><strong>y</strong> – Samples from distribution Q.</p></li>
+<li><p><strong>params</strong> – Discriminator parameters.</p></li>
+<li><p><strong>labels</strong> – Optional input labels.</p></li>
+<li><p><strong>dropout_rng</strong> – Optional dropout key for stochasticity.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Two-sided gradient penalty value.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Divergences_jax.Gradient_Penalty_2Sided.get_Lip_constant">
+<span class="sig-name descname"><span class="pre">get_Lip_constant</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_jax.html#Gradient_Penalty_2Sided.get_Lip_constant"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_jax.Gradient_Penalty_2Sided.get_Lip_constant" title="Link to this definition"></a></dt>
+<dd><p>Returns the target Lipschitz constant.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Lipschitz constant.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Divergences_jax.Gradient_Penalty_2Sided.set_Lip_constant">
+<span class="sig-name descname"><span class="pre">set_Lip_constant</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">L</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_jax.html#Gradient_Penalty_2Sided.set_Lip_constant"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_jax.Gradient_Penalty_2Sided.set_Lip_constant" title="Link to this definition"></a></dt>
+<dd><p>Sets the target Lipschitz constant.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>L</strong> – New Lipschitz constant.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="Divergences_jax.IPM">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Divergences_jax.</span></span><span class="sig-name descname"><span class="pre">IPM</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">discriminator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disc_optimizer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">discriminator_penalty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_jax.html#IPM"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_jax.IPM" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="index.html#Divergences_jax.Divergence" title="Divergences_jax.Divergence"><code class="xref py py-class docutils literal notranslate"><span class="pre">Divergence</span></code></a></p>
+<p>IPM (Integral Probability Metrics) class, a subclass of Divergence.
+Evaluates the IPM between distributions P and Q using a variational formula.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="Divergences_jax.IPM.eval_var_formula">
+<span class="sig-name descname"><span class="pre">eval_var_formula</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dropout_rng</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_jax.html#IPM.eval_var_formula"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_jax.IPM.eval_var_formula" title="Link to this definition"></a></dt>
+<dd><p>Evaluates the variational formula for IPM.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – Samples from distribution P.</p></li>
+<li><p><strong>y</strong> – Samples from distribution Q.</p></li>
+<li><p><strong>params</strong> – Discriminator parameters.</p></li>
+<li><p><strong>vars</strong> – Additional discriminator variables.</p></li>
+<li><p><strong>labels</strong> – Optional input labels.</p></li>
+<li><p><strong>dropout_rng</strong> – Optional dropout key for stochasticity.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tuple of divergence loss and updated variables.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Divergences_jax.IPM.eval_var_formula_gen">
+<span class="sig-name descname"><span class="pre">eval_var_formula_gen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dropout_rng</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_jax.html#IPM.eval_var_formula_gen"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_jax.IPM.eval_var_formula_gen" title="Link to this definition"></a></dt>
+<dd><p>Evaluates the variational formula for IPM when applied to a generator model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – Generated samples.</p></li>
+<li><p><strong>params</strong> – Discriminator parameters.</p></li>
+<li><p><strong>vars</strong> – Additional discriminator variables.</p></li>
+<li><p><strong>labels</strong> – Optional input labels.</p></li>
+<li><p><strong>dropout_rng</strong> – Optional dropout key for stochasticity.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tuple of generator loss and updated variables.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="Divergences_jax.Jensen_Shannon_LT">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Divergences_jax.</span></span><span class="sig-name descname"><span class="pre">Jensen_Shannon_LT</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">discriminator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disc_optimizer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">discriminator_penalty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_jax.html#Jensen_Shannon_LT"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_jax.Jensen_Shannon_LT" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="index.html#Divergences_jax.f_Divergence" title="Divergences_jax.f_Divergence"><code class="xref py py-class docutils literal notranslate"><span class="pre">f_Divergence</span></code></a></p>
+<p>Jensen-Shannon divergence class based on the Legendre transform.
+JS(P||Q), x~P, y~Q.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="Divergences_jax.Jensen_Shannon_LT.f_star">
+<span class="sig-name descname"><span class="pre">f_star</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_jax.html#Jensen_Shannon_LT.f_star"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_jax.Jensen_Shannon_LT.f_star" title="Link to this definition"></a></dt>
+<dd><p>Legendre transform of f(y) = y * log(y) - (y + 1) * log((y + 1) / 2).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>y</strong> – Input to the Legendre transform.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Transformed value.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Divergences_jax.Jensen_Shannon_LT.final_layer_activation">
+<span class="sig-name descname"><span class="pre">final_layer_activation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_jax.html#Jensen_Shannon_LT.final_layer_activation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_jax.Jensen_Shannon_LT.final_layer_activation" title="Link to this definition"></a></dt>
+<dd><p>Final layer activation function for Jensen-Shannon divergence.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>y</strong> – Input to the activation function.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Activated output.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="Divergences_jax.KLD_DV">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Divergences_jax.</span></span><span class="sig-name descname"><span class="pre">KLD_DV</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">discriminator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disc_optimizer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">discriminator_penalty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_jax.html#KLD_DV"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_jax.KLD_DV" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="index.html#Divergences_jax.Divergence" title="Divergences_jax.Divergence"><code class="xref py py-class docutils literal notranslate"><span class="pre">Divergence</span></code></a></p>
+<p>KL Divergence class based on the Donsker-Varadhan variational formula.
+KL(P||Q), x~P, y~Q.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="Divergences_jax.KLD_DV.eval_var_formula">
+<span class="sig-name descname"><span class="pre">eval_var_formula</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dropout_rng</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_jax.html#KLD_DV.eval_var_formula"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_jax.KLD_DV.eval_var_formula" title="Link to this definition"></a></dt>
+<dd><p>Evaluates the variational formula for KL divergence.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – Samples from distribution P.</p></li>
+<li><p><strong>y</strong> – Samples from distribution Q.</p></li>
+<li><p><strong>params</strong> – Discriminator parameters.</p></li>
+<li><p><strong>vars</strong> – Additional discriminator variables.</p></li>
+<li><p><strong>labels</strong> – Optional input labels.</p></li>
+<li><p><strong>dropout_rng</strong> – Optional dropout key for stochasticity.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tuple of KL divergence loss and updated variables.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Divergences_jax.KLD_DV.eval_var_formula_gen">
+<span class="sig-name descname"><span class="pre">eval_var_formula_gen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dropout_rng</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_jax.html#KLD_DV.eval_var_formula_gen"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_jax.KLD_DV.eval_var_formula_gen" title="Link to this definition"></a></dt>
+<dd><p>Evaluates the variational formula for KL divergence applied to a generator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – Generated samples.</p></li>
+<li><p><strong>params</strong> – Discriminator parameters.</p></li>
+<li><p><strong>vars</strong> – Additional discriminator variables.</p></li>
+<li><p><strong>labels</strong> – Optional input labels.</p></li>
+<li><p><strong>dropout_rng</strong> – Optional dropout key for stochasticity.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tuple of generator loss and updated variables.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="Divergences_jax.KLD_LT">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Divergences_jax.</span></span><span class="sig-name descname"><span class="pre">KLD_LT</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">discriminator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disc_optimizer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">discriminator_penalty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_jax.html#KLD_LT"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_jax.KLD_LT" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="index.html#Divergences_jax.f_Divergence" title="Divergences_jax.f_Divergence"><code class="xref py py-class docutils literal notranslate"><span class="pre">f_Divergence</span></code></a></p>
+<p>Kullback-Leibler (KL) Divergence class based on the Legendre transform.
+KL(P||Q), x~P, y~Q.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="Divergences_jax.KLD_LT.f_star">
+<span class="sig-name descname"><span class="pre">f_star</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_jax.html#KLD_LT.f_star"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_jax.KLD_LT.f_star" title="Link to this definition"></a></dt>
+<dd><p>Legendre transform of f(y) = y * log(y).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>y</strong> – Input to the Legendre transform.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Transformed value.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="Divergences_jax.Pearson_chi_squared_LT">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Divergences_jax.</span></span><span class="sig-name descname"><span class="pre">Pearson_chi_squared_LT</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">discriminator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disc_optimizer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">discriminator_penalty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_jax.html#Pearson_chi_squared_LT"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_jax.Pearson_chi_squared_LT" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="index.html#Divergences_jax.f_Divergence" title="Divergences_jax.f_Divergence"><code class="xref py py-class docutils literal notranslate"><span class="pre">f_Divergence</span></code></a></p>
+<p>Pearson chi-squared divergence class based on the Legendre transform.
+chi^2(P||Q), x~P, y~Q.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="Divergences_jax.Pearson_chi_squared_LT.f_star">
+<span class="sig-name descname"><span class="pre">f_star</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_jax.html#Pearson_chi_squared_LT.f_star"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_jax.Pearson_chi_squared_LT.f_star" title="Link to this definition"></a></dt>
+<dd><p>Legendre transform of f(y) = (y - 1)^2.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>y</strong> – Input to the Legendre transform.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Transformed value.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="Divergences_jax.Renyi_Divergence">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Divergences_jax.</span></span><span class="sig-name descname"><span class="pre">Renyi_Divergence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">discriminator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disc_optimizer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">discriminator_penalty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_jax.html#Renyi_Divergence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_jax.Renyi_Divergence" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="index.html#Divergences_jax.Divergence" title="Divergences_jax.Divergence"><code class="xref py py-class docutils literal notranslate"><span class="pre">Divergence</span></code></a></p>
+<p>Renyi divergence class, a subclass of Divergence.
+R_alpha(P||Q), x~P, y~Q.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="Divergences_jax.Renyi_Divergence.get_order">
+<span class="sig-name descname"><span class="pre">get_order</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_jax.html#Renyi_Divergence.get_order"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_jax.Renyi_Divergence.get_order" title="Link to this definition"></a></dt>
+<dd><p>Returns the order of the Renyi divergence.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Alpha order.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Divergences_jax.Renyi_Divergence.set_order">
+<span class="sig-name descname"><span class="pre">set_order</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_jax.html#Renyi_Divergence.set_order"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_jax.Renyi_Divergence.set_order" title="Link to this definition"></a></dt>
+<dd><p>Sets the order of the Renyi divergence.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>alpha</strong> – New alpha order.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="Divergences_jax.Renyi_Divergence_CC">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Divergences_jax.</span></span><span class="sig-name descname"><span class="pre">Renyi_Divergence_CC</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">discriminator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disc_optimizer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">final_act_func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">discriminator_penalty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_jax.html#Renyi_Divergence_CC"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_jax.Renyi_Divergence_CC" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="index.html#Divergences_jax.Renyi_Divergence" title="Divergences_jax.Renyi_Divergence"><code class="xref py py-class docutils literal notranslate"><span class="pre">Renyi_Divergence</span></code></a></p>
+<p>Renyi divergence class based on the convex-conjugate variational formula.
+R_alpha(P||Q), x~P, y~Q.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="Divergences_jax.Renyi_Divergence_CC.eval_var_formula">
+<span class="sig-name descname"><span class="pre">eval_var_formula</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dropout_rng</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_jax.html#Renyi_Divergence_CC.eval_var_formula"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_jax.Renyi_Divergence_CC.eval_var_formula" title="Link to this definition"></a></dt>
+<dd><p>Evaluates the variational formula of Renyi divergence using the convex-conjugate variational formula.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – Samples from distribution P.</p></li>
+<li><p><strong>y</strong> – Samples from distribution Q.</p></li>
+<li><p><strong>params</strong> – Discriminator parameters.</p></li>
+<li><p><strong>vars</strong> – Additional discriminator variables.</p></li>
+<li><p><strong>labels</strong> – Optional input labels.</p></li>
+<li><p><strong>dropout_rng</strong> – Optional dropout key for stochasticity.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tuple of Renyi divergence loss and updated variables.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Divergences_jax.Renyi_Divergence_CC.eval_var_formula_gen">
+<span class="sig-name descname"><span class="pre">eval_var_formula_gen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dropout_rng</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_jax.html#Renyi_Divergence_CC.eval_var_formula_gen"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_jax.Renyi_Divergence_CC.eval_var_formula_gen" title="Link to this definition"></a></dt>
+<dd><p>Evaluates the variational formula of Renyi divergence for the generator using the convex-conjugate variational formula.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – Generated samples.</p></li>
+<li><p><strong>params</strong> – Discriminator parameters.</p></li>
+<li><p><strong>vars</strong> – Additional discriminator variables.</p></li>
+<li><p><strong>labels</strong> – Optional input labels.</p></li>
+<li><p><strong>dropout_rng</strong> – Optional dropout key for stochasticity.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tuple of generator loss and updated variables.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Divergences_jax.Renyi_Divergence_CC.final_layer_activation">
+<span class="sig-name descname"><span class="pre">final_layer_activation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_jax.html#Renyi_Divergence_CC.final_layer_activation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_jax.Renyi_Divergence_CC.final_layer_activation" title="Link to this definition"></a></dt>
+<dd><p>Final layer activation function to enforce positive values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>y</strong> – Output of the discriminator.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Activated output, ensuring positivity based on the final activation function.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="Divergences_jax.Renyi_Divergence_CC_rescaled">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Divergences_jax.</span></span><span class="sig-name descname"><span class="pre">Renyi_Divergence_CC_rescaled</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">discriminator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disc_optimizer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">final_act_func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">discriminator_penalty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_jax.html#Renyi_Divergence_CC_rescaled"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_jax.Renyi_Divergence_CC_rescaled" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="index.html#Divergences_jax.Renyi_Divergence_CC" title="Divergences_jax.Renyi_Divergence_CC"><code class="xref py py-class docutils literal notranslate"><span class="pre">Renyi_Divergence_CC</span></code></a></p>
+<p>Rescaled Renyi divergence class based on the rescaled convex-conjugate variational formula.
+alpha * R_alpha(P||Q), x~P, y~Q.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="Divergences_jax.Renyi_Divergence_CC_rescaled.eval_var_formula">
+<span class="sig-name descname"><span class="pre">eval_var_formula</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dropout_rng</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_jax.html#Renyi_Divergence_CC_rescaled.eval_var_formula"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_jax.Renyi_Divergence_CC_rescaled.eval_var_formula" title="Link to this definition"></a></dt>
+<dd><p>Evaluates the variational formula of the rescaled Renyi divergence.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – Samples from distribution P.</p></li>
+<li><p><strong>y</strong> – Samples from distribution Q.</p></li>
+<li><p><strong>params</strong> – Discriminator parameters.</p></li>
+<li><p><strong>vars</strong> – Additional discriminator variables.</p></li>
+<li><p><strong>labels</strong> – Optional input labels.</p></li>
+<li><p><strong>dropout_rng</strong> – Optional dropout key for stochasticity.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tuple of rescaled Renyi divergence loss and updated variables.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Divergences_jax.Renyi_Divergence_CC_rescaled.eval_var_formula_gen">
+<span class="sig-name descname"><span class="pre">eval_var_formula_gen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dropout_rng</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_jax.html#Renyi_Divergence_CC_rescaled.eval_var_formula_gen"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_jax.Renyi_Divergence_CC_rescaled.eval_var_formula_gen" title="Link to this definition"></a></dt>
+<dd><p>Evaluates the variational formula for the generator of the rescaled Renyi divergence.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – Generated samples.</p></li>
+<li><p><strong>params</strong> – Discriminator parameters.</p></li>
+<li><p><strong>vars</strong> – Additional discriminator variables.</p></li>
+<li><p><strong>labels</strong> – Optional input labels.</p></li>
+<li><p><strong>dropout_rng</strong> – Optional dropout key for stochasticity.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tuple of generator loss and updated variables.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Divergences_jax.Renyi_Divergence_CC_rescaled.final_layer_activation">
+<span class="sig-name descname"><span class="pre">final_layer_activation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_jax.html#Renyi_Divergence_CC_rescaled.final_layer_activation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_jax.Renyi_Divergence_CC_rescaled.final_layer_activation" title="Link to this definition"></a></dt>
+<dd><p>Final layer activation function to enforce positivity, scaled by alpha.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>y</strong> – Output of the discriminator.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Activated output, scaled by the alpha parameter.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="Divergences_jax.Renyi_Divergence_DV">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Divergences_jax.</span></span><span class="sig-name descname"><span class="pre">Renyi_Divergence_DV</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">discriminator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disc_optimizer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">discriminator_penalty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_jax.html#Renyi_Divergence_DV"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_jax.Renyi_Divergence_DV" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="index.html#Divergences_jax.Renyi_Divergence" title="Divergences_jax.Renyi_Divergence"><code class="xref py py-class docutils literal notranslate"><span class="pre">Renyi_Divergence</span></code></a></p>
+<p>Renyi divergence class based on the Renyi-Donsker-Varadhan variational formula.
+R_alpha(P||Q), x~P, y~Q.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="Divergences_jax.Renyi_Divergence_DV.eval_var_formula">
+<span class="sig-name descname"><span class="pre">eval_var_formula</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dropout_rng</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_jax.html#Renyi_Divergence_DV.eval_var_formula"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_jax.Renyi_Divergence_DV.eval_var_formula" title="Link to this definition"></a></dt>
+<dd><p>Evaluates the variational formula of Renyi divergence.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – Samples from distribution P.</p></li>
+<li><p><strong>y</strong> – Samples from distribution Q.</p></li>
+<li><p><strong>params</strong> – Discriminator parameters.</p></li>
+<li><p><strong>vars</strong> – Additional discriminator variables.</p></li>
+<li><p><strong>labels</strong> – Optional input labels.</p></li>
+<li><p><strong>dropout_rng</strong> – Optional dropout key for stochasticity.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tuple of Renyi divergence loss and updated variables.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Divergences_jax.Renyi_Divergence_DV.eval_var_formula_gen">
+<span class="sig-name descname"><span class="pre">eval_var_formula_gen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dropout_rng</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_jax.html#Renyi_Divergence_DV.eval_var_formula_gen"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_jax.Renyi_Divergence_DV.eval_var_formula_gen" title="Link to this definition"></a></dt>
+<dd><p>Evaluates the variational formula of Renyi divergence for the generator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – Generated samples.</p></li>
+<li><p><strong>params</strong> – Discriminator parameters.</p></li>
+<li><p><strong>vars</strong> – Additional discriminator variables.</p></li>
+<li><p><strong>labels</strong> – Optional input labels.</p></li>
+<li><p><strong>dropout_rng</strong> – Optional dropout key for stochasticity.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tuple of generator loss and updated variables.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="Divergences_jax.Renyi_Divergence_WCR">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Divergences_jax.</span></span><span class="sig-name descname"><span class="pre">Renyi_Divergence_WCR</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">discriminator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disc_optimizer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">final_act_func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">discriminator_penalty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_jax.html#Renyi_Divergence_WCR"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_jax.Renyi_Divergence_WCR" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="index.html#Divergences_jax.Renyi_Divergence_CC" title="Divergences_jax.Renyi_Divergence_CC"><code class="xref py py-class docutils literal notranslate"><span class="pre">Renyi_Divergence_CC</span></code></a></p>
+<p>Rescaled Renyi divergence class as alpha approaches infinity (worst-case regret divergence).
+Dinfty(P||Q), x~P, y~Q.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="Divergences_jax.Renyi_Divergence_WCR.eval_var_formula">
+<span class="sig-name descname"><span class="pre">eval_var_formula</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dropout_rng</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_jax.html#Renyi_Divergence_WCR.eval_var_formula"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_jax.Renyi_Divergence_WCR.eval_var_formula" title="Link to this definition"></a></dt>
+<dd><p>Evaluates the variational formula of the Renyi divergence class as alpha approaches infinity (worst-case regret divergence).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – Samples from distribution P.</p></li>
+<li><p><strong>y</strong> – Samples from distribution Q.</p></li>
+<li><p><strong>params</strong> – Discriminator parameters.</p></li>
+<li><p><strong>vars</strong> – Additional discriminator variables.</p></li>
+<li><p><strong>labels</strong> – Optional input labels.</p></li>
+<li><p><strong>dropout_rng</strong> – Optional dropout key for stochasticity.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tuple of worst-case regret divergence loss and updated variables.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Divergences_jax.Renyi_Divergence_WCR.eval_var_formula_gen">
+<span class="sig-name descname"><span class="pre">eval_var_formula_gen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dropout_rng</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_jax.html#Renyi_Divergence_WCR.eval_var_formula_gen"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_jax.Renyi_Divergence_WCR.eval_var_formula_gen" title="Link to this definition"></a></dt>
+<dd><p>Evaluates the variational formula for the generator of the worst-case regret divergence.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – Generated samples.</p></li>
+<li><p><strong>params</strong> – Discriminator parameters.</p></li>
+<li><p><strong>vars</strong> – Additional discriminator variables.</p></li>
+<li><p><strong>labels</strong> – Optional input labels.</p></li>
+<li><p><strong>dropout_rng</strong> – Optional dropout key for stochasticity.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tuple of generator loss and updated variables.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="Divergences_jax.alpha_Divergence_LT">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Divergences_jax.</span></span><span class="sig-name descname"><span class="pre">alpha_Divergence_LT</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">discriminator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disc_optimizer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">discriminator_penalty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_jax.html#alpha_Divergence_LT"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_jax.alpha_Divergence_LT" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="index.html#Divergences_jax.f_Divergence" title="Divergences_jax.f_Divergence"><code class="xref py py-class docutils literal notranslate"><span class="pre">f_Divergence</span></code></a></p>
+<p>Alpha-divergence class based on the Legendre transform.
+D_f_alpha(P||Q), x~P, y~Q.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="Divergences_jax.alpha_Divergence_LT.f_star">
+<span class="sig-name descname"><span class="pre">f_star</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_jax.html#alpha_Divergence_LT.f_star"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_jax.alpha_Divergence_LT.f_star" title="Link to this definition"></a></dt>
+<dd><p>Legendre transform of f_alpha based on the alpha value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>y</strong> – Input to the Legendre transform.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Transformed value.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Divergences_jax.alpha_Divergence_LT.get_order">
+<span class="sig-name descname"><span class="pre">get_order</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_jax.html#alpha_Divergence_LT.get_order"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_jax.alpha_Divergence_LT.get_order" title="Link to this definition"></a></dt>
+<dd><p>Returns the order of the alpha-divergence.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Alpha order.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Divergences_jax.alpha_Divergence_LT.set_order">
+<span class="sig-name descname"><span class="pre">set_order</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_jax.html#alpha_Divergence_LT.set_order"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_jax.alpha_Divergence_LT.set_order" title="Link to this definition"></a></dt>
+<dd><p>Sets the order of the alpha-divergence.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>alpha</strong> – New alpha order.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="Divergences_jax.f_Divergence">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Divergences_jax.</span></span><span class="sig-name descname"><span class="pre">f_Divergence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">discriminator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disc_optimizer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">discriminator_penalty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_jax.html#f_Divergence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_jax.f_Divergence" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="index.html#Divergences_jax.Divergence" title="Divergences_jax.Divergence"><code class="xref py py-class docutils literal notranslate"><span class="pre">Divergence</span></code></a></p>
+<p>f-divergence class, parent class for f-divergence-based measures D_f(P||Q).
+Subclasses need to implement the Legendre transform of f (f_star).</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="Divergences_jax.f_Divergence.eval_var_formula">
+<span class="sig-name descname"><span class="pre">eval_var_formula</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dropout_rng</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_jax.html#f_Divergence.eval_var_formula"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_jax.f_Divergence.eval_var_formula" title="Link to this definition"></a></dt>
+<dd><p>Evaluates the variational formula of f-divergence, D_f(P||Q).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – Samples from distribution P.</p></li>
+<li><p><strong>y</strong> – Samples from distribution Q.</p></li>
+<li><p><strong>params</strong> – Discriminator parameters.</p></li>
+<li><p><strong>vars</strong> – Additional discriminator variables.</p></li>
+<li><p><strong>labels</strong> – Optional input labels.</p></li>
+<li><p><strong>dropout_rng</strong> – Optional dropout key for stochasticity.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tuple of divergence loss and updated variables.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Divergences_jax.f_Divergence.eval_var_formula_gen">
+<span class="sig-name descname"><span class="pre">eval_var_formula_gen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dropout_rng</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_jax.html#f_Divergence.eval_var_formula_gen"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_jax.f_Divergence.eval_var_formula_gen" title="Link to this definition"></a></dt>
+<dd><p>Evaluates the variational formula for f-divergence when applied to a generator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – Generated samples.</p></li>
+<li><p><strong>params</strong> – Discriminator parameters.</p></li>
+<li><p><strong>vars</strong> – Additional discriminator variables.</p></li>
+<li><p><strong>labels</strong> – Optional input labels.</p></li>
+<li><p><strong>dropout_rng</strong> – Optional dropout key for stochasticity.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tuple of generator loss and updated variables.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Divergences_jax.f_Divergence.f_star">
+<span class="sig-name descname"><span class="pre">f_star</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_jax.html#f_Divergence.f_star"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_jax.f_Divergence.f_star" title="Link to this definition"></a></dt>
+<dd><p>Placeholder for the Legendre transform of the function f.
+Should be implemented by subclasses.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>y</strong> – Input to the Legendre transform.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Divergences_jax.f_Divergence.final_layer_activation">
+<span class="sig-name descname"><span class="pre">final_layer_activation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_jax.html#f_Divergence.final_layer_activation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_jax.f_Divergence.final_layer_activation" title="Link to this definition"></a></dt>
+<dd><p>Final activation function applied to the output of the discriminator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>y</strong> – Output of the discriminator.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Activated output.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="Divergences_jax.squared_Hellinger_LT">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Divergences_jax.</span></span><span class="sig-name descname"><span class="pre">squared_Hellinger_LT</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">discriminator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disc_optimizer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">discriminator_penalty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_jax.html#squared_Hellinger_LT"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_jax.squared_Hellinger_LT" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="index.html#Divergences_jax.f_Divergence" title="Divergences_jax.f_Divergence"><code class="xref py py-class docutils literal notranslate"><span class="pre">f_Divergence</span></code></a></p>
+<p>Squared Hellinger distance class based on the Legendre transform.
+H(P||Q), x~P, y~Q.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="Divergences_jax.squared_Hellinger_LT.f_star">
+<span class="sig-name descname"><span class="pre">f_star</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_jax.html#squared_Hellinger_LT.f_star"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_jax.squared_Hellinger_LT.f_star" title="Link to this definition"></a></dt>
+<dd><p>Legendre transform of f(y) = (sqrt(y) - 1)^2.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>y</strong> – Input to the Legendre transform.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Transformed value.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Divergences_jax.squared_Hellinger_LT.final_layer_activation">
+<span class="sig-name descname"><span class="pre">final_layer_activation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Divergences_jax.html#squared_Hellinger_LT.final_layer_activation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Divergences_jax.squared_Hellinger_LT.final_layer_activation" title="Link to this definition"></a></dt>
+<dd><p>Final layer activation for squared Hellinger distance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>y</strong> – Input to the activation function.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Activated output.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="modules.html" class="btn btn-neutral float-left" title="models" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="Divergences_tf.html" class="btn btn-neutral float-right" title="Divergences_tf module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Alexandros Angelakis.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

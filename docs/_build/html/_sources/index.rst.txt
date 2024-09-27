@@ -1,17 +1,10 @@
-.. nedipm library documentation master file, created by
-   sphinx-quickstart on Wed Jun 14 16:10:53 2023.
+.. NEDIPM documentation master file, created by
+   sphinx-quickstart on Mon Sep 16 18:49:30 2024.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to nedipm library's documentation! 
-==========================================
-
-.. _INTRODUCTION:
-.. toctree::
-   :maxdepth: 2
-   :caption: Intro:
-
-   introduction
+Welcome to NEDIPM's documentation!
+==================================
 
 .. toctree::
    :maxdepth: 2
@@ -19,9 +12,57 @@ Welcome to nedipm library's documentation!
 
    modules
 
-.. Indices and tables
-.. ==================
 
-.. * :ref:`genindex`
-.. * :ref:`modindex`
-.. * :ref:`search`
+.. automodule:: Divergences_jax
+   :members:
+
+.. automodule:: Divergences_tf
+   :members:
+
+.. automodule:: Divergences_torch
+   :members:
+
+.. automodule:: GAN_CIFAR10_jax
+   :members:
+
+.. automodule:: GAN_CIFAR10_tf
+   :members:
+
+.. automodule:: GAN_CIFAR10_torch
+   :members:
+
+.. automodule:: GAN_MNIST_jax
+   :members:
+
+.. automodule:: GAN_MNIST_tf
+   :members:
+
+.. automodule:: GAN_MNIST_torch
+   :members:
+
+.. automodule:: GAN_jax
+   :members:
+
+.. automodule:: GAN_tf
+   :members:
+
+.. automodule:: GAN_torch
+   :members:
+
+.. automodule:: model_jax
+   :members:
+
+.. automodule:: model_tf
+   :members:
+
+.. automodule:: model_torch
+   :members:
+
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
+

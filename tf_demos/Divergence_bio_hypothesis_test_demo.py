@@ -2,22 +2,19 @@ import numpy as np
 import argparse
 import csv
 import os
-import json
 import sys
-#from aux_funcs import *
-from numpy import genfromtxt
 
 current_dir = os.path.dirname(os.path.realpath(__file__))
 parent_dir = os.path.dirname(current_dir)
 sys.path.append(parent_dir)
 
-from models.tf_model import *
-from models.Divergences import *
+from models.model_tf import *
+from models.Divergences_tf import *
 
 # read input arguments
 parser = argparse.ArgumentParser(description='AUC for Sick Cell Detection using Neural-based Variational Divergences ')
 parser.add_argument('--prob_sick', type=float, metavar='p')
-parser.add_argument('--method', default='all', type=str, metavar='mthd',
+parser.add_argument('--method', default='KLD-DV', type=str, metavar='mthd',
                    help='values: IPM, Wasserstein, KLD-LT, KLD-DV, KLD-DV-GP, squared-Hel-LT, chi-squared-HCR, chi-squared-LT, JS-LT, alpha-LT, Renyi-DV, Renyi-CC, rescaled-Renyi-CC, Renyi-WCR')
 parser.add_argument('--sample_size', default=10000, type=int, metavar='N')
 parser.add_argument('--batch_size', default=1000, type=int, metavar='m')
@@ -79,7 +76,6 @@ data_s = np.genfromtxt("../bio_csv/sick.csv", delimiter=",").astype('float32')
 d = data_h.shape[1]
 layers_list.insert(0, d)
 
-
 print(f'Predicting the {mthd} divergence using TensorFlow\n')
 discriminator = Discriminator(input_dim=d, spec_norm=spec_norm, bounded=bounded, layers_list=layers_list)
 
@@ -102,14 +98,12 @@ dataset_cntmd = np.concatenate((data_h[idx_mix1], data_s[idx_mix2]), axis=0)
 idx = np.random.randint(N, size=N)
 dataset_cntmd = dataset_cntmd[idx]
 
-
 if reverse_order:
     data_P = dataset_pure
     data_Q = dataset_cntmd
 else:
     data_P = dataset_cntmd
     data_Q = dataset_pure
-
 
 print('Data shapes:')
 print(data_P.shape)
@@ -124,15 +118,15 @@ if optimizer == 'Adam':
 if optimizer == 'RMS':
     disc_optimizer = tf.keras.optimizers.RMSprop(lr)
 
+discriminator.compile(optimizer=disc_optimizer)
+
 # construct gradient penalty
 if use_GP:
     discriminator_penalty=Gradient_Penalty_1Sided(gp_weight, L)
 else:
     discriminator_penalty=None
 
-
 #Construct divergence
-       
 if mthd=="IPM":
     div_dense = IPM(discriminator, disc_optimizer, epochs, m, discriminator_penalty)            
 
@@ -166,7 +160,7 @@ if mthd=="Renyi-CC":
 if mthd=="rescaled-Renyi-CC":
     div_dense = Renyi_Divergence_CC_rescaled(discriminator, disc_optimizer, alpha, epochs, m, fl_act_func_IC, discriminator_penalty)
        	       
-if mthd=="Renyi-WCR":
+if mthd=="Renyi-CC-WCR":
     div_dense = Renyi_Divergence_WCR(discriminator, disc_optimizer, 'Inf', epochs, m, fl_act_func_IC, discriminator_penalty)
        	              
     	    

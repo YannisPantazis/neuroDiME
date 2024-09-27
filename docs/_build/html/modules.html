@@ -1,24 +1,28 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>models &mdash; nedipm library 0.0.1 documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <title>models &mdash; NEDIPM 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=d45e8c67"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Divergences module" href="Divergences.html" />
-    <link rel="prev" title="Introduction" href="introduction.html" /> 
+    <link rel="next" title="Divergences_jax module" href="Divergences_jax.html" />
+    <link rel="prev" title="Welcome to NEDIPM’s documentation!" href="index.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -30,7 +34,7 @@
           
           
           <a href="index.html" class="icon icon-home">
-            nedipm library
+            NEDIPM
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -40,19 +44,24 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Intro:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">models</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="Divergences.html">Divergences module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Divergences_jax.html">Divergences_jax module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Divergences_tf.html">Divergences_tf module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Divergences_torch.html">Divergences_torch module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="GAN.html">GAN module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GAN_CIFAR10_jax.html">GAN_CIFAR10_jax module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GAN_CIFAR10_tf.html">GAN_CIFAR10_tf module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GAN_CIFAR10_torch.html">GAN_CIFAR10_torch module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GAN_MNIST_jax.html">GAN_MNIST_jax module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GAN_MNIST_tf.html">GAN_MNIST_tf module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GAN_MNIST_torch.html">GAN_MNIST_torch module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GAN_jax.html">GAN_jax module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GAN_tf.html">GAN_tf module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="GAN_torch.html">GAN_torch module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tf_model.html">tf_model module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="torch_model.html">torch_model module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model_jax.html">model_jax module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model_tf.html">model_tf module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model_torch.html">model_torch module</a></li>
 </ul>
 </li>
 </ul>
@@ -63,7 +72,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">nedipm library</a>
+          <a href="index.html">NEDIPM</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -82,261 +91,588 @@
            <div itemprop="articleBody">
              
   <section id="models">
-<h1>models<a class="headerlink" href="#models" title="Permalink to this heading"></a></h1>
+<h1>models<a class="headerlink" href="#models" title="Link to this heading"></a></h1>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="Divergences.html">Divergences module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="Divergences.html#models.Divergences.Discriminator_Penalty"><code class="docutils literal notranslate"><span class="pre">Discriminator_Penalty</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="Divergences.html#models.Divergences.Discriminator_Penalty.evaluate"><code class="docutils literal notranslate"><span class="pre">Discriminator_Penalty.evaluate()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="Divergences.html#models.Divergences.Discriminator_Penalty.get_penalty_weight"><code class="docutils literal notranslate"><span class="pre">Discriminator_Penalty.get_penalty_weight()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="Divergences.html#models.Divergences.Discriminator_Penalty.set_penalty_weight"><code class="docutils literal notranslate"><span class="pre">Discriminator_Penalty.set_penalty_weight()</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="Divergences_jax.html">Divergences_jax module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Divergences_jax.html#Divergences_jax.DataLoader"><code class="docutils literal notranslate"><span class="pre">DataLoader</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="Divergences_jax.html#Divergences_jax.Discriminator_Penalty"><code class="docutils literal notranslate"><span class="pre">Discriminator_Penalty</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_jax.html#Divergences_jax.Discriminator_Penalty.evaluate"><code class="docutils literal notranslate"><span class="pre">Discriminator_Penalty.evaluate()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_jax.html#Divergences_jax.Discriminator_Penalty.get_penalty_weight"><code class="docutils literal notranslate"><span class="pre">Discriminator_Penalty.get_penalty_weight()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_jax.html#Divergences_jax.Discriminator_Penalty.set_penalty_weight"><code class="docutils literal notranslate"><span class="pre">Discriminator_Penalty.set_penalty_weight()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="Divergences.html#models.Divergences.Divergence"><code class="docutils literal notranslate"><span class="pre">Divergence</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="Divergences.html#models.Divergences.Divergence.discriminate"><code class="docutils literal notranslate"><span class="pre">Divergence.discriminate()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="Divergences.html#models.Divergences.Divergence.discriminator_loss"><code class="docutils literal notranslate"><span class="pre">Divergence.discriminator_loss()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="Divergences.html#models.Divergences.Divergence.estimate"><code class="docutils literal notranslate"><span class="pre">Divergence.estimate()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="Divergences.html#models.Divergences.Divergence.eval_var_formula"><code class="docutils literal notranslate"><span class="pre">Divergence.eval_var_formula()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="Divergences.html#models.Divergences.Divergence.get_batch_size"><code class="docutils literal notranslate"><span class="pre">Divergence.get_batch_size()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="Divergences.html#models.Divergences.Divergence.get_discriminator"><code class="docutils literal notranslate"><span class="pre">Divergence.get_discriminator()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="Divergences.html#models.Divergences.Divergence.get_learning_rate"><code class="docutils literal notranslate"><span class="pre">Divergence.get_learning_rate()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="Divergences.html#models.Divergences.Divergence.get_no_epochs"><code class="docutils literal notranslate"><span class="pre">Divergence.get_no_epochs()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="Divergences.html#models.Divergences.Divergence.set_batch_size"><code class="docutils literal notranslate"><span class="pre">Divergence.set_batch_size()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="Divergences.html#models.Divergences.Divergence.set_discriminator"><code class="docutils literal notranslate"><span class="pre">Divergence.set_discriminator()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="Divergences.html#models.Divergences.Divergence.set_learning_rate"><code class="docutils literal notranslate"><span class="pre">Divergence.set_learning_rate()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="Divergences.html#models.Divergences.Divergence.set_no_epochs"><code class="docutils literal notranslate"><span class="pre">Divergence.set_no_epochs()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="Divergences.html#models.Divergences.Divergence.train"><code class="docutils literal notranslate"><span class="pre">Divergence.train()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="Divergences.html#models.Divergences.Divergence.train_step"><code class="docutils literal notranslate"><span class="pre">Divergence.train_step()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="Divergences_jax.html#Divergences_jax.Divergence"><code class="docutils literal notranslate"><span class="pre">Divergence</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_jax.html#Divergences_jax.Divergence.discriminate"><code class="docutils literal notranslate"><span class="pre">Divergence.discriminate()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_jax.html#Divergences_jax.Divergence.discriminator_loss"><code class="docutils literal notranslate"><span class="pre">Divergence.discriminator_loss()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_jax.html#Divergences_jax.Divergence.estimate"><code class="docutils literal notranslate"><span class="pre">Divergence.estimate()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_jax.html#Divergences_jax.Divergence.eval_var_formula"><code class="docutils literal notranslate"><span class="pre">Divergence.eval_var_formula()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_jax.html#Divergences_jax.Divergence.gen_train_step"><code class="docutils literal notranslate"><span class="pre">Divergence.gen_train_step()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_jax.html#Divergences_jax.Divergence.generator_loss"><code class="docutils literal notranslate"><span class="pre">Divergence.generator_loss()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_jax.html#Divergences_jax.Divergence.get_batch_size"><code class="docutils literal notranslate"><span class="pre">Divergence.get_batch_size()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_jax.html#Divergences_jax.Divergence.get_discriminator"><code class="docutils literal notranslate"><span class="pre">Divergence.get_discriminator()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_jax.html#Divergences_jax.Divergence.get_learning_rate"><code class="docutils literal notranslate"><span class="pre">Divergence.get_learning_rate()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_jax.html#Divergences_jax.Divergence.get_no_epochs"><code class="docutils literal notranslate"><span class="pre">Divergence.get_no_epochs()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_jax.html#Divergences_jax.Divergence.set_batch_size"><code class="docutils literal notranslate"><span class="pre">Divergence.set_batch_size()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_jax.html#Divergences_jax.Divergence.set_discriminator"><code class="docutils literal notranslate"><span class="pre">Divergence.set_discriminator()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_jax.html#Divergences_jax.Divergence.set_learning_rate"><code class="docutils literal notranslate"><span class="pre">Divergence.set_learning_rate()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_jax.html#Divergences_jax.Divergence.set_no_epochs"><code class="docutils literal notranslate"><span class="pre">Divergence.set_no_epochs()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_jax.html#Divergences_jax.Divergence.train"><code class="docutils literal notranslate"><span class="pre">Divergence.train()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_jax.html#Divergences_jax.Divergence.train_step"><code class="docutils literal notranslate"><span class="pre">Divergence.train_step()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="Divergences.html#models.Divergences.Gradient_Penalty_1Sided"><code class="docutils literal notranslate"><span class="pre">Gradient_Penalty_1Sided</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="Divergences.html#models.Divergences.Gradient_Penalty_1Sided.evaluate"><code class="docutils literal notranslate"><span class="pre">Gradient_Penalty_1Sided.evaluate()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="Divergences.html#models.Divergences.Gradient_Penalty_1Sided.get_Lip_constant"><code class="docutils literal notranslate"><span class="pre">Gradient_Penalty_1Sided.get_Lip_constant()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="Divergences.html#models.Divergences.Gradient_Penalty_1Sided.set_Lip_constant"><code class="docutils literal notranslate"><span class="pre">Gradient_Penalty_1Sided.set_Lip_constant()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="Divergences_jax.html#Divergences_jax.Gradient_Penalty_1Sided"><code class="docutils literal notranslate"><span class="pre">Gradient_Penalty_1Sided</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_jax.html#Divergences_jax.Gradient_Penalty_1Sided.evaluate"><code class="docutils literal notranslate"><span class="pre">Gradient_Penalty_1Sided.evaluate()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_jax.html#Divergences_jax.Gradient_Penalty_1Sided.get_Lip_constant"><code class="docutils literal notranslate"><span class="pre">Gradient_Penalty_1Sided.get_Lip_constant()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_jax.html#Divergences_jax.Gradient_Penalty_1Sided.set_Lip_constant"><code class="docutils literal notranslate"><span class="pre">Gradient_Penalty_1Sided.set_Lip_constant()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="Divergences.html#models.Divergences.Gradient_Penalty_2Sided"><code class="docutils literal notranslate"><span class="pre">Gradient_Penalty_2Sided</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="Divergences.html#models.Divergences.Gradient_Penalty_2Sided.evaluate"><code class="docutils literal notranslate"><span class="pre">Gradient_Penalty_2Sided.evaluate()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="Divergences.html#models.Divergences.Gradient_Penalty_2Sided.get_Lip_constant"><code class="docutils literal notranslate"><span class="pre">Gradient_Penalty_2Sided.get_Lip_constant()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="Divergences.html#models.Divergences.Gradient_Penalty_2Sided.set_Lip_constant"><code class="docutils literal notranslate"><span class="pre">Gradient_Penalty_2Sided.set_Lip_constant()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="Divergences_jax.html#Divergences_jax.Gradient_Penalty_2Sided"><code class="docutils literal notranslate"><span class="pre">Gradient_Penalty_2Sided</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_jax.html#Divergences_jax.Gradient_Penalty_2Sided.evaluate"><code class="docutils literal notranslate"><span class="pre">Gradient_Penalty_2Sided.evaluate()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_jax.html#Divergences_jax.Gradient_Penalty_2Sided.get_Lip_constant"><code class="docutils literal notranslate"><span class="pre">Gradient_Penalty_2Sided.get_Lip_constant()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_jax.html#Divergences_jax.Gradient_Penalty_2Sided.set_Lip_constant"><code class="docutils literal notranslate"><span class="pre">Gradient_Penalty_2Sided.set_Lip_constant()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="Divergences.html#models.Divergences.IPM"><code class="docutils literal notranslate"><span class="pre">IPM</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="Divergences.html#models.Divergences.IPM.eval_var_formula"><code class="docutils literal notranslate"><span class="pre">IPM.eval_var_formula()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="Divergences_jax.html#Divergences_jax.IPM"><code class="docutils literal notranslate"><span class="pre">IPM</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_jax.html#Divergences_jax.IPM.eval_var_formula"><code class="docutils literal notranslate"><span class="pre">IPM.eval_var_formula()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_jax.html#Divergences_jax.IPM.eval_var_formula_gen"><code class="docutils literal notranslate"><span class="pre">IPM.eval_var_formula_gen()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="Divergences.html#models.Divergences.Jensen_Shannon_LT"><code class="docutils literal notranslate"><span class="pre">Jensen_Shannon_LT</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="Divergences.html#models.Divergences.Jensen_Shannon_LT.f_star"><code class="docutils literal notranslate"><span class="pre">Jensen_Shannon_LT.f_star()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="Divergences.html#models.Divergences.Jensen_Shannon_LT.final_layer_activation"><code class="docutils literal notranslate"><span class="pre">Jensen_Shannon_LT.final_layer_activation()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="Divergences_jax.html#Divergences_jax.Jensen_Shannon_LT"><code class="docutils literal notranslate"><span class="pre">Jensen_Shannon_LT</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_jax.html#Divergences_jax.Jensen_Shannon_LT.f_star"><code class="docutils literal notranslate"><span class="pre">Jensen_Shannon_LT.f_star()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_jax.html#Divergences_jax.Jensen_Shannon_LT.final_layer_activation"><code class="docutils literal notranslate"><span class="pre">Jensen_Shannon_LT.final_layer_activation()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="Divergences.html#models.Divergences.KLD_DV"><code class="docutils literal notranslate"><span class="pre">KLD_DV</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="Divergences.html#models.Divergences.KLD_DV.eval_var_formula"><code class="docutils literal notranslate"><span class="pre">KLD_DV.eval_var_formula()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="Divergences_jax.html#Divergences_jax.KLD_DV"><code class="docutils literal notranslate"><span class="pre">KLD_DV</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_jax.html#Divergences_jax.KLD_DV.eval_var_formula"><code class="docutils literal notranslate"><span class="pre">KLD_DV.eval_var_formula()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_jax.html#Divergences_jax.KLD_DV.eval_var_formula_gen"><code class="docutils literal notranslate"><span class="pre">KLD_DV.eval_var_formula_gen()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="Divergences.html#models.Divergences.KLD_LT"><code class="docutils literal notranslate"><span class="pre">KLD_LT</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="Divergences.html#models.Divergences.KLD_LT.f_star"><code class="docutils literal notranslate"><span class="pre">KLD_LT.f_star()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="Divergences_jax.html#Divergences_jax.KLD_LT"><code class="docutils literal notranslate"><span class="pre">KLD_LT</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_jax.html#Divergences_jax.KLD_LT.f_star"><code class="docutils literal notranslate"><span class="pre">KLD_LT.f_star()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="Divergences.html#models.Divergences.Pearson_chi_squared_HCR"><code class="docutils literal notranslate"><span class="pre">Pearson_chi_squared_HCR</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="Divergences.html#models.Divergences.Pearson_chi_squared_HCR.eval_var_formula"><code class="docutils literal notranslate"><span class="pre">Pearson_chi_squared_HCR.eval_var_formula()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="Divergences_jax.html#Divergences_jax.Pearson_chi_squared_LT"><code class="docutils literal notranslate"><span class="pre">Pearson_chi_squared_LT</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_jax.html#Divergences_jax.Pearson_chi_squared_LT.f_star"><code class="docutils literal notranslate"><span class="pre">Pearson_chi_squared_LT.f_star()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="Divergences.html#models.Divergences.Pearson_chi_squared_LT"><code class="docutils literal notranslate"><span class="pre">Pearson_chi_squared_LT</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="Divergences.html#models.Divergences.Pearson_chi_squared_LT.f_star"><code class="docutils literal notranslate"><span class="pre">Pearson_chi_squared_LT.f_star()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="Divergences_jax.html#Divergences_jax.Renyi_Divergence"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_jax.html#Divergences_jax.Renyi_Divergence.get_order"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence.get_order()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_jax.html#Divergences_jax.Renyi_Divergence.set_order"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence.set_order()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="Divergences.html#models.Divergences.Renyi_Divergence"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="Divergences.html#models.Divergences.Renyi_Divergence.get_order"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence.get_order()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="Divergences.html#models.Divergences.Renyi_Divergence.set_order"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence.set_order()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="Divergences_jax.html#Divergences_jax.Renyi_Divergence_CC"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_CC</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_jax.html#Divergences_jax.Renyi_Divergence_CC.eval_var_formula"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_CC.eval_var_formula()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_jax.html#Divergences_jax.Renyi_Divergence_CC.eval_var_formula_gen"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_CC.eval_var_formula_gen()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_jax.html#Divergences_jax.Renyi_Divergence_CC.final_layer_activation"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_CC.final_layer_activation()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="Divergences.html#models.Divergences.Renyi_Divergence_CC"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_CC</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="Divergences.html#models.Divergences.Renyi_Divergence_CC.eval_var_formula"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_CC.eval_var_formula()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="Divergences.html#models.Divergences.Renyi_Divergence_CC.final_layer_activation"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_CC.final_layer_activation()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="Divergences_jax.html#Divergences_jax.Renyi_Divergence_CC_rescaled"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_CC_rescaled</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_jax.html#Divergences_jax.Renyi_Divergence_CC_rescaled.eval_var_formula"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_CC_rescaled.eval_var_formula()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_jax.html#Divergences_jax.Renyi_Divergence_CC_rescaled.eval_var_formula_gen"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_CC_rescaled.eval_var_formula_gen()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_jax.html#Divergences_jax.Renyi_Divergence_CC_rescaled.final_layer_activation"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_CC_rescaled.final_layer_activation()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="Divergences.html#models.Divergences.Renyi_Divergence_CC_rescaled"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_CC_rescaled</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="Divergences.html#models.Divergences.Renyi_Divergence_CC_rescaled.eval_var_formula"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_CC_rescaled.eval_var_formula()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="Divergences.html#models.Divergences.Renyi_Divergence_CC_rescaled.final_layer_activation"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_CC_rescaled.final_layer_activation()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="Divergences_jax.html#Divergences_jax.Renyi_Divergence_DV"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_DV</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_jax.html#Divergences_jax.Renyi_Divergence_DV.eval_var_formula"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_DV.eval_var_formula()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_jax.html#Divergences_jax.Renyi_Divergence_DV.eval_var_formula_gen"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_DV.eval_var_formula_gen()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="Divergences.html#models.Divergences.Renyi_Divergence_DV"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_DV</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="Divergences.html#models.Divergences.Renyi_Divergence_DV.eval_var_formula"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_DV.eval_var_formula()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="Divergences_jax.html#Divergences_jax.Renyi_Divergence_WCR"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_WCR</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_jax.html#Divergences_jax.Renyi_Divergence_WCR.eval_var_formula"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_WCR.eval_var_formula()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_jax.html#Divergences_jax.Renyi_Divergence_WCR.eval_var_formula_gen"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_WCR.eval_var_formula_gen()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="Divergences.html#models.Divergences.Renyi_Divergence_WCR"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_WCR</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="Divergences.html#models.Divergences.Renyi_Divergence_WCR.eval_var_formula"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_WCR.eval_var_formula()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="Divergences_jax.html#Divergences_jax.alpha_Divergence_LT"><code class="docutils literal notranslate"><span class="pre">alpha_Divergence_LT</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_jax.html#Divergences_jax.alpha_Divergence_LT.f_star"><code class="docutils literal notranslate"><span class="pre">alpha_Divergence_LT.f_star()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_jax.html#Divergences_jax.alpha_Divergence_LT.get_order"><code class="docutils literal notranslate"><span class="pre">alpha_Divergence_LT.get_order()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_jax.html#Divergences_jax.alpha_Divergence_LT.set_order"><code class="docutils literal notranslate"><span class="pre">alpha_Divergence_LT.set_order()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="Divergences.html#models.Divergences.alpha_Divergence_LT"><code class="docutils literal notranslate"><span class="pre">alpha_Divergence_LT</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="Divergences.html#models.Divergences.alpha_Divergence_LT.f_star"><code class="docutils literal notranslate"><span class="pre">alpha_Divergence_LT.f_star()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="Divergences.html#models.Divergences.alpha_Divergence_LT.get_order"><code class="docutils literal notranslate"><span class="pre">alpha_Divergence_LT.get_order()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="Divergences.html#models.Divergences.alpha_Divergence_LT.set_order"><code class="docutils literal notranslate"><span class="pre">alpha_Divergence_LT.set_order()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="Divergences_jax.html#Divergences_jax.f_Divergence"><code class="docutils literal notranslate"><span class="pre">f_Divergence</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_jax.html#Divergences_jax.f_Divergence.eval_var_formula"><code class="docutils literal notranslate"><span class="pre">f_Divergence.eval_var_formula()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_jax.html#Divergences_jax.f_Divergence.eval_var_formula_gen"><code class="docutils literal notranslate"><span class="pre">f_Divergence.eval_var_formula_gen()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_jax.html#Divergences_jax.f_Divergence.f_star"><code class="docutils literal notranslate"><span class="pre">f_Divergence.f_star()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_jax.html#Divergences_jax.f_Divergence.final_layer_activation"><code class="docutils literal notranslate"><span class="pre">f_Divergence.final_layer_activation()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="Divergences.html#models.Divergences.f_Divergence"><code class="docutils literal notranslate"><span class="pre">f_Divergence</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="Divergences.html#models.Divergences.f_Divergence.eval_var_formula"><code class="docutils literal notranslate"><span class="pre">f_Divergence.eval_var_formula()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="Divergences.html#models.Divergences.f_Divergence.f_star"><code class="docutils literal notranslate"><span class="pre">f_Divergence.f_star()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="Divergences.html#models.Divergences.f_Divergence.final_layer_activation"><code class="docutils literal notranslate"><span class="pre">f_Divergence.final_layer_activation()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="Divergences_jax.html#Divergences_jax.squared_Hellinger_LT"><code class="docutils literal notranslate"><span class="pre">squared_Hellinger_LT</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_jax.html#Divergences_jax.squared_Hellinger_LT.f_star"><code class="docutils literal notranslate"><span class="pre">squared_Hellinger_LT.f_star()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_jax.html#Divergences_jax.squared_Hellinger_LT.final_layer_activation"><code class="docutils literal notranslate"><span class="pre">squared_Hellinger_LT.final_layer_activation()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="Divergences.html#models.Divergences.squared_Hellinger_LT"><code class="docutils literal notranslate"><span class="pre">squared_Hellinger_LT</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="Divergences.html#models.Divergences.squared_Hellinger_LT.f_star"><code class="docutils literal notranslate"><span class="pre">squared_Hellinger_LT.f_star()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="Divergences.html#models.Divergences.squared_Hellinger_LT.final_layer_activation"><code class="docutils literal notranslate"><span class="pre">squared_Hellinger_LT.final_layer_activation()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Divergences_tf.html">Divergences_tf module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Divergences_tf.html#Divergences_tf.Discriminator_Penalty"><code class="docutils literal notranslate"><span class="pre">Discriminator_Penalty</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_tf.html#Divergences_tf.Discriminator_Penalty.evaluate"><code class="docutils literal notranslate"><span class="pre">Discriminator_Penalty.evaluate()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_tf.html#Divergences_tf.Discriminator_Penalty.get_penalty_weight"><code class="docutils literal notranslate"><span class="pre">Discriminator_Penalty.get_penalty_weight()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_tf.html#Divergences_tf.Discriminator_Penalty.set_penalty_weight"><code class="docutils literal notranslate"><span class="pre">Discriminator_Penalty.set_penalty_weight()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="Divergences_tf.html#Divergences_tf.Divergence"><code class="docutils literal notranslate"><span class="pre">Divergence</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_tf.html#Divergences_tf.Divergence.discriminate"><code class="docutils literal notranslate"><span class="pre">Divergence.discriminate()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_tf.html#Divergences_tf.Divergence.discriminator_loss"><code class="docutils literal notranslate"><span class="pre">Divergence.discriminator_loss()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_tf.html#Divergences_tf.Divergence.estimate"><code class="docutils literal notranslate"><span class="pre">Divergence.estimate()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_tf.html#Divergences_tf.Divergence.eval_var_formula"><code class="docutils literal notranslate"><span class="pre">Divergence.eval_var_formula()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_tf.html#Divergences_tf.Divergence.generator_loss"><code class="docutils literal notranslate"><span class="pre">Divergence.generator_loss()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_tf.html#Divergences_tf.Divergence.get_batch_size"><code class="docutils literal notranslate"><span class="pre">Divergence.get_batch_size()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_tf.html#Divergences_tf.Divergence.get_discriminator"><code class="docutils literal notranslate"><span class="pre">Divergence.get_discriminator()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_tf.html#Divergences_tf.Divergence.get_learning_rate"><code class="docutils literal notranslate"><span class="pre">Divergence.get_learning_rate()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_tf.html#Divergences_tf.Divergence.get_no_epochs"><code class="docutils literal notranslate"><span class="pre">Divergence.get_no_epochs()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_tf.html#Divergences_tf.Divergence.set_batch_size"><code class="docutils literal notranslate"><span class="pre">Divergence.set_batch_size()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_tf.html#Divergences_tf.Divergence.set_discriminator"><code class="docutils literal notranslate"><span class="pre">Divergence.set_discriminator()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_tf.html#Divergences_tf.Divergence.set_learning_rate"><code class="docutils literal notranslate"><span class="pre">Divergence.set_learning_rate()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_tf.html#Divergences_tf.Divergence.set_no_epochs"><code class="docutils literal notranslate"><span class="pre">Divergence.set_no_epochs()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_tf.html#Divergences_tf.Divergence.train"><code class="docutils literal notranslate"><span class="pre">Divergence.train()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_tf.html#Divergences_tf.Divergence.train_step"><code class="docutils literal notranslate"><span class="pre">Divergence.train_step()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="Divergences_tf.html#Divergences_tf.Gradient_Penalty_1Sided"><code class="docutils literal notranslate"><span class="pre">Gradient_Penalty_1Sided</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_tf.html#Divergences_tf.Gradient_Penalty_1Sided.evaluate"><code class="docutils literal notranslate"><span class="pre">Gradient_Penalty_1Sided.evaluate()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_tf.html#Divergences_tf.Gradient_Penalty_1Sided.get_Lip_constant"><code class="docutils literal notranslate"><span class="pre">Gradient_Penalty_1Sided.get_Lip_constant()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_tf.html#Divergences_tf.Gradient_Penalty_1Sided.set_Lip_constant"><code class="docutils literal notranslate"><span class="pre">Gradient_Penalty_1Sided.set_Lip_constant()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="Divergences_tf.html#Divergences_tf.Gradient_Penalty_2Sided"><code class="docutils literal notranslate"><span class="pre">Gradient_Penalty_2Sided</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_tf.html#Divergences_tf.Gradient_Penalty_2Sided.evaluate"><code class="docutils literal notranslate"><span class="pre">Gradient_Penalty_2Sided.evaluate()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_tf.html#Divergences_tf.Gradient_Penalty_2Sided.get_Lip_constant"><code class="docutils literal notranslate"><span class="pre">Gradient_Penalty_2Sided.get_Lip_constant()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_tf.html#Divergences_tf.Gradient_Penalty_2Sided.set_Lip_constant"><code class="docutils literal notranslate"><span class="pre">Gradient_Penalty_2Sided.set_Lip_constant()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="Divergences_tf.html#Divergences_tf.IPM"><code class="docutils literal notranslate"><span class="pre">IPM</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_tf.html#Divergences_tf.IPM.eval_var_formula"><code class="docutils literal notranslate"><span class="pre">IPM.eval_var_formula()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_tf.html#Divergences_tf.IPM.eval_var_formula_gen"><code class="docutils literal notranslate"><span class="pre">IPM.eval_var_formula_gen()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="Divergences_tf.html#Divergences_tf.Jensen_Shannon_LT"><code class="docutils literal notranslate"><span class="pre">Jensen_Shannon_LT</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_tf.html#Divergences_tf.Jensen_Shannon_LT.f_star"><code class="docutils literal notranslate"><span class="pre">Jensen_Shannon_LT.f_star()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_tf.html#Divergences_tf.Jensen_Shannon_LT.final_layer_activation"><code class="docutils literal notranslate"><span class="pre">Jensen_Shannon_LT.final_layer_activation()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="Divergences_tf.html#Divergences_tf.KLD_DV"><code class="docutils literal notranslate"><span class="pre">KLD_DV</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_tf.html#Divergences_tf.KLD_DV.eval_var_formula"><code class="docutils literal notranslate"><span class="pre">KLD_DV.eval_var_formula()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_tf.html#Divergences_tf.KLD_DV.eval_var_formula_gen"><code class="docutils literal notranslate"><span class="pre">KLD_DV.eval_var_formula_gen()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="Divergences_tf.html#Divergences_tf.KLD_LT"><code class="docutils literal notranslate"><span class="pre">KLD_LT</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_tf.html#Divergences_tf.KLD_LT.f_star"><code class="docutils literal notranslate"><span class="pre">KLD_LT.f_star()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="Divergences_tf.html#Divergences_tf.Pearson_chi_squared_HCR"><code class="docutils literal notranslate"><span class="pre">Pearson_chi_squared_HCR</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_tf.html#Divergences_tf.Pearson_chi_squared_HCR.eval_var_formula"><code class="docutils literal notranslate"><span class="pre">Pearson_chi_squared_HCR.eval_var_formula()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_tf.html#Divergences_tf.Pearson_chi_squared_HCR.eval_var_formula_gen"><code class="docutils literal notranslate"><span class="pre">Pearson_chi_squared_HCR.eval_var_formula_gen()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="Divergences_tf.html#Divergences_tf.Pearson_chi_squared_LT"><code class="docutils literal notranslate"><span class="pre">Pearson_chi_squared_LT</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_tf.html#Divergences_tf.Pearson_chi_squared_LT.f_star"><code class="docutils literal notranslate"><span class="pre">Pearson_chi_squared_LT.f_star()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="Divergences_tf.html#Divergences_tf.Renyi_Divergence"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_tf.html#Divergences_tf.Renyi_Divergence.get_order"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence.get_order()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_tf.html#Divergences_tf.Renyi_Divergence.set_order"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence.set_order()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="Divergences_tf.html#Divergences_tf.Renyi_Divergence_CC"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_CC</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_tf.html#Divergences_tf.Renyi_Divergence_CC.eval_var_formula"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_CC.eval_var_formula()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_tf.html#Divergences_tf.Renyi_Divergence_CC.eval_var_formula_gen"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_CC.eval_var_formula_gen()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_tf.html#Divergences_tf.Renyi_Divergence_CC.final_layer_activation"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_CC.final_layer_activation()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="Divergences_tf.html#Divergences_tf.Renyi_Divergence_CC_rescaled"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_CC_rescaled</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_tf.html#Divergences_tf.Renyi_Divergence_CC_rescaled.eval_var_formula"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_CC_rescaled.eval_var_formula()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_tf.html#Divergences_tf.Renyi_Divergence_CC_rescaled.eval_var_formula_gen"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_CC_rescaled.eval_var_formula_gen()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_tf.html#Divergences_tf.Renyi_Divergence_CC_rescaled.final_layer_activation"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_CC_rescaled.final_layer_activation()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="Divergences_tf.html#Divergences_tf.Renyi_Divergence_DV"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_DV</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_tf.html#Divergences_tf.Renyi_Divergence_DV.eval_var_formula"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_DV.eval_var_formula()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_tf.html#Divergences_tf.Renyi_Divergence_DV.eval_var_formula_gen"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_DV.eval_var_formula_gen()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="Divergences_tf.html#Divergences_tf.Renyi_Divergence_WCR"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_WCR</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_tf.html#Divergences_tf.Renyi_Divergence_WCR.eval_var_formula"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_WCR.eval_var_formula()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_tf.html#Divergences_tf.Renyi_Divergence_WCR.eval_var_formula_gen"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_WCR.eval_var_formula_gen()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="Divergences_tf.html#Divergences_tf.alpha_Divergence_LT"><code class="docutils literal notranslate"><span class="pre">alpha_Divergence_LT</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_tf.html#Divergences_tf.alpha_Divergence_LT.f_star"><code class="docutils literal notranslate"><span class="pre">alpha_Divergence_LT.f_star()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_tf.html#Divergences_tf.alpha_Divergence_LT.get_order"><code class="docutils literal notranslate"><span class="pre">alpha_Divergence_LT.get_order()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_tf.html#Divergences_tf.alpha_Divergence_LT.set_order"><code class="docutils literal notranslate"><span class="pre">alpha_Divergence_LT.set_order()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="Divergences_tf.html#Divergences_tf.f_Divergence"><code class="docutils literal notranslate"><span class="pre">f_Divergence</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_tf.html#Divergences_tf.f_Divergence.eval_var_formula"><code class="docutils literal notranslate"><span class="pre">f_Divergence.eval_var_formula()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_tf.html#Divergences_tf.f_Divergence.eval_var_formula_gen"><code class="docutils literal notranslate"><span class="pre">f_Divergence.eval_var_formula_gen()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_tf.html#Divergences_tf.f_Divergence.f_star"><code class="docutils literal notranslate"><span class="pre">f_Divergence.f_star()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_tf.html#Divergences_tf.f_Divergence.final_layer_activation"><code class="docutils literal notranslate"><span class="pre">f_Divergence.final_layer_activation()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="Divergences_tf.html#Divergences_tf.squared_Hellinger_LT"><code class="docutils literal notranslate"><span class="pre">squared_Hellinger_LT</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_tf.html#Divergences_tf.squared_Hellinger_LT.f_star"><code class="docutils literal notranslate"><span class="pre">squared_Hellinger_LT.f_star()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_tf.html#Divergences_tf.squared_Hellinger_LT.final_layer_activation"><code class="docutils literal notranslate"><span class="pre">squared_Hellinger_LT.final_layer_activation()</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="Divergences_torch.html">Divergences_torch module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="Divergences_torch.html#models.Divergences_torch.Discriminator_Penalty"><code class="docutils literal notranslate"><span class="pre">Discriminator_Penalty</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#models.Divergences_torch.Discriminator_Penalty.evaluate"><code class="docutils literal notranslate"><span class="pre">Discriminator_Penalty.evaluate()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#models.Divergences_torch.Discriminator_Penalty.get_penalty_weight"><code class="docutils literal notranslate"><span class="pre">Discriminator_Penalty.get_penalty_weight()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#models.Divergences_torch.Discriminator_Penalty.set_penalty_weight"><code class="docutils literal notranslate"><span class="pre">Discriminator_Penalty.set_penalty_weight()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="Divergences_torch.html#Divergences_torch.Discriminator_Penalty"><code class="docutils literal notranslate"><span class="pre">Discriminator_Penalty</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#Divergences_torch.Discriminator_Penalty.evaluate"><code class="docutils literal notranslate"><span class="pre">Discriminator_Penalty.evaluate()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#Divergences_torch.Discriminator_Penalty.get_penalty_weight"><code class="docutils literal notranslate"><span class="pre">Discriminator_Penalty.get_penalty_weight()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#Divergences_torch.Discriminator_Penalty.set_penalty_weight"><code class="docutils literal notranslate"><span class="pre">Discriminator_Penalty.set_penalty_weight()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="Divergences_torch.html#models.Divergences_torch.Divergence"><code class="docutils literal notranslate"><span class="pre">Divergence</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#models.Divergences_torch.Divergence.discriminate"><code class="docutils literal notranslate"><span class="pre">Divergence.discriminate()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#models.Divergences_torch.Divergence.discriminator_loss"><code class="docutils literal notranslate"><span class="pre">Divergence.discriminator_loss()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#models.Divergences_torch.Divergence.estimate"><code class="docutils literal notranslate"><span class="pre">Divergence.estimate()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#models.Divergences_torch.Divergence.eval_var_formula"><code class="docutils literal notranslate"><span class="pre">Divergence.eval_var_formula()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#models.Divergences_torch.Divergence.get_batch_size"><code class="docutils literal notranslate"><span class="pre">Divergence.get_batch_size()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#models.Divergences_torch.Divergence.get_discriminator"><code class="docutils literal notranslate"><span class="pre">Divergence.get_discriminator()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#models.Divergences_torch.Divergence.get_learning_rate"><code class="docutils literal notranslate"><span class="pre">Divergence.get_learning_rate()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#models.Divergences_torch.Divergence.get_no_epochs"><code class="docutils literal notranslate"><span class="pre">Divergence.get_no_epochs()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#models.Divergences_torch.Divergence.set_batch_size"><code class="docutils literal notranslate"><span class="pre">Divergence.set_batch_size()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#models.Divergences_torch.Divergence.set_discriminator"><code class="docutils literal notranslate"><span class="pre">Divergence.set_discriminator()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#models.Divergences_torch.Divergence.set_learning_rate"><code class="docutils literal notranslate"><span class="pre">Divergence.set_learning_rate()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#models.Divergences_torch.Divergence.set_no_epochs"><code class="docutils literal notranslate"><span class="pre">Divergence.set_no_epochs()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#models.Divergences_torch.Divergence.train"><code class="docutils literal notranslate"><span class="pre">Divergence.train()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#models.Divergences_torch.Divergence.train_step"><code class="docutils literal notranslate"><span class="pre">Divergence.train_step()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="Divergences_torch.html#Divergences_torch.Divergence"><code class="docutils literal notranslate"><span class="pre">Divergence</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#Divergences_torch.Divergence.discriminate"><code class="docutils literal notranslate"><span class="pre">Divergence.discriminate()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#Divergences_torch.Divergence.discriminator_loss"><code class="docutils literal notranslate"><span class="pre">Divergence.discriminator_loss()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#Divergences_torch.Divergence.estimate"><code class="docutils literal notranslate"><span class="pre">Divergence.estimate()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#Divergences_torch.Divergence.eval_var_formula"><code class="docutils literal notranslate"><span class="pre">Divergence.eval_var_formula()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#Divergences_torch.Divergence.generator_loss"><code class="docutils literal notranslate"><span class="pre">Divergence.generator_loss()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#Divergences_torch.Divergence.get_batch_size"><code class="docutils literal notranslate"><span class="pre">Divergence.get_batch_size()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#Divergences_torch.Divergence.get_discriminator"><code class="docutils literal notranslate"><span class="pre">Divergence.get_discriminator()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#Divergences_torch.Divergence.get_learning_rate"><code class="docutils literal notranslate"><span class="pre">Divergence.get_learning_rate()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#Divergences_torch.Divergence.get_no_epochs"><code class="docutils literal notranslate"><span class="pre">Divergence.get_no_epochs()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#Divergences_torch.Divergence.set_batch_size"><code class="docutils literal notranslate"><span class="pre">Divergence.set_batch_size()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#Divergences_torch.Divergence.set_discriminator"><code class="docutils literal notranslate"><span class="pre">Divergence.set_discriminator()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#Divergences_torch.Divergence.set_learning_rate"><code class="docutils literal notranslate"><span class="pre">Divergence.set_learning_rate()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#Divergences_torch.Divergence.set_no_epochs"><code class="docutils literal notranslate"><span class="pre">Divergence.set_no_epochs()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#Divergences_torch.Divergence.train"><code class="docutils literal notranslate"><span class="pre">Divergence.train()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#Divergences_torch.Divergence.train_step"><code class="docutils literal notranslate"><span class="pre">Divergence.train_step()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="Divergences_torch.html#models.Divergences_torch.Gradient_Penalty_1Sided"><code class="docutils literal notranslate"><span class="pre">Gradient_Penalty_1Sided</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#models.Divergences_torch.Gradient_Penalty_1Sided.evaluate"><code class="docutils literal notranslate"><span class="pre">Gradient_Penalty_1Sided.evaluate()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#models.Divergences_torch.Gradient_Penalty_1Sided.get_Lip_constant"><code class="docutils literal notranslate"><span class="pre">Gradient_Penalty_1Sided.get_Lip_constant()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#models.Divergences_torch.Gradient_Penalty_1Sided.set_Lip_constant"><code class="docutils literal notranslate"><span class="pre">Gradient_Penalty_1Sided.set_Lip_constant()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="Divergences_torch.html#Divergences_torch.Gradient_Penalty_1Sided"><code class="docutils literal notranslate"><span class="pre">Gradient_Penalty_1Sided</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#Divergences_torch.Gradient_Penalty_1Sided.evaluate"><code class="docutils literal notranslate"><span class="pre">Gradient_Penalty_1Sided.evaluate()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#Divergences_torch.Gradient_Penalty_1Sided.get_Lip_constant"><code class="docutils literal notranslate"><span class="pre">Gradient_Penalty_1Sided.get_Lip_constant()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#Divergences_torch.Gradient_Penalty_1Sided.set_Lip_constant"><code class="docutils literal notranslate"><span class="pre">Gradient_Penalty_1Sided.set_Lip_constant()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="Divergences_torch.html#models.Divergences_torch.Gradient_Penalty_2Sided"><code class="docutils literal notranslate"><span class="pre">Gradient_Penalty_2Sided</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#models.Divergences_torch.Gradient_Penalty_2Sided.evaluate"><code class="docutils literal notranslate"><span class="pre">Gradient_Penalty_2Sided.evaluate()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#models.Divergences_torch.Gradient_Penalty_2Sided.get_Lip_constant"><code class="docutils literal notranslate"><span class="pre">Gradient_Penalty_2Sided.get_Lip_constant()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#models.Divergences_torch.Gradient_Penalty_2Sided.set_Lip_constant"><code class="docutils literal notranslate"><span class="pre">Gradient_Penalty_2Sided.set_Lip_constant()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="Divergences_torch.html#Divergences_torch.Gradient_Penalty_2Sided"><code class="docutils literal notranslate"><span class="pre">Gradient_Penalty_2Sided</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#Divergences_torch.Gradient_Penalty_2Sided.evaluate"><code class="docutils literal notranslate"><span class="pre">Gradient_Penalty_2Sided.evaluate()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#Divergences_torch.Gradient_Penalty_2Sided.get_Lip_constant"><code class="docutils literal notranslate"><span class="pre">Gradient_Penalty_2Sided.get_Lip_constant()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#Divergences_torch.Gradient_Penalty_2Sided.set_Lip_constant"><code class="docutils literal notranslate"><span class="pre">Gradient_Penalty_2Sided.set_Lip_constant()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="Divergences_torch.html#models.Divergences_torch.IPM"><code class="docutils literal notranslate"><span class="pre">IPM</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#models.Divergences_torch.IPM.eval_var_formula"><code class="docutils literal notranslate"><span class="pre">IPM.eval_var_formula()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="Divergences_torch.html#Divergences_torch.IPM"><code class="docutils literal notranslate"><span class="pre">IPM</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#Divergences_torch.IPM.eval_var_formula"><code class="docutils literal notranslate"><span class="pre">IPM.eval_var_formula()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#Divergences_torch.IPM.eval_var_formula_gen"><code class="docutils literal notranslate"><span class="pre">IPM.eval_var_formula_gen()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="Divergences_torch.html#models.Divergences_torch.Jensen_Shannon_LT"><code class="docutils literal notranslate"><span class="pre">Jensen_Shannon_LT</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#models.Divergences_torch.Jensen_Shannon_LT.f_star"><code class="docutils literal notranslate"><span class="pre">Jensen_Shannon_LT.f_star()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#models.Divergences_torch.Jensen_Shannon_LT.final_layer_activation"><code class="docutils literal notranslate"><span class="pre">Jensen_Shannon_LT.final_layer_activation()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="Divergences_torch.html#Divergences_torch.Jensen_Shannon_LT"><code class="docutils literal notranslate"><span class="pre">Jensen_Shannon_LT</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#Divergences_torch.Jensen_Shannon_LT.f_star"><code class="docutils literal notranslate"><span class="pre">Jensen_Shannon_LT.f_star()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#Divergences_torch.Jensen_Shannon_LT.final_layer_activation"><code class="docutils literal notranslate"><span class="pre">Jensen_Shannon_LT.final_layer_activation()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="Divergences_torch.html#models.Divergences_torch.KLD_DV"><code class="docutils literal notranslate"><span class="pre">KLD_DV</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#models.Divergences_torch.KLD_DV.eval_var_formula"><code class="docutils literal notranslate"><span class="pre">KLD_DV.eval_var_formula()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="Divergences_torch.html#Divergences_torch.KLD_DV"><code class="docutils literal notranslate"><span class="pre">KLD_DV</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#Divergences_torch.KLD_DV.eval_var_formula"><code class="docutils literal notranslate"><span class="pre">KLD_DV.eval_var_formula()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#Divergences_torch.KLD_DV.eval_var_formula_gen"><code class="docutils literal notranslate"><span class="pre">KLD_DV.eval_var_formula_gen()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="Divergences_torch.html#models.Divergences_torch.KLD_LT"><code class="docutils literal notranslate"><span class="pre">KLD_LT</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#models.Divergences_torch.KLD_LT.f_star"><code class="docutils literal notranslate"><span class="pre">KLD_LT.f_star()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="Divergences_torch.html#Divergences_torch.KLD_LT"><code class="docutils literal notranslate"><span class="pre">KLD_LT</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#Divergences_torch.KLD_LT.f_star"><code class="docutils literal notranslate"><span class="pre">KLD_LT.f_star()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="Divergences_torch.html#models.Divergences_torch.Pearson_chi_squared_HCR"><code class="docutils literal notranslate"><span class="pre">Pearson_chi_squared_HCR</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#models.Divergences_torch.Pearson_chi_squared_HCR.eval_var_formula"><code class="docutils literal notranslate"><span class="pre">Pearson_chi_squared_HCR.eval_var_formula()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="Divergences_torch.html#Divergences_torch.Pearson_chi_squared_HCR"><code class="docutils literal notranslate"><span class="pre">Pearson_chi_squared_HCR</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#Divergences_torch.Pearson_chi_squared_HCR.eval_var_formula"><code class="docutils literal notranslate"><span class="pre">Pearson_chi_squared_HCR.eval_var_formula()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#Divergences_torch.Pearson_chi_squared_HCR.eval_var_formula_gen"><code class="docutils literal notranslate"><span class="pre">Pearson_chi_squared_HCR.eval_var_formula_gen()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="Divergences_torch.html#models.Divergences_torch.Pearson_chi_squared_LT"><code class="docutils literal notranslate"><span class="pre">Pearson_chi_squared_LT</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#models.Divergences_torch.Pearson_chi_squared_LT.f_star"><code class="docutils literal notranslate"><span class="pre">Pearson_chi_squared_LT.f_star()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="Divergences_torch.html#Divergences_torch.Pearson_chi_squared_LT"><code class="docutils literal notranslate"><span class="pre">Pearson_chi_squared_LT</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#Divergences_torch.Pearson_chi_squared_LT.f_star"><code class="docutils literal notranslate"><span class="pre">Pearson_chi_squared_LT.f_star()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="Divergences_torch.html#models.Divergences_torch.Renyi_Divergence"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#models.Divergences_torch.Renyi_Divergence.get_order"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence.get_order()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#models.Divergences_torch.Renyi_Divergence.set_order"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence.set_order()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="Divergences_torch.html#Divergences_torch.Renyi_Divergence"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#Divergences_torch.Renyi_Divergence.get_order"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence.get_order()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#Divergences_torch.Renyi_Divergence.set_order"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence.set_order()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="Divergences_torch.html#models.Divergences_torch.Renyi_Divergence_CC"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_CC</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#models.Divergences_torch.Renyi_Divergence_CC.eval_var_formula"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_CC.eval_var_formula()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#models.Divergences_torch.Renyi_Divergence_CC.final_layer_activation"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_CC.final_layer_activation()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="Divergences_torch.html#Divergences_torch.Renyi_Divergence_CC"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_CC</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#Divergences_torch.Renyi_Divergence_CC.eval_var_formula"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_CC.eval_var_formula()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#Divergences_torch.Renyi_Divergence_CC.eval_var_formula_gen"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_CC.eval_var_formula_gen()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#Divergences_torch.Renyi_Divergence_CC.final_layer_activation"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_CC.final_layer_activation()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="Divergences_torch.html#models.Divergences_torch.Renyi_Divergence_CC_rescaled"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_CC_rescaled</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#models.Divergences_torch.Renyi_Divergence_CC_rescaled.eval_var_formula"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_CC_rescaled.eval_var_formula()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#models.Divergences_torch.Renyi_Divergence_CC_rescaled.final_layer_activation"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_CC_rescaled.final_layer_activation()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="Divergences_torch.html#Divergences_torch.Renyi_Divergence_CC_rescaled"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_CC_rescaled</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#Divergences_torch.Renyi_Divergence_CC_rescaled.eval_var_formula"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_CC_rescaled.eval_var_formula()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#Divergences_torch.Renyi_Divergence_CC_rescaled.eval_var_formula_gen"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_CC_rescaled.eval_var_formula_gen()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#Divergences_torch.Renyi_Divergence_CC_rescaled.final_layer_activation"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_CC_rescaled.final_layer_activation()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="Divergences_torch.html#models.Divergences_torch.Renyi_Divergence_DV"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_DV</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#models.Divergences_torch.Renyi_Divergence_DV.eval_var_formula"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_DV.eval_var_formula()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="Divergences_torch.html#Divergences_torch.Renyi_Divergence_DV"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_DV</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#Divergences_torch.Renyi_Divergence_DV.eval_var_formula"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_DV.eval_var_formula()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#Divergences_torch.Renyi_Divergence_DV.eval_var_formula_gen"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_DV.eval_var_formula_gen()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="Divergences_torch.html#models.Divergences_torch.Renyi_Divergence_WCR"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_WCR</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#models.Divergences_torch.Renyi_Divergence_WCR.eval_var_formula"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_WCR.eval_var_formula()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="Divergences_torch.html#Divergences_torch.Renyi_Divergence_WCR"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_WCR</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#Divergences_torch.Renyi_Divergence_WCR.eval_var_formula"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_WCR.eval_var_formula()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#Divergences_torch.Renyi_Divergence_WCR.eval_var_formula_gen"><code class="docutils literal notranslate"><span class="pre">Renyi_Divergence_WCR.eval_var_formula_gen()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="Divergences_torch.html#models.Divergences_torch.alpha_Divergence_LT"><code class="docutils literal notranslate"><span class="pre">alpha_Divergence_LT</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#models.Divergences_torch.alpha_Divergence_LT.f_star"><code class="docutils literal notranslate"><span class="pre">alpha_Divergence_LT.f_star()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#models.Divergences_torch.alpha_Divergence_LT.get_order"><code class="docutils literal notranslate"><span class="pre">alpha_Divergence_LT.get_order()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#models.Divergences_torch.alpha_Divergence_LT.set_order"><code class="docutils literal notranslate"><span class="pre">alpha_Divergence_LT.set_order()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="Divergences_torch.html#Divergences_torch.alpha_Divergence_LT"><code class="docutils literal notranslate"><span class="pre">alpha_Divergence_LT</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#Divergences_torch.alpha_Divergence_LT.f_star"><code class="docutils literal notranslate"><span class="pre">alpha_Divergence_LT.f_star()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#Divergences_torch.alpha_Divergence_LT.get_order"><code class="docutils literal notranslate"><span class="pre">alpha_Divergence_LT.get_order()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#Divergences_torch.alpha_Divergence_LT.set_order"><code class="docutils literal notranslate"><span class="pre">alpha_Divergence_LT.set_order()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="Divergences_torch.html#models.Divergences_torch.f_Divergence"><code class="docutils literal notranslate"><span class="pre">f_Divergence</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#models.Divergences_torch.f_Divergence.eval_var_formula"><code class="docutils literal notranslate"><span class="pre">f_Divergence.eval_var_formula()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#models.Divergences_torch.f_Divergence.f_star"><code class="docutils literal notranslate"><span class="pre">f_Divergence.f_star()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#models.Divergences_torch.f_Divergence.final_layer_activation"><code class="docutils literal notranslate"><span class="pre">f_Divergence.final_layer_activation()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="Divergences_torch.html#Divergences_torch.f_Divergence"><code class="docutils literal notranslate"><span class="pre">f_Divergence</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#Divergences_torch.f_Divergence.eval_var_formula"><code class="docutils literal notranslate"><span class="pre">f_Divergence.eval_var_formula()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#Divergences_torch.f_Divergence.eval_var_formula_gen"><code class="docutils literal notranslate"><span class="pre">f_Divergence.eval_var_formula_gen()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#Divergences_torch.f_Divergence.f_star"><code class="docutils literal notranslate"><span class="pre">f_Divergence.f_star()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#Divergences_torch.f_Divergence.final_layer_activation"><code class="docutils literal notranslate"><span class="pre">f_Divergence.final_layer_activation()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="Divergences_torch.html#models.Divergences_torch.squared_Hellinger_LT"><code class="docutils literal notranslate"><span class="pre">squared_Hellinger_LT</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#models.Divergences_torch.squared_Hellinger_LT.f_star"><code class="docutils literal notranslate"><span class="pre">squared_Hellinger_LT.f_star()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#models.Divergences_torch.squared_Hellinger_LT.final_layer_activation"><code class="docutils literal notranslate"><span class="pre">squared_Hellinger_LT.final_layer_activation()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="Divergences_torch.html#Divergences_torch.squared_Hellinger_LT"><code class="docutils literal notranslate"><span class="pre">squared_Hellinger_LT</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#Divergences_torch.squared_Hellinger_LT.f_star"><code class="docutils literal notranslate"><span class="pre">squared_Hellinger_LT.f_star()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Divergences_torch.html#Divergences_torch.squared_Hellinger_LT.final_layer_activation"><code class="docutils literal notranslate"><span class="pre">squared_Hellinger_LT.final_layer_activation()</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="GAN.html">GAN module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="GAN.html#models.GAN.GAN"><code class="docutils literal notranslate"><span class="pre">GAN</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="GAN.html#models.GAN.GAN.disc_train_step"><code class="docutils literal notranslate"><span class="pre">GAN.disc_train_step()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="GAN.html#models.GAN.GAN.estimate_loss"><code class="docutils literal notranslate"><span class="pre">GAN.estimate_loss()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="GAN.html#models.GAN.GAN.gen_train_step"><code class="docutils literal notranslate"><span class="pre">GAN.gen_train_step()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="GAN.html#models.GAN.GAN.generate_samples"><code class="docutils literal notranslate"><span class="pre">GAN.generate_samples()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="GAN.html#models.GAN.GAN.train"><code class="docutils literal notranslate"><span class="pre">GAN.train()</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="GAN_CIFAR10_jax.html">GAN_CIFAR10_jax module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="GAN_CIFAR10_jax.html#GAN_CIFAR10_jax.Discriminator"><code class="docutils literal notranslate"><span class="pre">Discriminator</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="GAN_CIFAR10_jax.html#GAN_CIFAR10_jax.Discriminator.__call__"><code class="docutils literal notranslate"><span class="pre">Discriminator.__call__()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="GAN_CIFAR10_jax.html#GAN_CIFAR10_jax.Discriminator.name"><code class="docutils literal notranslate"><span class="pre">Discriminator.name</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="GAN_CIFAR10_jax.html#GAN_CIFAR10_jax.Discriminator.parent"><code class="docutils literal notranslate"><span class="pre">Discriminator.parent</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="GAN_CIFAR10_jax.html#GAN_CIFAR10_jax.Discriminator.scope"><code class="docutils literal notranslate"><span class="pre">Discriminator.scope</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="GAN_CIFAR10_jax.html#GAN_CIFAR10_jax.Discriminator_cond"><code class="docutils literal notranslate"><span class="pre">Discriminator_cond</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="GAN_CIFAR10_jax.html#GAN_CIFAR10_jax.Discriminator_cond.__call__"><code class="docutils literal notranslate"><span class="pre">Discriminator_cond.__call__()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="GAN_CIFAR10_jax.html#GAN_CIFAR10_jax.Discriminator_cond.name"><code class="docutils literal notranslate"><span class="pre">Discriminator_cond.name</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="GAN_CIFAR10_jax.html#GAN_CIFAR10_jax.Discriminator_cond.parent"><code class="docutils literal notranslate"><span class="pre">Discriminator_cond.parent</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="GAN_CIFAR10_jax.html#GAN_CIFAR10_jax.Discriminator_cond.scope"><code class="docutils literal notranslate"><span class="pre">Discriminator_cond.scope</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="GAN_CIFAR10_jax.html#GAN_CIFAR10_jax.Generator"><code class="docutils literal notranslate"><span class="pre">Generator</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="GAN_CIFAR10_jax.html#GAN_CIFAR10_jax.Generator.__call__"><code class="docutils literal notranslate"><span class="pre">Generator.__call__()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="GAN_CIFAR10_jax.html#GAN_CIFAR10_jax.Generator.name"><code class="docutils literal notranslate"><span class="pre">Generator.name</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="GAN_CIFAR10_jax.html#GAN_CIFAR10_jax.Generator.parent"><code class="docutils literal notranslate"><span class="pre">Generator.parent</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="GAN_CIFAR10_jax.html#GAN_CIFAR10_jax.Generator.scope"><code class="docutils literal notranslate"><span class="pre">Generator.scope</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="GAN_CIFAR10_jax.html#GAN_CIFAR10_jax.Generator_cond"><code class="docutils literal notranslate"><span class="pre">Generator_cond</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="GAN_CIFAR10_jax.html#GAN_CIFAR10_jax.Generator_cond.__call__"><code class="docutils literal notranslate"><span class="pre">Generator_cond.__call__()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="GAN_CIFAR10_jax.html#GAN_CIFAR10_jax.Generator_cond.name"><code class="docutils literal notranslate"><span class="pre">Generator_cond.name</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="GAN_CIFAR10_jax.html#GAN_CIFAR10_jax.Generator_cond.parent"><code class="docutils literal notranslate"><span class="pre">Generator_cond.parent</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="GAN_CIFAR10_jax.html#GAN_CIFAR10_jax.Generator_cond.scope"><code class="docutils literal notranslate"><span class="pre">Generator_cond.scope</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="GAN_CIFAR10_tf.html">GAN_CIFAR10_tf module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="GAN_CIFAR10_tf.html#GAN_CIFAR10_tf.Discriminator"><code class="docutils literal notranslate"><span class="pre">Discriminator</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="GAN_CIFAR10_tf.html#GAN_CIFAR10_tf.Discriminator.call"><code class="docutils literal notranslate"><span class="pre">Discriminator.call()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="GAN_CIFAR10_tf.html#GAN_CIFAR10_tf.Discriminator.build"><code class="docutils literal notranslate"><span class="pre">Discriminator.build()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="GAN_CIFAR10_tf.html#id0"><code class="docutils literal notranslate"><span class="pre">Discriminator.call()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="GAN_CIFAR10_tf.html#GAN_CIFAR10_tf.DiscriminatorBlock"><code class="docutils literal notranslate"><span class="pre">DiscriminatorBlock</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="GAN_CIFAR10_tf.html#GAN_CIFAR10_tf.DiscriminatorBlock.call"><code class="docutils literal notranslate"><span class="pre">DiscriminatorBlock.call()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="GAN_CIFAR10_tf.html#GAN_CIFAR10_tf.DiscriminatorBlock.build"><code class="docutils literal notranslate"><span class="pre">DiscriminatorBlock.build()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="GAN_CIFAR10_tf.html#id1"><code class="docutils literal notranslate"><span class="pre">DiscriminatorBlock.call()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="GAN_CIFAR10_tf.html#GAN_CIFAR10_tf.Generator"><code class="docutils literal notranslate"><span class="pre">Generator</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="GAN_CIFAR10_tf.html#GAN_CIFAR10_tf.Generator.call"><code class="docutils literal notranslate"><span class="pre">Generator.call()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="GAN_CIFAR10_tf.html#GAN_CIFAR10_tf.Generator.build"><code class="docutils literal notranslate"><span class="pre">Generator.build()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="GAN_CIFAR10_tf.html#id2"><code class="docutils literal notranslate"><span class="pre">Generator.call()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="GAN_CIFAR10_tf.html#GAN_CIFAR10_tf.GeneratorBlock"><code class="docutils literal notranslate"><span class="pre">GeneratorBlock</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="GAN_CIFAR10_tf.html#GAN_CIFAR10_tf.GeneratorBlock.call"><code class="docutils literal notranslate"><span class="pre">GeneratorBlock.call()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="GAN_CIFAR10_tf.html#GAN_CIFAR10_tf.GeneratorBlock.build"><code class="docutils literal notranslate"><span class="pre">GeneratorBlock.build()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="GAN_CIFAR10_tf.html#id3"><code class="docutils literal notranslate"><span class="pre">GeneratorBlock.call()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="GAN_CIFAR10_tf.html#GAN_CIFAR10_tf.GeneratorBlock.compute_output_shape"><code class="docutils literal notranslate"><span class="pre">GeneratorBlock.compute_output_shape()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="GAN_CIFAR10_tf.html#GAN_CIFAR10_tf.GeneratorBlock.from_config"><code class="docutils literal notranslate"><span class="pre">GeneratorBlock.from_config()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="GAN_CIFAR10_tf.html#GAN_CIFAR10_tf.GeneratorBlock.get_config"><code class="docutils literal notranslate"><span class="pre">GeneratorBlock.get_config()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="GAN_CIFAR10_tf.html#GAN_CIFAR10_tf.avg_pool2d"><code class="docutils literal notranslate"><span class="pre">avg_pool2d()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="GAN_CIFAR10_torch.html">GAN_CIFAR10_torch module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="GAN_CIFAR10_torch.html#GAN_CIFAR10_torch.Discriminator"><code class="docutils literal notranslate"><span class="pre">Discriminator</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="GAN_CIFAR10_torch.html#GAN_CIFAR10_torch.Discriminator.forward"><code class="docutils literal notranslate"><span class="pre">Discriminator.forward()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="GAN_CIFAR10_torch.html#id0"><code class="docutils literal notranslate"><span class="pre">Discriminator.forward()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="GAN_CIFAR10_torch.html#GAN_CIFAR10_torch.DiscriminatorBlock"><code class="docutils literal notranslate"><span class="pre">DiscriminatorBlock</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="GAN_CIFAR10_torch.html#GAN_CIFAR10_torch.DiscriminatorBlock.forward"><code class="docutils literal notranslate"><span class="pre">DiscriminatorBlock.forward()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="GAN_CIFAR10_torch.html#id1"><code class="docutils literal notranslate"><span class="pre">DiscriminatorBlock.forward()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="GAN_CIFAR10_torch.html#GAN_CIFAR10_torch.Discriminator_cond"><code class="docutils literal notranslate"><span class="pre">Discriminator_cond</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="GAN_CIFAR10_torch.html#GAN_CIFAR10_torch.Discriminator_cond.forward"><code class="docutils literal notranslate"><span class="pre">Discriminator_cond.forward()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="GAN_CIFAR10_torch.html#id2"><code class="docutils literal notranslate"><span class="pre">Discriminator_cond.forward()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="GAN_CIFAR10_torch.html#GAN_CIFAR10_torch.Generator"><code class="docutils literal notranslate"><span class="pre">Generator</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="GAN_CIFAR10_torch.html#GAN_CIFAR10_torch.Generator.forward"><code class="docutils literal notranslate"><span class="pre">Generator.forward()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="GAN_CIFAR10_torch.html#id3"><code class="docutils literal notranslate"><span class="pre">Generator.forward()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="GAN_CIFAR10_torch.html#GAN_CIFAR10_torch.GeneratorBlock"><code class="docutils literal notranslate"><span class="pre">GeneratorBlock</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="GAN_CIFAR10_torch.html#GAN_CIFAR10_torch.GeneratorBlock.forward"><code class="docutils literal notranslate"><span class="pre">GeneratorBlock.forward()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="GAN_CIFAR10_torch.html#id4"><code class="docutils literal notranslate"><span class="pre">GeneratorBlock.forward()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="GAN_CIFAR10_torch.html#GAN_CIFAR10_torch.Generator_cond"><code class="docutils literal notranslate"><span class="pre">Generator_cond</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="GAN_CIFAR10_torch.html#GAN_CIFAR10_torch.Generator_cond.forward"><code class="docutils literal notranslate"><span class="pre">Generator_cond.forward()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="GAN_CIFAR10_torch.html#id5"><code class="docutils literal notranslate"><span class="pre">Generator_cond.forward()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="GAN_CIFAR10_torch.html#GAN_CIFAR10_torch.avg_pool2d"><code class="docutils literal notranslate"><span class="pre">avg_pool2d()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="GAN_MNIST_jax.html">GAN_MNIST_jax module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="GAN_MNIST_jax.html#GAN_MNIST_jax.Discriminator_MNIST_cond"><code class="docutils literal notranslate"><span class="pre">Discriminator_MNIST_cond</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="GAN_MNIST_jax.html#GAN_MNIST_jax.Discriminator_MNIST_cond.name"><code class="docutils literal notranslate"><span class="pre">Discriminator_MNIST_cond.name</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="GAN_MNIST_jax.html#GAN_MNIST_jax.Discriminator_MNIST_cond.parent"><code class="docutils literal notranslate"><span class="pre">Discriminator_MNIST_cond.parent</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="GAN_MNIST_jax.html#GAN_MNIST_jax.Discriminator_MNIST_cond.scope"><code class="docutils literal notranslate"><span class="pre">Discriminator_MNIST_cond.scope</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="GAN_MNIST_jax.html#GAN_MNIST_jax.Generator_MNIST_cond"><code class="docutils literal notranslate"><span class="pre">Generator_MNIST_cond</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="GAN_MNIST_jax.html#GAN_MNIST_jax.Generator_MNIST_cond.latent_dim"><code class="docutils literal notranslate"><span class="pre">Generator_MNIST_cond.latent_dim</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="GAN_MNIST_jax.html#GAN_MNIST_jax.Generator_MNIST_cond.name"><code class="docutils literal notranslate"><span class="pre">Generator_MNIST_cond.name</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="GAN_MNIST_jax.html#GAN_MNIST_jax.Generator_MNIST_cond.num_classes"><code class="docutils literal notranslate"><span class="pre">Generator_MNIST_cond.num_classes</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="GAN_MNIST_jax.html#GAN_MNIST_jax.Generator_MNIST_cond.parent"><code class="docutils literal notranslate"><span class="pre">Generator_MNIST_cond.parent</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="GAN_MNIST_jax.html#GAN_MNIST_jax.Generator_MNIST_cond.scope"><code class="docutils literal notranslate"><span class="pre">Generator_MNIST_cond.scope</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="GAN_MNIST_tf.html">GAN_MNIST_tf module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="GAN_MNIST_tf.html#GAN_MNIST_tf.Discriminator_MNIST_cond"><code class="docutils literal notranslate"><span class="pre">Discriminator_MNIST_cond()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="GAN_MNIST_tf.html#GAN_MNIST_tf.Generator_MNIST_cond"><code class="docutils literal notranslate"><span class="pre">Generator_MNIST_cond()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="GAN_MNIST_torch.html">GAN_MNIST_torch module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="GAN_MNIST_torch.html#GAN_MNIST_torch.Discriminator_MNIST"><code class="docutils literal notranslate"><span class="pre">Discriminator_MNIST</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="GAN_MNIST_torch.html#GAN_MNIST_torch.Discriminator_MNIST.forward"><code class="docutils literal notranslate"><span class="pre">Discriminator_MNIST.forward()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="GAN_MNIST_torch.html#id0"><code class="docutils literal notranslate"><span class="pre">Discriminator_MNIST.forward()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="GAN_MNIST_torch.html#GAN_MNIST_torch.Discriminator_MNIST_cond"><code class="docutils literal notranslate"><span class="pre">Discriminator_MNIST_cond</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="GAN_MNIST_torch.html#GAN_MNIST_torch.Discriminator_MNIST_cond.forward"><code class="docutils literal notranslate"><span class="pre">Discriminator_MNIST_cond.forward()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="GAN_MNIST_torch.html#id1"><code class="docutils literal notranslate"><span class="pre">Discriminator_MNIST_cond.forward()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="GAN_MNIST_torch.html#GAN_MNIST_torch.Generator_MNIST"><code class="docutils literal notranslate"><span class="pre">Generator_MNIST</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="GAN_MNIST_torch.html#GAN_MNIST_torch.Generator_MNIST.forward"><code class="docutils literal notranslate"><span class="pre">Generator_MNIST.forward()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="GAN_MNIST_torch.html#id2"><code class="docutils literal notranslate"><span class="pre">Generator_MNIST.forward()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="GAN_MNIST_torch.html#GAN_MNIST_torch.Generator_MNIST_cond"><code class="docutils literal notranslate"><span class="pre">Generator_MNIST_cond</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="GAN_MNIST_torch.html#GAN_MNIST_torch.Generator_MNIST_cond.forward"><code class="docutils literal notranslate"><span class="pre">Generator_MNIST_cond.forward()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="GAN_MNIST_torch.html#id3"><code class="docutils literal notranslate"><span class="pre">Generator_MNIST_cond.forward()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="GAN_jax.html">GAN_jax module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="GAN_jax.html#GAN_jax.DataLoader"><code class="docutils literal notranslate"><span class="pre">DataLoader</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="GAN_jax.html#GAN_jax.GAN"><code class="docutils literal notranslate"><span class="pre">GAN</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="GAN_jax.html#GAN_jax.GAN.disc_train_step"><code class="docutils literal notranslate"><span class="pre">GAN.disc_train_step()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="GAN_jax.html#GAN_jax.GAN.estimate_loss"><code class="docutils literal notranslate"><span class="pre">GAN.estimate_loss()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="GAN_jax.html#GAN_jax.GAN.gen_train_step"><code class="docutils literal notranslate"><span class="pre">GAN.gen_train_step()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="GAN_jax.html#GAN_jax.GAN.generate_samples"><code class="docutils literal notranslate"><span class="pre">GAN.generate_samples()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="GAN_jax.html#GAN_jax.GAN.train"><code class="docutils literal notranslate"><span class="pre">GAN.train()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="GAN_tf.html">GAN_tf module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="GAN_tf.html#GAN_tf.GAN"><code class="docutils literal notranslate"><span class="pre">GAN</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="GAN_tf.html#GAN_tf.GAN.disc_train_step"><code class="docutils literal notranslate"><span class="pre">GAN.disc_train_step()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="GAN_tf.html#GAN_tf.GAN.estimate_loss"><code class="docutils literal notranslate"><span class="pre">GAN.estimate_loss()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="GAN_tf.html#GAN_tf.GAN.gen_train_step"><code class="docutils literal notranslate"><span class="pre">GAN.gen_train_step()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="GAN_tf.html#GAN_tf.GAN.generate_samples"><code class="docutils literal notranslate"><span class="pre">GAN.generate_samples()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="GAN_tf.html#GAN_tf.GAN.train"><code class="docutils literal notranslate"><span class="pre">GAN.train()</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="GAN_torch.html">GAN_torch module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="GAN_torch.html#models.GAN_torch.GAN"><code class="docutils literal notranslate"><span class="pre">GAN</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="GAN_torch.html#models.GAN_torch.GAN.disc_train_step"><code class="docutils literal notranslate"><span class="pre">GAN.disc_train_step()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="GAN_torch.html#models.GAN_torch.GAN.estimate_loss"><code class="docutils literal notranslate"><span class="pre">GAN.estimate_loss()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="GAN_torch.html#models.GAN_torch.GAN.gen_train_step"><code class="docutils literal notranslate"><span class="pre">GAN.gen_train_step()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="GAN_torch.html#models.GAN_torch.GAN.generate_samples"><code class="docutils literal notranslate"><span class="pre">GAN.generate_samples()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="GAN_torch.html#models.GAN_torch.GAN.train"><code class="docutils literal notranslate"><span class="pre">GAN.train()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="GAN_torch.html#GAN_torch.GAN"><code class="docutils literal notranslate"><span class="pre">GAN</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="GAN_torch.html#GAN_torch.GAN.disc_train_step"><code class="docutils literal notranslate"><span class="pre">GAN.disc_train_step()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="GAN_torch.html#GAN_torch.GAN.estimate_loss"><code class="docutils literal notranslate"><span class="pre">GAN.estimate_loss()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="GAN_torch.html#GAN_torch.GAN.gen_train_step"><code class="docutils literal notranslate"><span class="pre">GAN.gen_train_step()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="GAN_torch.html#GAN_torch.GAN.generate_samples"><code class="docutils literal notranslate"><span class="pre">GAN.generate_samples()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="GAN_torch.html#GAN_torch.GAN.train"><code class="docutils literal notranslate"><span class="pre">GAN.train()</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="tf_model.html">tf_model module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="tf_model.html#models.tf_model.Discriminator"><code class="docutils literal notranslate"><span class="pre">Discriminator</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="tf_model.html#models.tf_model.Discriminator.bounded_activation"><code class="docutils literal notranslate"><span class="pre">Discriminator.bounded_activation()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="tf_model.html#models.tf_model.Discriminator.call"><code class="docutils literal notranslate"><span class="pre">Discriminator.call()</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="model_jax.html">model_jax module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="model_jax.html#model_jax.Discriminator"><code class="docutils literal notranslate"><span class="pre">Discriminator</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="model_jax.html#model_jax.Discriminator.bounded"><code class="docutils literal notranslate"><span class="pre">Discriminator.bounded</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="model_jax.html#model_jax.Discriminator.bounded_activation"><code class="docutils literal notranslate"><span class="pre">Discriminator.bounded_activation()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="model_jax.html#model_jax.Discriminator.input_dim"><code class="docutils literal notranslate"><span class="pre">Discriminator.input_dim</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="model_jax.html#model_jax.Discriminator.layers_list"><code class="docutils literal notranslate"><span class="pre">Discriminator.layers_list</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="model_jax.html#model_jax.Discriminator.name"><code class="docutils literal notranslate"><span class="pre">Discriminator.name</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="model_jax.html#model_jax.Discriminator.parent"><code class="docutils literal notranslate"><span class="pre">Discriminator.parent</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="model_jax.html#model_jax.Discriminator.scope"><code class="docutils literal notranslate"><span class="pre">Discriminator.scope</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="model_jax.html#model_jax.Discriminator.spec_norm"><code class="docutils literal notranslate"><span class="pre">Discriminator.spec_norm</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="tf_model.html#models.tf_model.Generator"><code class="docutils literal notranslate"><span class="pre">Generator</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="tf_model.html#models.tf_model.Generator.call"><code class="docutils literal notranslate"><span class="pre">Generator.call()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="model_jax.html#model_jax.DiscriminatorMNIST"><code class="docutils literal notranslate"><span class="pre">DiscriminatorMNIST</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="model_jax.html#model_jax.DiscriminatorMNIST.name"><code class="docutils literal notranslate"><span class="pre">DiscriminatorMNIST.name</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="model_jax.html#model_jax.DiscriminatorMNIST.parent"><code class="docutils literal notranslate"><span class="pre">DiscriminatorMNIST.parent</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="model_jax.html#model_jax.DiscriminatorMNIST.scope"><code class="docutils literal notranslate"><span class="pre">DiscriminatorMNIST.scope</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="model_jax.html#model_jax.Generator"><code class="docutils literal notranslate"><span class="pre">Generator</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="model_jax.html#model_jax.Generator.X_dim"><code class="docutils literal notranslate"><span class="pre">Generator.X_dim</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="model_jax.html#model_jax.Generator.Z_dim"><code class="docutils literal notranslate"><span class="pre">Generator.Z_dim</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="model_jax.html#model_jax.Generator.layers_list"><code class="docutils literal notranslate"><span class="pre">Generator.layers_list</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="model_jax.html#model_jax.Generator.name"><code class="docutils literal notranslate"><span class="pre">Generator.name</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="model_jax.html#model_jax.Generator.parent"><code class="docutils literal notranslate"><span class="pre">Generator.parent</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="model_jax.html#model_jax.Generator.scope"><code class="docutils literal notranslate"><span class="pre">Generator.scope</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="model_jax.html#model_jax.Generator.spec_norm"><code class="docutils literal notranslate"><span class="pre">Generator.spec_norm</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="torch_model.html">torch_model module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="torch_model.html#models.torch_model.BoundedActivation"><code class="docutils literal notranslate"><span class="pre">BoundedActivation</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="torch_model.html#models.torch_model.BoundedActivation.bounded_activation"><code class="docutils literal notranslate"><span class="pre">BoundedActivation.bounded_activation()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="torch_model.html#models.torch_model.BoundedActivation.forward"><code class="docutils literal notranslate"><span class="pre">BoundedActivation.forward()</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="model_tf.html">model_tf module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="model_tf.html#model_tf.Discriminator"><code class="docutils literal notranslate"><span class="pre">Discriminator</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="model_tf.html#model_tf.Discriminator.call"><code class="docutils literal notranslate"><span class="pre">Discriminator.call()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="model_tf.html#model_tf.Discriminator.bounded_activation"><code class="docutils literal notranslate"><span class="pre">Discriminator.bounded_activation()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="model_tf.html#id0"><code class="docutils literal notranslate"><span class="pre">Discriminator.bounded_activation()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="model_tf.html#id1"><code class="docutils literal notranslate"><span class="pre">Discriminator.call()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="torch_model.html#models.torch_model.Discriminator"><code class="docutils literal notranslate"><span class="pre">Discriminator</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="torch_model.html#models.torch_model.Discriminator.forward"><code class="docutils literal notranslate"><span class="pre">Discriminator.forward()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="model_tf.html#model_tf.DiscriminatorMNIST"><code class="docutils literal notranslate"><span class="pre">DiscriminatorMNIST</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="model_tf.html#model_tf.DiscriminatorMNIST.call"><code class="docutils literal notranslate"><span class="pre">DiscriminatorMNIST.call()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="model_tf.html#id2"><code class="docutils literal notranslate"><span class="pre">DiscriminatorMNIST.call()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="torch_model.html#models.torch_model.Generator"><code class="docutils literal notranslate"><span class="pre">Generator</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="torch_model.html#models.torch_model.Generator.forward"><code class="docutils literal notranslate"><span class="pre">Generator.forward()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="model_tf.html#model_tf.Generator"><code class="docutils literal notranslate"><span class="pre">Generator</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="model_tf.html#model_tf.Generator.call"><code class="docutils literal notranslate"><span class="pre">Generator.call()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="model_tf.html#id3"><code class="docutils literal notranslate"><span class="pre">Generator.call()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="model_torch.html">model_torch module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="model_torch.html#model_torch.BoundedActivation"><code class="docutils literal notranslate"><span class="pre">BoundedActivation</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="model_torch.html#model_torch.BoundedActivation.bounded_activation"><code class="docutils literal notranslate"><span class="pre">BoundedActivation.bounded_activation()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="model_torch.html#model_torch.BoundedActivation.forward"><code class="docutils literal notranslate"><span class="pre">BoundedActivation.forward()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="model_torch.html#id0"><code class="docutils literal notranslate"><span class="pre">BoundedActivation.bounded_activation()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="model_torch.html#id1"><code class="docutils literal notranslate"><span class="pre">BoundedActivation.forward()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="model_torch.html#model_torch.Discriminator"><code class="docutils literal notranslate"><span class="pre">Discriminator</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="model_torch.html#model_torch.Discriminator.forward"><code class="docutils literal notranslate"><span class="pre">Discriminator.forward()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="model_torch.html#id2"><code class="docutils literal notranslate"><span class="pre">Discriminator.forward()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="model_torch.html#model_torch.Discriminator_MNIST"><code class="docutils literal notranslate"><span class="pre">Discriminator_MNIST</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="model_torch.html#model_torch.Discriminator_MNIST.forward"><code class="docutils literal notranslate"><span class="pre">Discriminator_MNIST.forward()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="model_torch.html#id3"><code class="docutils literal notranslate"><span class="pre">Discriminator_MNIST.forward()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="model_torch.html#model_torch.Generator"><code class="docutils literal notranslate"><span class="pre">Generator</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="model_torch.html#model_torch.Generator.forward"><code class="docutils literal notranslate"><span class="pre">Generator.forward()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="model_torch.html#id4"><code class="docutils literal notranslate"><span class="pre">Generator.forward()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -349,14 +685,14 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="introduction.html" class="btn btn-neutral float-left" title="Introduction" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="Divergences.html" class="btn btn-neutral float-right" title="Divergences module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to NEDIPM’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="Divergences_jax.html" class="btn btn-neutral float-right" title="Divergences_jax module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2023, Yannis Pantazis, Alexandros Angelakis, Jeremiah Birrell, Markos Katsoulakis.</p>
+    <p>&#169; Copyright 2024, Alexandros Angelakis.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

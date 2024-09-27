@@ -16,9 +16,9 @@ current_dir = os.path.dirname(os.path.realpath(__file__))
 parent_dir = os.path.dirname(current_dir)
 sys.path.append(parent_dir)
 
-from models.tf_model import *
-from models.Divergences import *
-from models.GAN import *
+from models.model_tf import *
+from models.Divergences_tf import *
+from models.GAN_tf import *
 
 # read input arguments
 parser = argparse.ArgumentParser(description='Neural-based Estimation of Divergences between Gaussians')
@@ -98,10 +98,6 @@ df=5
 X_dim = d+di+df #dimension of the real data
 offset=1.0
 
-
-
-
-
 def embed_data(x):
     z=np.concatenate((offset*np.ones([x.shape[0],di]),x),axis=1)
     z=np.concatenate((z,offset*np.ones([x.shape[0],df])),axis=1)
@@ -118,13 +114,8 @@ def sample_P(N_samp):
     
     return embed_data(x)
 
-
-
-
 data_P = sample_P(N)
 data_P = data_P.astype('f')
-
-
 
 # construct the discriminator neural network
 act_func = 'relu'
@@ -138,7 +129,6 @@ G_hidden_layers=[64,32,16] #sizes of hidden layers for the generator
 Z_dim=10 #dimension of the noise source for the generator
 
 generator = Generator(X_dim=X_dim, Z_dim=Z_dim, spec_norm=spec_norm, layers_list=G_hidden_layers)
-
 
 #Function for sampling from the noise source
 
@@ -154,13 +144,14 @@ if optimizer == 'RMS':
     disc_optimizer = tf.keras.optimizers.RMSprop(lr)
     gen_optimizer = tf.keras.optimizers.RMSprop(lr)
 
+discriminator.compile(optimizer=disc_optimizer)
+generator.compile(optimizer=gen_optimizer)
 
 # construct gradient penalty
 if use_GP:
     discriminator_penalty=Gradient_Penalty_1Sided(gp_weight, L)
 else:
     discriminator_penalty=None
-
 
 # construct divergence
 if mthd=="IPM":
@@ -196,8 +187,8 @@ if mthd=="Renyi-CC":
 if mthd=="rescaled-Renyi-CC":
     div_dense = Renyi_Divergence_CC_rescaled(discriminator, disc_optimizer, alpha, epochs, m, fl_act_func_CC, discriminator_penalty)
 
-if mthd=="Renyi-WCR":
-    div_dense = Renyi_Divergence_WCR(discriminator, disc_optimizer, epochs, m, fl_act_func_CC, discriminator_penalty)
+if mthd=="Renyi-CC-WCR":
+    div_dense = Renyi_Divergence_WCR(discriminator, disc_optimizer, alpha, epochs, m, fl_act_func_CC, discriminator_penalty)
 
 
 #train GAN
