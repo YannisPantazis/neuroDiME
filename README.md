@@ -1,7 +1,7 @@
 # NeuroDiME: A Software Library on Neural-based Estimation of Divergences and Metrics
 
 ## Overview
-This repository contains implementations for neural-based estimation of divergences and integral probability metrics (IPM). The implemented methods cover a wide range of divergences, including various f-divergences, and integral probability metrics.
+This repository contains implementations for neural-based estimation of divergences and integral probability metrics (IPM). The implemented methods cover a wide range of divergences, including various f-divergences, and integral probability metrics. You can also view the documentation in HTML files, located in the docs/_build/html directory.
 
 ## Class Hierarchy
 The structure of the divergence classes is as follows:
