@@ -529,6 +529,39 @@ class Pearson_chi_squared_LT(f_Divergence):
         return f_star_y
 
 
+class Pearson_chi_squared_HCR(Divergence):
+    '''
+    Pearson chi-squared divergence class based on the Hammersley-Chapman-Robbins bound.
+    chi^2(P||Q), x~P, y~Q.
+    '''
+    def eval_var_formula(self, x, y, params, vars, labels=None, dropout_rng=None):
+        '''
+        Evaluates the variational formula for Pearson chi-squared divergence based on the Hammersley-Chapman-Robbins bound.
+
+        Args:
+            x: Samples from distribution P.
+            y: Samples from distribution Q.
+            labels: Optional labels for the input data.
+
+        Returns:
+            Pearson chi-squared divergence loss.
+        '''
+        D_P, vars_d = self.discriminate(x, params, vars, labels, dropout_rng)
+        D_Q, vars_d = self.discriminate(y, params, vars, labels, dropout_rng)
+
+        D_loss_P = jnp.mean(D_P)
+        D_loss_Q = jnp.mean(D_Q)
+
+        D_loss = (D_loss_P - D_loss_Q)**2 / jnp.var(D_Q)
+        return D_loss, vars_d
+    
+    def eval_var_formula_gen(self, x, params, vars, labels=None, dropout_rng=None):
+        ''' Evaluates the generator's objective based on Pearson chi-squared divergence. '''
+        G_Q, vars_d = self.discriminate(x, params, vars, labels, dropout_rng)
+        G_loss_Q = -jnp.mean(G_Q)
+        return G_loss_Q, vars_d
+    
+    
 class squared_Hellinger_LT(f_Divergence):
     '''
     Squared Hellinger distance class based on the Legendre transform.

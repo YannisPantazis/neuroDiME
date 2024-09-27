@@ -27,6 +27,7 @@ Divergence
 ```
 
 ## Requirements
+Everything was tested on cuda 12.5 and cudnn 8.9.2
 All dependencies are listed in the `requirements.txt` file. To set up the environment, run the following commands:
 ```bash
 # Create a new conda environment
@@ -62,9 +63,10 @@ The following are some example use cases available in this repository:
 3. **Subpopulation detection**: Both synthetic (GMM) and real datasets
 4. **Equivariant dataset**: To test on structured data
 5. **Image-based tasks**: Divergence estimation with possible CNN-based models
+6. **Generation/GANS**: Generating MNIST and CIFAR-10 images
 
 Key parameters to test include sample size, batch size, Lipschitz constant, alpha, and Gamma function space, among others.
-
+All the examples were tested on one GPU, a 4070 Super with 16GB.
 ## Python Files
 - `Divergences.py`: Contains implementations of all the basic divergence families (the test function/discriminator is an input argument).
 - One file for each demonstration example (e.g., `1D Gaussian`, `Mixture of Gaussians`, `Subpopulation detection`, etc.).
@@ -74,16 +76,19 @@ Additionally, gamma function spaces implemented include continuous & bounded, L-
 ## How to Run
 Here are some example commands to run the scripts:
 ```bash
-# Run an N-dimensional Gaussian example
-python N_dim_Gaussian_demo.py --sample_size 10000 --batch_size 1000 --epochs 200 --method KLD-DV --use_GP True
+# Run an N-dimensional Gaussian example with dimension 1
+python N_dim_Gaussian_demo.py --sample_size 10000 --batch_size 1000 --epochs 200 --method KLD-DV --use_GP True --dimension 1
 
-# Run an N-dimensional Gaussian example with dimension 2
-python N_dim_Gaussian_demo.py --sample_size 10000 --batch_size 1000 --epochs 200 --method KLD-DV --use_GP True --dimension 2
+# Run an MNIST GAN example
+python mnist_gan.py --method KLD-DV --use_GP True --conditional True
 
-# (NOT READY YET) Example for large scale bio run
-python3 large_scale_bio_run_new.py --sample_size 100000 --batch_size 10000 --alpha 2.0 --no_repeats 50 --epochs 200 --method IC-rescaled
-# python3 aucs_bio_example.py
-```
+# Run an CIFAR-10 GAN example
+python cifar10_gan.py --method KLD-DV --use_GP True --conditional True
+
+# Run an biological hypothesis test example
+python Divergence_bio_hypothesis_test_demo.py --p 0.01 --method KLD-DV
+
+
 
 ## License
 Please refer to the LICENSE file for more information.
