@@ -8,7 +8,7 @@ from optax import rmsprop, adam
 import time
 import torchvision.datasets as datasets
 import flax.linen as nn
-from flax.training import checkpoints
+from flax.training import checkpoints, train_state
 
 # Add parent directory to sys.path
 current_dir = os.path.dirname(os.path.realpath(__file__))
@@ -81,8 +81,8 @@ layers_list = [32, 32]
 act_func = 'relu'
 
 # load data
-data_h = np.genfromtxt("bio_csv/healthy.csv", delimiter=",").astype('float32')
-data_s = np.genfromtxt("bio_csv/sick.csv", delimiter=",").astype('float32')
+data_h = np.genfromtxt("../bio_csv/healthy.csv", delimiter=",").astype('float32')
+data_s = np.genfromtxt("../bio_csv/sick.csv", delimiter=",").astype('float32')
 
 d = data_h.shape[1]
 layers_list.insert(0, d)
@@ -96,8 +96,7 @@ print(test(x))
 
 # Initialize the model's parameters with a dummy input
 rng = jax.random.PRNGKey(0)
-params = discriminator.init(rng, x)
-print(jax.tree_map(lambda x: x.shape, params)) # Check the parameters
+vars = discriminator.init(rng, x)
 
 # number of sample per class
 N2 = int(np.ceil(N*p))
@@ -140,8 +139,7 @@ if optimizer == 'Adam':
 if optimizer == 'RMS':
     disc_optimizer = rmsprop(lr)
 
-opt_state = disc_optimizer.init(params)
-
+state = train_state.TrainState.create(apply_fn=discriminator.apply, params=vars['params'], tx=disc_optimizer)
 
 # construct gradient penalty
 if use_GP:
@@ -190,7 +188,7 @@ if mthd=="Renyi-WCR":
        	              
     	    
 # Estimate divergence    
-divergence_estimates, params, opt_state = div_dense.train(data_P, data_Q, params, opt_state)
+divergence_estimates, losses = div_dense.train(data_P, data_Q, state, vars)
 
 print('prob sick: '+str(p))      
 print(mthd+':\t\t {:.4}'.format(divergence_estimates[-1]))

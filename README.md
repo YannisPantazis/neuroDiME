@@ -27,7 +27,7 @@ Divergence
 ```
 
 ## Requirements
-Everything was tested on cuda 12.5 and cudnn 8.9.2
+Everything was tested on cuda 12.5, cudnn 8.9.2 and ubuntu 22.04
 All dependencies are listed in the `requirements.txt` file. To set up the environment, run the following commands:
 ```bash
 # Create a new conda environment
@@ -46,6 +46,7 @@ pip install protobuf==3.20.3
 pip install matplotlib==3.7.1
 pip install scipy
 pip install torchsummary
+pip install torchinfo
 
 # Install PyTorch with CUDA support if available
 pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121  # if CUDA is available
@@ -68,8 +69,8 @@ The following are some example use cases available in this repository:
 Key parameters to test include sample size, batch size, Lipschitz constant, alpha, and Gamma function space, among others.
 All the examples were tested on one GPU, a 4070 Super with 16GB.
 ## Python Files
-- `Divergences.py`: Contains implementations of all the basic divergence families (the test function/discriminator is an input argument).
-- One file for each demonstration example (e.g., `1D Gaussian`, `Mixture of Gaussians`, `Subpopulation detection`, etc.).
+- `Divergences_tf.py`, `Divergences_torch`, `Divergences_jax`: Contain implementations of all the basic divergence families (the test function/discriminator is an input argument). Can be found in the folder `models`.
+- One file for each demonstration example (e.g., `1D Gaussian`, `Mixture of Gaussians`, `Subpopulation detection`, etc.). Can be foudn in the folders tf_demos, torch_demos and jax_demos.
 
 Additionally, gamma function spaces implemented include continuous & bounded, L-Lipschitz, equivariant, and user-defined.
 
@@ -87,8 +88,6 @@ python cifar10_gan.py --method KLD-DV --use_GP True --conditional True
 
 # Run an biological hypothesis test example
 python Divergence_bio_hypothesis_test_demo.py --p 0.01 --method KLD-DV
-
-
 
 ## License
 Please refer to the LICENSE file for more information.

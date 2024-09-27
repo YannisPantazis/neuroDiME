@@ -82,11 +82,11 @@ class GAN():
         
         z = jnp.array(z)
         if self.reverse_order:
-            data1 = self.generator.apply(disc_params, z, train=False, rngs={'dropout': jax.random.PRNGKey(0)})
+            data1 = self.generator.apply(disc_params, z, rngs={'dropout': jax.random.PRNGKey(0)})
             data2 = x
         else:
             data1 = x
-            data2 = self.generator.apply(disc_params, z, train=False, rngs={'dropout': jax.random.PRNGKey(0)})
+            data2 = self.generator.apply(disc_params, z, rngs={'dropout': jax.random.PRNGKey(0)})
         
         disc_params, disc_opt_state = self.divergence.train_step(data1, data2, disc_params, disc_opt_state)
         return disc_opt_state, disc_params

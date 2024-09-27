@@ -127,13 +127,13 @@ act_func = 'relu'
 
 D_hidden_layers=[64,32,16] #sizes of hidden layers for the discriminator
 
-discriminator = Discriminator(input_dim=X_dim, batch_size=m, spec_norm=spec_norm, bounded=bounded, layers_list=D_hidden_layers)
+discriminator = Discriminator(input_dim=X_dim, spec_norm=spec_norm, bounded=bounded, layers_list=D_hidden_layers)
 
 #construct the generator neural network
 G_hidden_layers=[64,32,16] #sizes of hidden layers for the generator
 Z_dim=10 #dimension of the noise source for the generator
 
-generator = Generator(X_dim=X_dim, Z_dim=Z_dim, batch_size=m, spec_norm=spec_norm, layers_list=G_hidden_layers)
+generator = Generator(X_dim=X_dim, Z_dim=Z_dim, spec_norm=spec_norm, layers_list=G_hidden_layers)
 
 #Function for sampling from the noise source
 def noise_source(N_samp):
@@ -212,7 +212,7 @@ if mthd=="Renyi-WCR":
 
 # train GAN
 GAN_dense = GAN(div_dense, generator, gen_optimizer, noise_source, epochs, disc_steps_per_gen_step, m, reverse_order)
-generator_samples, loss_array, disc_params, gen_params, disc_opt_state, gen_opt_state = div_dense.train(data_P, disc_params, gen_params, disc_opt_state, gen_opt_state)
+generator_samples, loss_array, disc_params, gen_params, disc_opt_state, gen_opt_state = GAN_dense.train(data_P, disc_params, gen_params, disc_opt_state, gen_opt_state)
 
 #Save results    
 test_name='2Dstudent_submanifold_GAN_demo'

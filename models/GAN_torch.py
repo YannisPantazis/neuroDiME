@@ -102,8 +102,8 @@ class GAN():
                 gen_cost = self.gen_train_step(P_batch, noise_batch)
                 gen_loss += gen_cost
             
-            gen_losses[epoch] = gen_loss / len(P_dataset)
-            disc_losses[epoch] = disc_loss / len(P_dataset)
+            gen_losses.append(gen_loss / len(P_dataset))
+            disc_losses.append(disc_loss / len(P_dataset))
             
             if save_frequency is not None and (epoch+1) % save_frequency == 0:
                 if num_gen_samples_to_save is not None:

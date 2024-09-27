@@ -153,7 +153,7 @@ def main(mthd):
     parser.add_argument('--load_model', choices=('True','False'), default='False', type=str, metavar='load_model')  
     parser.add_argument('--load_model_path', default='trained_models', type=str, metavar='load_model_path')
     parser.add_argument('--run_number', default=1, type=int, metavar='run_num')
-    parser.add_argument('--conditional', choices=('True','False'), default='False', type=str, metavar='conditional')
+    parser.add_argument('--conditional', choices=('True','False'), default='True', type=str, metavar='conditional')
     
     opt = parser.parse_args()
     opt_dict = vars(opt)

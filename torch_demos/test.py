@@ -485,12 +485,13 @@ def main(mthd, run):
     
     
 if __name__ == '__main__':
-    methods = ['alpha-LT', 'Renyi-DV']
+    methods = ['chi-squared-HCR']
     # methods = ['Renyi-CC', 'rescaled-Renyi-CC', 'Renyi-CC-WCR']
     runs = 3
 
-    for method in methods:
-        for run in range(1, runs+1):
-            fid_scores = main(method, run)
-            print(f'Completed training for {method}')
-    
+    # for method in methods:
+    #     for run in range(1, runs+1):
+    #         fid_scores = main(method, run)
+    #         print(f'Completed training for {method}')
+    fid_scores = main('chi-squared-HCR', 3)
+    print(f'COmpleted training for chi-squared-HCR')

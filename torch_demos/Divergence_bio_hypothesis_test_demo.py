@@ -11,7 +11,7 @@ sys.path.append(parent_dir)
 from models.model_torch import *
 from models.Divergences_torch import *
 
-def main(mthd, p):
+def main():
     # read input arguments
     parser = argparse.ArgumentParser(description='AUC for Sick Cell Detection using Neural-based Variational Divergences ')
     parser.add_argument('--prob_sick', type=float, metavar='p')
@@ -37,8 +37,8 @@ def main(mthd, p):
     opt_dict = vars(opt)
     print('parsed options:', opt_dict)
 
-    # p=opt_dict['prob_sick']
-    # mthd = opt_dict['method']
+    p=opt_dict['prob_sick']
+    mthd = opt_dict['method']
     N = opt_dict['sample_size']
     m = opt_dict['batch_size']
     lr = opt_dict['lr']
@@ -173,56 +173,23 @@ def main(mthd, p):
     # Estimate divergence    
     divergence_estimates = div_dense.train(data_P, data_Q)
 
-    # print('prob sick: '+str(p))      
-    # print(mthd+':\t\t {:.4}'.format(divergence_estimates[-1]))
-    # print()
+    print('prob sick: '+str(p))      
+    print(mthd+':\t\t {:.4}'.format(divergence_estimates[-1]))
+    print()
             
-    # #save result       
-    # test_name="Bio_hypothesis_test_torch"
+    #save result       
+    test_name="Bio_hypothesis_test_torch_eee"
 
-    # if not os.path.exists(test_name):
-    #     os.makedirs(test_name)
+    if not os.path.exists(test_name):
+        os.makedirs(test_name)
         
             
-    # with open(test_name+'/estimated_'+mthd+'_p_{:.1e}'.format(p)+'_N_'+str(N)+'_m_'+str(m)+'_Lrate_{:.1e}'.format(lr)+'_epochs_'+str(epochs)+'_alpha_{:.1f}'.format(alpha)+'_L_{:.1f}'.format(L)+'_gp_weight_{:.1f}'.format(gp_weight)+'_spec_norm_'+str(spec_norm)+'_bounded_'+str(bounded)+'_reverse_'+str(reverse_order)+'_run_num_'+str(run_num)+'.csv', "w") as output:
-    #     writer = csv.writer(output, lineterminator='\n')
-    #     for divergence_estimate in divergence_estimates:
-    #         writer.writerow([divergence_estimate]) 
-    return np.array(divergence_estimates)
+    with open(test_name+'/estimated_'+mthd+'_p_{:.1e}'.format(p)+'_N_'+str(N)+'_m_'+str(m)+'_Lrate_{:.1e}'.format(lr)+'_epochs_'+str(epochs)+'_alpha_{:.1f}'.format(alpha)+'_L_{:.1f}'.format(L)+'_gp_weight_{:.1f}'.format(gp_weight)+'_spec_norm_'+str(spec_norm)+'_bounded_'+str(bounded)+'_reverse_'+str(reverse_order)+'_run_num_'+str(run_num)+'.csv', "w") as output:
+        writer = csv.writer(output, lineterminator='\n')
+        for divergence_estimate in divergence_estimates:
+            writer.writerow([divergence_estimate]) 
 
 
 if __name__ == '__main__':
-    methods = ['IPM', 'KLD-LT', 'KLD-DV', 'squared-Hel-LT', 'chi-squared-LT', 'chi-squared-HCR', 'JS-LT', 'alpha-LT', 'Renyi-DV', 'Renyi-CC', 'rescaled-Renyi-CC', 'Renyi-CC-WCR']
-    runs = 100
-    epochs = 1000
-
-    all_estimated_divergences = {}
-
-    prob_sick_values = np.logspace(-3, -1, 10)
-    
-    for prob_sick in prob_sick_values:
-        estimated_divergences = {
-            method: np.zeros(epochs) for method in methods
-        }   
-        
-        for method in methods:
-            for run in range(runs):
-                divergence_estimates = main(method, prob_sick)
-            
-                estimated_divergences[method] += divergence_estimates
-                
-            estimated_divergences[method] /= runs
-        
-        all_estimated_divergences[prob_sick] = estimated_divergences
-        
-    with open('estimated_divergences.csv', 'w') as f:
-        writer = csv.writer(f)
-        header = ['prob_sick', 'method'] + [f'epoch_{i+1}' for i in range(epochs)]
-        writer.writerow(header)
-            
-        for prob_sick, estimated_divergences in all_estimated_divergences.items():
-            for method, divergence_estimates in estimated_divergences.items():
-                row = [prob_sick, method] + list(divergence_estimates)
-                writer.writerow(row)
-        
+    main()
         

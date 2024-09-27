@@ -1,0 +1,15 @@
+tensorflow
+tensorflow_addons
+torch
+torchvision
+torchaudio
+torchinfo
+torchmetrics
+torch-fidelity
+jax[cuda12]
+flax
+pandas
+matplotlib
+scipy
+tqdm
+seaborn
