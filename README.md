@@ -91,6 +91,20 @@ python Divergence_bio_hypothesis_test_demo.py --p 0.01 --method KLD-DV
 
 ---
 
+## 💬 **Support**
+
+If you encounter any issues or have questions, feel free to open an issue on GitHub. We also welcome suggestions and feedback to improve the library!
+
+---
+
+## 📧 **Contact**
+
+For further inquiries, reach out to us at:
+
+- Email: [a.aggelakis@iacm.forth.gr](a.aggelakis@iacm.forth.gr)
+
+---
+
 ## 📄 **License**
 
 This project is released under the **MIT License**, granting you the freedom to use, modify, and distribute the software. For more details, refer to the `LICENSE` file.
