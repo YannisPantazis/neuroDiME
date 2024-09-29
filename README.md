@@ -4,7 +4,7 @@
 ### 🔍 **Overview**
 **NeuroDiME** is a software library offering neural-based estimation methods for various **divergences** and **integral probability metrics (IPM)**. It supports a wide range of divergences, including several **f-divergences**, and provides an extensive suite of functionalities for estimation and analysis. 
 
-To dive deeper into the documentation, visit our official site: [**NeuroDiME Documentation**](https://neurodime.readthedocs.io/en/latest/index.html)
+To dive deeper into the documentation, visit our site: [**NeuroDiME Documentation**](https://neurodime.readthedocs.io/en/latest/index.html)
 
 ---
 
