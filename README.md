@@ -105,6 +105,17 @@ For further inquiries, reach out to us at:
 
 ---
 
+## 👥 **Contributors**
+
+The development of **NeuroDiME** is based on the research presented in our paper. The contributors are:
+
+- [**Alexandros Angelakis**](https://www.linkedin.com/in/alexandrosangelakis/) - (University of Crete, IACM-FORTH)
+- [**Yannis Pantazis**](https://sites.google.com/site/yannispantazis/) - (University of Crete, IACM-FORTH)
+- [**Jeremiah Birrell**](https://scholar.google.co.uk/citations?user=R60hJGUAAAAJ&hl=en) - (Texas State University)
+- [**Markos Katsoulakis**](https://scholar.google.com/citations?user=2PpEwFQAAAAJ&hl=el) - (University of Massachusetts)
+
+---
+
 ## 📄 **License**
 
 This project is released under the **MIT License**, granting you the freedom to use, modify, and distribute the software. For more details, refer to the `LICENSE` file.
