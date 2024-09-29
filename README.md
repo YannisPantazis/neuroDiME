@@ -1,76 +1,100 @@
-# NeuroDiME: A Software Library on Neural-based Estimation of Divergences and Metrics
 
-## Overview
-This repository contains implementations for neural-based estimation of divergences and integral probability metrics (IPM). The implemented methods cover a wide range of divergences, including various f-divergences, and integral probability metrics. You can also view the documentation at https://neurodime.readthedocs.io/en/latest/index.html
+# **NeuroDiME**: A Software Library for Neural-based Divergence and Metric Estimation
 
-## Class Hierarchy
-The structure of the divergence classes is as follows:
+### 🔍 **Overview**
+**NeuroDiME** is a software library offering neural-based estimation methods for various **divergences** and **integral probability metrics (IPM)**. It supports a wide range of divergences, including several **f-divergences**, and provides an extensive suite of functionalities for estimation and analysis. 
 
-![Alt text](images/class_hierarchy_2.png)
+To dive deeper into the documentation, visit our official site: [**NeuroDiME Documentation**](https://neurodime.readthedocs.io/en/latest/index.html)
 
+---
 
-## Requirements
-Everything was tested on cuda 12.5, cudnn 8.9.2 and ubuntu 22.04
-All dependencies are listed in the `requirements.txt` file. To set up the environment, run the following commands:
+## 🌳 **Class Hierarchy**
+
+Our library offers a structured and intuitive class hierarchy for divergence estimation. Below is an illustrative diagram of how different classes interrelate:
+
+![Class Hierarchy](images/class_hierarchy_2.png)
+
+---
+
+## 📋 **Requirements**
+
+We tested our library with the following prerequisites:
+
+- **OS**: Ubuntu 22.04
+- **CUDA**: 12.5
+- **cuDNN**: 8.9.2
+
+All other dependencies are specified in the `requirements.txt`. 
+
+### 🔧 **Quick Setup**
+To quickly set up your environment, use the following commands:
+
 ```bash
-# Create a new conda environment
-conda create --name <env> python=3.10.4
+# Step 1: Create a new conda environment
+conda create --name neurodime_env python=3.10.4
+
+# Step 2: Install all required packages
 pip install -r requirements.txt
 ```
 
-Additionally, you can install packages individually:
+Alternatively, you can install packages individually:
 ```bash
-# Install necessary packages
-pip install tensorflow
-pip install tensorflow_addons
-pip install torch
-pip install torchvision
-pip install torchaudio
-pip install torchinfo
-pip install torchmetrics
-pip install torch-fidelity
-pip install jax[cuda12]
-pip install flax
-pip install pandas
-pip install matplotlib
-pip install scipy
-pip install tqdm
-pip install seaborn
+pip install tensorflow tensorflow_addons torch torchvision torchaudio torchinfo torchmetrics torch-fidelity
+pip install jax[cuda12] flax pandas matplotlib scipy tqdm seaborn
 ```
 
-## Examples
-The following are some example use cases available in this repository:
-1. **Multivariate Gaussians**: Vary dimension and correlation coefficient (`rho`)
-2. **Heavy-tailed distribution**: Varying alpha
-3. **Subpopulation detection**: Both synthetic (GMM) and real datasets
-4. **Equivariant dataset**: To test on structured data
-5. **Image-based tasks**: Divergence estimation with possible CNN-based models
-6. **Generation/GAN**: Generating MNIST and CIFAR-10 images
+---
 
-All the examples were tested on one GPU, a 4070 Super with 16GB.
-You can find our pretrained models for the Generation/GANs examples in every demos folder.
+## 💡 **Examples and Use Cases**
 
-## Python Files
-- `Divergences_tf.py`, `Divergences_torch`, `Divergences_jax`: Contain implementations of all the basic divergence families (the test function/discriminator is an input argument). Can be found in the folder `models`.
-- One file for each demonstration example (e.g., `1D Gaussian`, `Mixture of Gaussians`, `Subpopulation detection`, etc.). Can be foudn in the folders tf_demos, torch_demos and jax_demos.
+Explore the wide range of example implementations available in NeuroDiME:
 
-Additionally, gamma function spaces implemented include continuous & bounded, L-Lipschitz, equivariant, and user-defined.
+1. **Multivariate Gaussians**: Experiment with different dimensions and correlation coefficients (`rho`).
+2. **Heavy-tailed Distributions**: Adjust parameters such as `alpha`.
+3. **Subpopulation Detection**: Analyze both synthetic (GMM) and real datasets.
+4. **Equivariant Datasets**: Test on structured data.
+5. **Image-based Tasks**: Utilize CNN-based models for divergence estimation.
+6. **Generation/GAN**: Generate images using MNIST and CIFAR-10 datasets.
 
-## How to Run
-Here are some example commands to run the scripts:
+> 💻 *Note*: All examples have been tested on a single GPU (NVIDIA 4070 Super, 16GB). Pretrained models for Generation/GAN examples can be found within each respective `demos` folder.
+
+---
+
+## 📂 **Core Python Files**
+
+Our implementation is organized into several key files:
+
+- **`Divergences_tf.py`**, **`Divergences_torch.py`**, **`Divergences_jax.py`**: Contain the core implementations for all major divergence families. You can customize these using input arguments for the test functions/discriminators. Find them under the `models` directory.
+- **Demonstration Files**: Each demonstration example (e.g., **1D Gaussian**, **Mixture of Gaussians**, **Subpopulation detection**) has a corresponding Python file located in the `tf_demos`, `torch_demos`, and `jax_demos` directories.
+
+NeuroDiME supports various gamma function spaces, including **continuous & bounded**, **L-Lipschitz**, **equivariant**, and **user-defined** functions.
+
+---
+
+## 🚀 **How to Run**
+
+Ready to explore NeuroDiME? Here’s how you can get started with different examples:
+
 ```bash
-# Run an N-dimensional Gaussian example with dimension 1
+# Example 1: Run an N-dimensional Gaussian with 1 dimension
 python N_dim_Gaussian_demo.py --sample_size 10000 --batch_size 1000 --epochs 200 --method KLD-DV --use_GP True --dimension 1
 
-# Run an MNIST GAN example
+# Example 2: Train a GAN on the MNIST dataset
 python mnist_gan.py --method KLD-DV --use_GP True --conditional True
 
-# Run an CIFAR-10 GAN example
+# Example 3: Train a GAN on CIFAR-10
 python cifar10_gan.py --method KLD-DV --use_GP True --conditional True
 
-# Run an biological hypothesis test example
+# Example 4: Run a biological hypothesis test
 python Divergence_bio_hypothesis_test_demo.py --p 0.01 --method KLD-DV
 ```
 
-## License
-This project is licensed under the terms of the MIT license.
+---
+
+## 📄 **License**
+
+This project is released under the **MIT License**, granting you the freedom to use, modify, and distribute the software. For more details, refer to the `LICENSE` file.
+
+---
+
+Feel free to reach out if you have any questions or suggestions. Enjoy using **NeuroDiME**! 🎉
