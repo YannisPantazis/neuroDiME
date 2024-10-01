@@ -1,5 +1,14 @@
-
+<div align="center">
+  
 # **NeuroDiME**: A Software Library for Neural-based Divergence and Metric Estimation
+
+<img src="https://img.shields.io/badge/Python-3.10-306998">
+<img src="https://img.shields.io/badge/Conda-4.12.0-44903d">
+<img src="https://img.shields.io/badge/CUDA-12.5-purple">
+<img src="https://img.shields.io/badge/cuDNN-8.9.2-red">
+</div>
+
+---
 
 ### 🔍 **Overview**
 **NeuroDiME** is a software library offering neural-based estimation methods for various **divergences** and **integral probability metrics (IPM)**. It supports a wide range of divergences, including several **f-divergences**, and provides an extensive suite of functionalities for estimation and analysis. 
@@ -17,14 +26,7 @@ Our library offers a structured and intuitive class hierarchy for divergence est
 ---
 
 ## 📋 **Requirements**
-
-We tested our library with the following prerequisites:
-
-- **OS**: Ubuntu 22.04
-- **CUDA**: 12.5
-- **cuDNN**: 8.9.2
-
-All other dependencies are specified in the `requirements.txt`. 
+All dependencies are specified in the `requirements.txt`. 
 
 ### 🔧 **Quick Setup**
 To quickly set up your environment, use the following commands:
