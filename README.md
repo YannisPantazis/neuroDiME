@@ -6,6 +6,7 @@
 <img src="https://img.shields.io/badge/Conda-4.12.0-44903d">
 <img src="https://img.shields.io/badge/CUDA-12.5-purple">
 <img src="https://img.shields.io/badge/cuDNN-8.9.2-red">
+<img src="https://img.shields.io/badge/License-MIT-yellow">
 </div>
 
 ---
