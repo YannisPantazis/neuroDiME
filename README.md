@@ -49,7 +49,7 @@ pip install jax[cuda12] flax pandas matplotlib scipy tqdm seaborn
 
 Explore the wide range of example implementations available in NeuroDiME:
 
-1. **Multivariate Gaussians**: Experiment with different dimensions and correlation coefficients (`rho`).
+1. **Multivariate Gaussians**: Experiment with different dimensions and correlation coefficients.
 2. **Heavy-tailed Distributions**: Adjust parameters such as `alpha`.
 3. **Subpopulation Detection**: Analyze both synthetic (GMM) and real datasets.
 4. **Equivariant Datasets**: Test on structured data.
