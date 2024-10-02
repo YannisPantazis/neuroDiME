@@ -53,11 +53,9 @@ pip install jax[cuda12] flax pandas matplotlib scipy tqdm seaborn
 Explore the wide range of example implementations available in NeuroDiME:
 
 1. **Multivariate Gaussians**: Experiment with different dimensions and correlation coefficients.
-2. **Heavy-tailed Distributions**: Adjust parameters such as `alpha`.
-3. **Subpopulation Detection**: Analyze both synthetic (GMM) and real datasets.
-4. **Equivariant Datasets**: Test on structured data.
-5. **Image-based Tasks**: Utilize CNN-based models for divergence estimation.
-6. **Generation/GAN**: Generate images using MNIST and CIFAR-10 datasets.
+2. **Subpopulation Detection**: Analyze real datasets.
+3. **Image-based Tasks**: Utilize CNN-based models for divergence estimation.
+4. **Generation/GAN**: Generate images using MNIST and CIFAR-10 datasets.
 
 > 💻 *Note*: All examples have been tested on a single GPU (NVIDIA 4070 Super, 16GB). Pretrained models for Generation/GAN examples can be found within each respective `demos` folder.
 
