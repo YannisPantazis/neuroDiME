@@ -52,12 +52,12 @@ pip install jax[cuda12] flax pandas matplotlib scipy tqdm seaborn
 
 Explore the wide range of example implementations available in NeuroDiME:
 
-1. **Multivariate Gaussians**: Experiment with different dimensions and correlation coefficients.
-2. **Subpopulation Detection**: Analyze real datasets.
-3. **Image-based Tasks**: Utilize CNN-based models for divergence estimation.
-4. **Generation/GAN**: Generate images using MNIST and CIFAR-10 datasets.
+1. [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/16rC99fr34160PwNfS1b40OYQEllhVmK5) **Multivariate Gaussians**: Experiment with different dimensions and correlation coefficients.
+2. [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/11jeQs149iXYmBRM-O0S5fvMkwkj8m1Tv) **Subpopulation Detection**: Analyze real datasets.
+3. [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/10_jN8qfONkYwZmshocqlwgpNtscB3E5k) **Image-based Tasks**: Utilize CNN-based models for divergence estimation.
+4. [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](1BUOWmrtpaEtNsaqRYLmQTSSMZn-iZAke) [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](1SX5SOAYWKGUBP_BR-vM6XdX8zssXsUDq) **Generation/GAN**: Generate images using MNIST and CIFAR-10 datasets.
 
-> 💻 *Note*: All examples have been tested on a single GPU (NVIDIA 4070 Super, 16GB). Pretrained models for Generation/GAN examples can be found within each respective `demos` folder.
+> 💻 *Note*: All examples have been tested on a single GPU (NVIDIA 4070 Super, 16GB). Pretrained models for Generation/GAN examples can be found within each respective `demos` folder. All the Colab Notebooks are implemented with PyTorch, with support for other frameworks coming soon.
 
 ---
 
