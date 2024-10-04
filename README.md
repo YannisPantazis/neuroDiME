@@ -4,8 +4,6 @@
 
 <img src="https://img.shields.io/badge/Python-3.10-306998">
 <img src="https://img.shields.io/badge/Conda-4.12.0-44903d">
-<img src="https://img.shields.io/badge/CUDA-12.5-purple">
-<img src="https://img.shields.io/badge/cuDNN-8.9.2-red">
 <img src="https://img.shields.io/badge/License-MIT-yellow">
 </div>
 
@@ -27,6 +25,8 @@ Our library offers a structured and intuitive class hierarchy for divergence est
 ---
 
 ## 📋 **Requirements**
+We tested our examples with CUDA 12.5 and cuDNN 8.9.2.
+
 All dependencies are specified in the `requirements.txt`. 
 
 ### 🔧 **Quick Setup**
