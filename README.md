@@ -57,7 +57,7 @@ Explore the wide range of example implementations available in NeuroDiME:
 3. [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/10_jN8qfONkYwZmshocqlwgpNtscB3E5k?usp=sharing) **Image-based Tasks**: Utilize CNN-based models for divergence estimation.
 4. [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1BUOWmrtpaEtNsaqRYLmQTSSMZn-iZAke?usp=sharing) [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1SX5SOAYWKGUBP_BR-vM6XdX8zssXsUDq?usp=sharing) **Generation/GAN**: Generate images using MNIST and CIFAR-10 datasets.
 
-> 💻 *Note*: All examples have been tested on a single GPU (NVIDIA 4070 Super, 16GB). Pretrained models for Generation/GAN examples can be found within each respective `demos` folder. All the Colab Notebooks are implemented with PyTorch, with support for other frameworks coming soon.
+> 💻 *Note*: All examples have been tested on a single GPU (NVIDIA 4070 Super, 16GB). For the pretrained models used in the Generation/GAN examples, please reach out to us. All the Colab Notebooks are implemented with PyTorch, with support for other frameworks coming soon.
 
 ---
 
